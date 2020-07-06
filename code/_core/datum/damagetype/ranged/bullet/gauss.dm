@@ -1,10 +1,9 @@
-/damagetype/ranged/bullet/gauss_carbine
+/damagetype/ranged/bullet/gauss_gun
 	name = "gauss carbine bullet"
 
 	//The base attack damage of the weapon. It's a flat value, unaffected by any skills or attributes.
 	attack_damage_base = list(
-		BLUNT = 20,
-		PIERCE = 50
+		PIERCE = 110
 	)
 
 	//How much armor to penetrate. It basically removes the percentage of the armor using these values.
@@ -13,4 +12,4 @@
 		PIERCE = INFINITY
 	)
 
-	falloff = VIEW_RANGE + ZOOM_RANGE
+	falloff = VIEW_RANGE*3
