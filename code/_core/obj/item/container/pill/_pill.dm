@@ -16,6 +16,34 @@
 
 	value = 1
 
+/obj/item/container/pill/save_item_data(var/save_inventory = TRUE)
+	. = ..()
+	.["double"] = double
+	if(reagents_2) .["reagents_2"] = reagents_2.stored_reagents
+	return .
+
+
+/obj/item/container/pill/load_item_data_pre(var/mob/living/advanced/player/P,var/list/object_data)
+
+	. = ..()
+
+	if(object_data["double"]) double = object_data["double"]
+
+	return .
+
+/obj/item/container/pill/load_item_data_post(var/mob/living/advanced/player/P,var/list/object_data)
+
+	. = ..()
+
+	if(object_data["reagents_2"] && length(object_data["reagents_2"]))
+		for(var/r_id in object_data["reagents_2"])
+			var/volume = object_data["reagents_2"][r_id]
+			reagents_2.add_reagent(r_id,volume,TNULL,FALSE)
+		reagents_2.update_container()
+
+	return .
+
+
 /obj/item/container/pill/calculate_value()
 
 	. = ..()

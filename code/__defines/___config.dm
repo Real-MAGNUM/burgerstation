@@ -2,10 +2,11 @@
 #define ENABLE_INSTALOAD FALSE
 #define ENABLE_STOPLAG TRUE
 #define MOVEMENT_DELAY_MOD 0.75 //Lower values means faster.
+#define ENABLE_DAMAGE_NUMBERS FALSE
 
 //Game Options
 #define FPS_CLIENT 60 //0 Means synced. Also this is default, players can change this for themselves.
-#define FPS_SERVER 30
+#define FPS_SERVER 20
 
 #define SHUTDOWN_SUBSYSTEM_ON_ERROR FALSE
 
@@ -35,7 +36,6 @@
 #define TALK_RANGE VIEW_RANGE
 #define YELL_RANGE VIEW_RANGE*1.5
 
-#define RADIO_RANGE 3 //Can only receive radio messages in this distance
 #define RADIO_WHISPER_RANGE 1
 #define RADIO_TALK_RANGE 4
 #define RADIO_YELL_RANGE 8
@@ -57,12 +57,10 @@
 
 #define BYPASS_AREA_NO_DAMAGE TRUE
 
-//Makes compiling faster. FALSE means disabled
-
 #define ENABLE_BULLET_CASINGS FALSE
 #define ENABLE_AI TRUE
 #define ENABLE_MAPLOAD TRUE
-#define ENABLE_LIGHTING TRUE
+#define ENABLE_LIGHTING FALSE
 #define ENABLE_TURFGEN TRUE
 
 #define ENABLE_HIJACK FALSE
@@ -70,7 +68,7 @@
 #define ENABLE_ATMOS FALSE
 
 #define ENABLE_MOB TRUE
-#define ENABLE_WEATHERGEN TRUE
+#define ENABLE_WEATHERGEN FALSE
 #define ENABLE_HAZARDS FALSE
 #define ENABLE_WOUNDS FALSE
 

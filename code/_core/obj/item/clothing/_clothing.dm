@@ -45,6 +45,18 @@
 	var/hidden_clothing = 0x0 //Flags of Clothing slots that it should hide when this object is equipped.
 	var/list/hidden_organs = list() //List of organ IDs that are hidden when this object is equipped.
 
+
+
+/obj/item/clothing/save_item_data(var/save_inventory = TRUE)
+	. = ..()
+	if(length(polymorphs)) .["polymorphs"] = polymorphs
+	return .
+
+/obj/item/clothing/load_item_data_pre(var/mob/living/advanced/player/P,var/list/object_data)
+	. = ..()
+	if(object_data["polymorphs"]) polymorphs = object_data["polymorphs"]
+	return .
+
 /obj/item/clothing/New(var/desired_loc)
 	additional_clothing_stored = list()
 	..()

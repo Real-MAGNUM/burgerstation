@@ -21,6 +21,8 @@
 	has_quick_function = TRUE
 	quick_function_type =  FLAG_QUICK_INSTANT
 
+	interaction_flags = FLAG_INTERACTION_LIVING | FLAG_INTERACTION_DEAD | FLAG_INTERACTION_NO_DISTANCE
+
 /obj/hud/button/quick(var/mob/living/advanced/caller,var/atom/object,location,control,params)
 
 	if(alpha == 0)
@@ -66,4 +68,5 @@
 
 /obj/hud/button/clicked_on_by_object(var/mob/caller,object,location,control,params)
 	play('sound/ui/tap-muted.ogg',caller, sound_setting = SOUND_SETTING_UI)
+	INTERACT_CHECK
 	return TRUE

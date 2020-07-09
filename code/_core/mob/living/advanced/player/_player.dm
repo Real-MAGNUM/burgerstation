@@ -75,6 +75,8 @@ var/global/list/mob/living/advanced/player/all_players = list()
 
 	var/list/mob/living/followers = list()
 
+	var/save_id
+
 	//movement_delay = DECISECONDS_TO_TICKS(1.5)
 
 /mob/living/advanced/player/New(loc,desired_client,desired_level_multiplier)
@@ -92,7 +94,7 @@ var/global/list/mob/living/advanced/player/all_players = list()
 
 	add_species_languages()
 
-	mobdata.apply_data_to_mob(src,teleport,update_blends)
+	set_mob_data(mobdata["loaded_data"],teleport,update_blends)
 
 	return TRUE
 

@@ -11,6 +11,7 @@
 	//Menu
 	verbs += /client/verb/open_discord
 	verbs += /client/verb/open_github
+	verbs += /client/verb/open_patreon
 	verbs += /client/verb/player_who
 	verbs += /client/verb/staff_who
 
@@ -69,5 +70,7 @@
 		verbs += /client/verb/subsystem_report
 		verbs += /client/verb/reload_badwords
 		verbs += /client/verb/force_save_all
+		verbs += /client/verb/rejuvenate_player
+		verbs += /client/verb/stress_test
 
 	return TRUE

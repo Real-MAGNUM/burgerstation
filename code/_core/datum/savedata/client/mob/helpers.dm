@@ -89,7 +89,7 @@
 		return FALSE
 
 	if(!istype(A))
-		usr?.to_chat(span("danger","<h2>Save failed. Please contact the server owner with error code: 2000.</h2>"))
+		usr?.to_chat(span("danger","<h2>Save failed. Tried to save [A.get_debug_name()]. Please contact the server owner with error code: 2000.</h2>"))
 		return FALSE
 
 	if(!force && world_state != STATE_RUNNING)
@@ -98,49 +98,19 @@
 
 	//LOG_DEBUG("[owner] is saving their character [A.get_debug_name()]...")
 
-	//Basic Information
-	loaded_data["name"] = A.real_name
-	//loaded_data["id"] = owner.save_slot
-	loaded_data["currency"] = A.currency
-	loaded_data["species"] = A.species
-	loaded_data["gender"] = A.gender
-	loaded_data["sex"] = A.sex
-	loaded_data["nutrition"] = A.nutrition
-	loaded_data["hydration"] = A.hydration
-	loaded_data["known_languages"] = A.known_languages
-
-	var/final_organ_list = list()
-	for(var/id in A.labeled_organs)
-		var/obj/item/organ/O = A.labeled_organs[id]
-		final_organ_list[id] = get_item_data(O,save_inventory)
-
-	loaded_data["organs"] = final_organ_list
-
-	//Skills
-	var/list/final_skill_list = list()
-	for(var/id in A.skills)
-		var/experience/skill/S = A.skills[id]
-		var/desired_experience = ENABLE_XP_SAVING ? S.experience : S.level_to_xp(S.chargen_max_level)
-		final_skill_list[id] = desired_experience
-	loaded_data["skills"] = final_skill_list
-
-	//Attributes
-	var/list/final_attribute_list = list()
-	for(var/id in A.attributes)
-		var/experience/attribute/B = A.attributes[id]
-		var/desired_experience = ENABLE_XP_SAVING ? B.experience : B.level_to_xp(B.chargen_max_level)
-		final_attribute_list[id] = desired_experience
-	loaded_data["attributes"] = final_attribute_list
-
+	var/list/loaded_data = A.get_mob_data(save_inventory,force)
 	if(write_json_data_to_id(loaded_data["id"],loaded_data))
 		A.to_chat(span("notice","Sucessfully saved character [A.name]."))
 	else
 		A.to_chat(span("danger","<h2>Save failed. Please contact the server owner with error code: 99.</h2>"))
 
+	LOG_DEBUG("[A.client] has finished saving their character [A.get_debug_name()].")
+
 	A.client?.globals?.save() //Save globals too. TODO: FIX THIS
 
 	return TRUE
 
+/*
 /savedata/client/mob/proc/apply_data_to_mob(var/mob/living/advanced/player/A,var/do_teleport = TRUE,var/update_blends=TRUE)
 
 	attached_mob = A
@@ -222,3 +192,4 @@
 		var/desired_type = value_or_null(blend_list,"type")
 		var/desired_layer = value_or_null(blend_list,"layer")
 		O.add_blend(desired_id,desired_icon,desired_icon_state,desired_color,desired_blend,desired_type,TRUE,desired_layer)
+*/

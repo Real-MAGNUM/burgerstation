@@ -284,11 +284,31 @@ client/verb/air_test(var/pressure as num)
 	set category = "Debug"
 
 	for(var/mob/living/advanced/player/P in world)
-		if(!P.ckey_last)
+		if(!P.ckey_last || !P.allow_save)
 			continue
 		try
 			var/savedata/client/mob/mobdata = MOBDATA(P.ckey_last)
 			if(mobdata)
 				mobdata.save_character(src,force = TRUE)
+			to_chat("Saved [P.get_debug_name()].")
 		catch
 			to_chat("COULD NOT SAVE [P.get_debug_name()]!")
+
+/client/verb/stress_test()
+	set name = "Stress Test (DANGER)"
+	set category = "Debug"
+
+	var/confirm = input("Are you sure you want to do this?","HELL.") in list("Yes","No","Cancel")|null
+
+	if(confirm != "Yes")
+		return FALSE
+
+	var/list/valid_turfs = list()
+
+	for(var/turf/simulated/S in view(VIEW_RANGE + ZOOM_RANGE,mob))
+		valid_turfs += S
+
+	for(var/i=1,i<=60,i++)
+		var/mob/living/advanced/npc/syndicate/stress_test/ST = new(pick(valid_turfs))
+		INITIALIZE(ST)
+		GENERATE(ST)

@@ -25,12 +25,11 @@
 
 /obj/hud/button/squad/main/clicked_on_by_object(var/mob/caller,var/atom/object,location,control,params)
 
-	if(!is_player(caller))
-		return ..()
+	. = ..()
 
-	var/mob/living/advanced/player/P = caller
+	if(. && is_player(caller))
+		var/mob/living/advanced/player/P = caller
 
-	spawn()
 		if(length(all_squads))
 
 			var/list/squad_table = list()
@@ -46,7 +45,7 @@
 
 			var/answer = input("Which squad would you like to join?","Squad Selection",null) as null|anything in squad_table
 
-			if(!P)
+			if(!P || !answer)
 				return FALSE
 
 			if(P.current_squad && answer == "Leave Existing Squad")
@@ -70,7 +69,7 @@
 			if(answer == "Yes")
 				new_squad(P)
 
-	return ..()
+	return .
 
 /obj/hud/button/squad/main/proc/new_squad(var/mob/living/advanced/player/P)
 	while(P.client)

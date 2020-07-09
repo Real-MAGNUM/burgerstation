@@ -41,10 +41,17 @@
 		following.followers -= src
 		following = null
 
+	if(is_sneaking)
+		is_sneaking = FALSE
+		handle_alpha()
+
 	post_death()
 
 	if(queue_delete_on_death)
 		queue_delete(src,ITEM_DELETION_TIME_DROPPED,TRUE)
+
+	var/obj/hud/button/dead_ghost/DG = new
+	DG.update_owner(src)
 
 	return TRUE
 
@@ -81,11 +88,13 @@
 		health.update_health()
 	if(ai)
 		ai.enabled = TRUE
+	for(var/obj/hud/button/dead_ghost/DG in buttons)
+		DG.update_owner(null)
 	return TRUE
 
 /mob/living/proc/resurrect()
 	if(health)
-		health.health_current = health.health_max
+		health.adjust_loss_smart(-1000,-1000,-1000,-1000)
 	revive()
 	return TRUE
 
@@ -111,11 +120,13 @@
 
 /mob/living/can_use_controls(object,location,control,params)
 
+	/*
 	if(dead)
 		return FALSE
 
 	if(has_status_effect(list(PARALYZE,SLEEP,STAGGER,STUN)))
 		return FALSE
+	*/
 
 	return ..()
 
@@ -232,7 +243,7 @@
 
 /mob/living/proc/on_life()
 
-	if(!initialized)
+	if(!initialized || qdeleting)
 		return FALSE
 
 	handle_status_effects()
