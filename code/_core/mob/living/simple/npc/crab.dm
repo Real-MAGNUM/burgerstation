@@ -19,18 +19,16 @@
 
 	armor_base = list(
 		BLADE = 25,
-		BLUNT = 10,
-		PIERCE = 25,
-		LASER = -25,
-		MAGIC = -25,
-		HEAT = -15,
-		COLD = -15,
-		BOMB = -15,
-		BIO = 0,
-		RAD = 0,
-		HOLY = 0,
-		DARK = 0,
-		FATIGUE = 25
+		BLUNT = -25,
+		PIERCE = 75,
+		LASER = 25,
+		MAGIC = 50,
+		HEAT = -25,
+		COLD = -25,
+		BOMB = 50,
+		BIO = 25,
+		HOLY = 100,
+		DARK = 100
 	)
 
 	mob_size = MOB_SIZE_ANIMAL
@@ -84,13 +82,13 @@
 	armor_base = list(
 		BLADE = 75,
 		BLUNT = 75,
-		PIERCE = 100,
+		PIERCE = 75,
 		LASER = 50,
-		MAGIC = 50,
-		HEAT = 0,
+		MAGIC = 25,
+		HEAT = 25,
 		COLD = 25,
-		BOMB = 25,
-		BIO = 50,
+		BOMB = 75,
+		BIO = 25,
 		RAD = 25,
 		HOLY = 100,
 		DARK = 100,
@@ -100,17 +98,11 @@
 	damage_received_multiplier = 0.5
 
 	status_immune = list(
-		STUN = TRUE,
+		STUN = STAGGER,
 		SLEEP = STAGGER,
 		PARALYZE = STAGGER,
 		FATIGUE = STAGGER,
-		STAGGER = FALSE,
-		CONFUSED = FALSE,
-		CRIT = FALSE,
-		REST = FALSE,
-		ADRENALINE = FALSE,
-		DISARM = FALSE,
-		DRUGGY = FALSE
+		DISARM = TRUE
 	)
 
 	enable_medical_hud = FALSE

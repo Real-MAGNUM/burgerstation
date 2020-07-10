@@ -24,35 +24,13 @@
 	force_spawn = TRUE
 	boss = TRUE
 
-	armor_base = list(
-		BLADE = 75,
-		BLUNT = 50,
-		PIERCE = 50,
-		LASER = 100,
-		MAGIC = 0,
-		HEAT = INFINITY,
-		COLD = 0,
-		BOMB = 75,
-		BIO = 75,
-		RAD = 75,
-		HOLY = 25,
-		DARK = INFINITY,
-		FATIGUE = INFINITY
-	)
-
 	status_immune = list(
-		STUN = TRUE,
+		STUN = STAGGER,
 		SLEEP = STAGGER,
 		PARALYZE = STAGGER,
 		FATIGUE = STAGGER,
-		STAGGER = FALSE,
-		CONFUSED = FALSE,
-		CRIT = FALSE,
-		REST = FALSE,
-		ADRENALINE = FALSE,
-		DISARM = FALSE,
-		DRUGGY = FALSE,
-		FIRE = FALSE
+		DISARM = TRUE,
+		FIRE = TRUE
 	)
 
 	butcher_contents = list(

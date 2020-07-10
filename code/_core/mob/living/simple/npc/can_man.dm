@@ -22,13 +22,13 @@
 	boss = TRUE
 
 	armor_base = list(
-		BLADE = 90,
-		BLUNT = 90,
+		BLADE = 75,
+		BLUNT = 75,
 		PIERCE = 75,
-		LASER = INFINITY,
-		MAGIC = 50,
-		HEAT = INFINITY,
-		COLD =INFINITY,
+		LASER = 100,
+		MAGIC = 25,
+		HEAT = 75,
+		COLD = 100,
 		BOMB = 50,
 		BIO = INFINITY,
 		RAD = INFINITY,
@@ -40,17 +40,11 @@
 	damage_received_multiplier = 0.5
 
 	status_immune = list(
-		STUN = TRUE,
+		STUN = STAGGER,
 		SLEEP = STAGGER,
 		PARALYZE = STAGGER,
 		FATIGUE = STAGGER,
-		STAGGER = FALSE,
-		CONFUSED = FALSE,
-		CRIT = FALSE,
-		REST = FALSE,
-		ADRENALINE = FALSE,
-		DISARM = FALSE,
-		DRUGGY = FALSE,
+		DISARM = TRUE,
 		FIRE = TRUE
 	)
 

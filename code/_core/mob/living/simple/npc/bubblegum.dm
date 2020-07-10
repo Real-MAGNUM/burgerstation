@@ -26,33 +26,28 @@
 	boss = TRUE
 
 	armor_base = list(
-		BLADE = 90,
-		BLUNT = 90,
-		PIERCE = 90,
-		LASER = 120,
+		BLADE = 50,
+		BLUNT = 75,
+		PIERCE = 75,
+		LASER = 100,
 		MAGIC = 50,
-		HEAT = INFINITY,
-		COLD = INFINITY,
-		BOMB = 50,
-		BIO = 75,
-		RAD = 75,
-		HOLY = 0,
-		DARK = INFINITY,
-		FATIGUE = INFINITY
+		HEAT = 75,
+		COLD = 25,
+		BOMB = 25,
+		BIO = 50,
+		RAD = 50,
+		HOLY = 75,
+		DARK = 75,
+		FATIGUE = 75
 	)
 
 	status_immune = list(
-		STUN = TRUE,
+		STUN = STAGGER,
 		SLEEP = STAGGER,
 		PARALYZE = STAGGER,
 		FATIGUE = STAGGER,
-		STAGGER = FALSE,
-		CONFUSED = FALSE,
-		CRIT = FALSE,
-		REST = FALSE,
-		ADRENALINE = FALSE,
-		DISARM = FALSE,
-		DRUGGY = FALSE
+		DISARM = TRUE,
+		FIRE = TRUE
 	)
 
 	iff_tag = "bubblegum"

@@ -22,33 +22,28 @@
 	boss = TRUE
 
 	armor_base = list(
-		BLADE = 50,
+		BLADE = 25,
 		BLUNT = 75,
-		PIERCE = 50,
+		PIERCE = 75,
 		LASER = 100,
-		MAGIC = 25,
-		HEAT = INFINITY,
-		COLD = INFINITY,
-		BOMB = 50,
-		BIO = 75,
-		RAD = 75,
+		MAGIC = 75,
+		HEAT = 75,
+		COLD = 100,
+		BOMB = 25,
+		BIO = 25,
+		RAD = 50,
 		HOLY = 25,
-		DARK = INFINITY,
-		FATIGUE = INFINITY
+		DARK = 100,
+		FATIGUE = 100
 	)
 
 	status_immune = list(
-		STUN = TRUE,
+		STUN = STAGGER,
 		SLEEP = STAGGER,
 		PARALYZE = STAGGER,
 		FATIGUE = STAGGER,
-		STAGGER = FALSE,
-		CONFUSED = FALSE,
-		CRIT = FALSE,
-		REST = FALSE,
-		ADRENALINE = FALSE,
-		DISARM = FALSE,
-		DRUGGY = FALSE
+		DISARM = TRUE,
+		FIRE = TRUE
 	)
 
 	iff_tag = "colossus"

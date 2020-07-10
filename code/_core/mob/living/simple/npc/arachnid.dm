@@ -7,7 +7,7 @@
 	damage_type = /damagetype/unarmed/claw/
 	class = /class/arachnid
 
-	value = 500
+	value = 1000
 
 	ai = /ai/
 
@@ -18,17 +18,16 @@
 	armor_base = list(
 		BLADE = 50,
 		BLUNT = 25,
-		PIERCE = 75,
-		LASER = 0,
+		PIERCE = 50,
+		LASER = -25,
 		MAGIC = 25,
-		HEAT = 50,
-		COLD = 0,
+		HEAT = 25,
+		COLD = -50,
 		BOMB = 25,
-		BIO = INFINITY,
-		RAD = INFINITY,
-		HOLY = 100,
-		DARK = 100,
-		FATIGUE = INFINITY
+		BIO = 75,
+		HOLY = 50,
+		DARK = 50,
+		FATIGUE = 25
 	)
 
 	iff_tag = "jungle"
@@ -39,17 +38,11 @@
 	movement_delay = DECISECONDS_TO_TICKS(2)
 
 	status_immune = list(
-		STUN = TRUE,
+		STUN = STAGGER,
 		SLEEP = STAGGER,
 		PARALYZE = STAGGER,
 		FATIGUE = STAGGER,
-		STAGGER = FALSE,
-		CONFUSED = FALSE,
-		CRIT = FALSE,
-		REST = FALSE,
-		ADRENALINE = FALSE,
-		DISARM = FALSE,
-		DRUGGY = FALSE
+		DISARM = TRUE
 	)
 
 	mob_size = MOB_SIZE_GIANT
