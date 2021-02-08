@@ -103,3 +103,26 @@
 		/obj/item/powercell/bluespace = CHANCE_GOD
 
 	)
+
+/loot/fishing/sky
+	loot_table = list(
+		null = 500,
+		/obj/item/clothing/feet/shoes/miner = CHANCE_JUNK,
+		/obj/item/clothing/feet/shoes/miner/left = CHANCE_JUNK,
+		/obj/item/clothing/head/helmet/full/miner = CHANCE_JUNK,
+		/obj/item/clothing/mask/gas/mining = CHANCE_JUNK,
+		/obj/item/clothing/mask/gas/syndicate = CHANCE_JUNK,
+		/mob/living/simple/goliath = CHANCE_MEME,
+		/mob/living/simple/goliath/ancient = CHANCE_MEME,
+		/obj/item/supply_crate/american = CHANCE_CRATE,
+		/obj/item/supply_crate/magic = CHANCE_CRATE,
+		/obj/item/supply_crate/nanotrasen = CHANCE_CRATE,
+		/obj/item/supply_crate/russian = CHANCE_CRATE,
+		/obj/item/supply_crate/syndicate = CHANCE_CRATE,
+		/obj/item/dice/d20/cursed = CHANCE_GOD,
+		/obj/item/tempering/quality/magic = CHANCE_GOD,
+		/obj/item/tempering/quality/ranged = CHANCE_GOD,
+		/obj/item/storage/ammo/fire = CHANCE_GOD,
+		/obj/item/powercell/bluespace = CHANCE_GOD
+
+	)

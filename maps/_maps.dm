@@ -5,6 +5,7 @@ var/global/list/horde_maps = list(
 	//"Jungle B-0X (WIP)" = "maps/horde/box.dmm",
 	"Lavaland" = "maps/horde/lavaland.dmm",
 	//"Supermatter Defense" = "maps/horde/supermatter.dmm"
+	"Sky Island change name" = "maps/horde/sky_island.dmm"
 )
 
 

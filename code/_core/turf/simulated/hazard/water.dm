@@ -27,3 +27,9 @@
 /turf/simulated/hazard/water/sea
 	name = "saltwater"
 	fishing_rewards = /loot/fishing/sea
+
+/turf/simulated/hazard/water/sky
+	name = "sky"
+	icon = 'icons/turf/floor/sky.dmi'
+	icon_state = "sky_slow_south"
+	fishing_rewards = /loot/fishing/sky
