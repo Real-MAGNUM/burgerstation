@@ -16,10 +16,8 @@
 
 	view_punch = 10
 
-	slowdown_mul_held = HELD_SLOWDOWN_RIFLE
-
 	size = SIZE_4
-	weight = WEIGHT_5
+	weight = 20
 
 	heat_per_shot = 0.04
 	heat_max = 0.08
@@ -34,13 +32,80 @@
 
 	ai_heat_sensitivity = 0.75
 
+	attachment_whitelist = list(
+		/obj/item/attachment/barrel/charger = TRUE, /obj/item/attachment/barrel/charger/advanced = TRUE,
+		/obj/item/attachment/barrel/compensator = TRUE,
+		/obj/item/attachment/barrel/extended = TRUE,
+		/obj/item/attachment/barrel/gyro = TRUE,
+		/obj/item/attachment/barrel/laser_charger = FALSE,
+		/obj/item/attachment/barrel/suppressor = TRUE,
 
-/obj/item/weapon/ranged/bullet/magazine/rifle/assault/get_static_spread() //Base spread
-	if(!wielded)
-		return 0.2
+		/obj/item/attachment/sight/laser_sight = TRUE,
+		/obj/item/attachment/sight/quickfire_adapter = TRUE,
+		/obj/item/attachment/sight/red_dot = TRUE,
+		/obj/item/attachment/sight/scope = TRUE,
+		/obj/item/attachment/sight/scope/large = TRUE,
+		/obj/item/attachment/sight/targeting_computer = TRUE,
+
+		/obj/item/attachment/stock/c20r = FALSE,
+
+		/obj/item/attachment/undermount/angled_grip = TRUE,
+		/obj/item/attachment/undermount/bipod = TRUE,
+		/obj/item/attachment/undermount/burst_adapter = TRUE,
+		/obj/item/attachment/undermount/vertical_grip = TRUE
+	)
+
+	attachment_barrel_offset_x = 32 - 16
+	attachment_barrel_offset_y = 19 - 16
+
+	attachment_sight_offset_x = 22 - 16
+	attachment_sight_offset_y = 22 - 16
+
+	attachment_undermount_offset_x = 24 - 16
+	attachment_undermount_offset_y = 14 - 16
+
+	firing_pin = /obj/item/firing_pin/electronic/iff/deathsquad
+
+/obj/item/weapon/ranged/bullet/magazine/rifle/assault/get_static_spread()
+	if(!wielded) return 0.2
 	return 0.001
 
-/obj/item/weapon/ranged/bullet/magazine/rifle/assault/get_skill_spread(var/mob/living/L) //Base spread
-	if(!heat_current)
-		return 0
+/obj/item/weapon/ranged/bullet/magazine/rifle/assault/get_skill_spread(var/mob/living/L)
+	if(!heat_current) return 0
 	return max(0,0.02 - (0.06 * L.get_skill_power(SKILL_RANGED)))
+
+/obj/item/weapon/ranged/bullet/magazine/rifle/assault/equipped/Generate()
+
+	. = ..()
+
+	if(prob(50))
+		attachment_barrel = pick(\
+			/obj/item/attachment/barrel/charger,\
+			/obj/item/attachment/barrel/compensator,\
+			/obj/item/attachment/barrel/extended,\
+			/obj/item/attachment/barrel/gyro,\
+			/obj/item/attachment/barrel/suppressor\
+		)
+	if(prob(50))
+		attachment_sight = pick(\
+			/obj/item/attachment/sight/laser_sight,\
+			/obj/item/attachment/sight/quickfire_adapter,\
+			/obj/item/attachment/sight/red_dot\
+		)
+
+	if(prob(50))
+		attachment_undermount = pick(\
+			/obj/item/attachment/undermount/angled_grip,\
+			/obj/item/attachment/undermount/bipod,\
+			/obj/item/attachment/undermount/burst_adapter,\
+			/obj/item/attachment/undermount/vertical_grip\
+		)
+
+	if(attachment_barrel) attachment_barrel = new attachment_barrel(src)
+	if(attachment_sight) attachment_sight = new attachment_sight(src)
+	if(attachment_undermount) attachment_undermount = new attachment_undermount(src)
+
+	update_attachment_stats()
+	update_sprite()
+
+	return .

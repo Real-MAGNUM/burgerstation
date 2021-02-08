@@ -8,11 +8,11 @@
 	protected_limbs = list(BODY_TORSO)
 
 	defense_rating = list(
-		MAGIC = 10,
-		COLD = 15,
+		ARCANE = AP_AXE,
+		COLD = AP_SWORD,
 	)
 
-	value = 5
+	value = 20
 
 	dyeable = TRUE
 
@@ -26,5 +26,12 @@
 /obj/item/clothing/neck/cloak/red
 	color = "#8E0000"
 
+/obj/item/clothing/neck/cloak/blue
+	color = COLOR_BLUE
+
 /obj/item/clothing/neck/cloak/nanotrasen
 	color = COLOR_NANOTRASEN
+
+
+/obj/item/clothing/neck/cloak/black
+	color = COLOR_BLACK

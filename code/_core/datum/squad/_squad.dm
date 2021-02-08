@@ -28,7 +28,8 @@ var/global/list/squad/all_squads = list()
 
 	all_squads -= src
 
-	for(var/mob/living/advanced/player/P in members)
+	for(var/k in members)
+		var/mob/living/advanced/player/P = k
 		remove_member(P)
 
 	remove_leader()
@@ -53,10 +54,11 @@ var/global/list/squad/all_squads = list()
 
 	P.set_squad(src)
 
-	for(var/mob/living/advanced/player/P2 in members)
+	for(var/k in members)
+		var/mob/living/advanced/player/P2 = k
 		P2.add_squad_button(P)
 
-	P.to_chat("You have joined [name].")
+	P.to_chat(span("warning","You have joined the squad \"[name]\"."))
 
 	return TRUE
 
@@ -72,9 +74,10 @@ var/global/list/squad/all_squads = list()
 
 	members -= P
 
-	P.to_chat("You are no longer in [name].")
+	P.to_chat(span("warning","You are no longer a squad member of [name]."))
 
-	for(var/mob/living/advanced/player/P2 in members)
+	for(var/k in members)
+		var/mob/living/advanced/player/P2 = k
 		P2.remove_squad_button(P)
 
 	if(!never_delete && !length(members))
@@ -96,7 +99,7 @@ var/global/list/squad/all_squads = list()
 
 	leader = P
 
-	P.to_chat("You are now the leader of [name].")
+	P.to_chat(span("notice","You are now the squad leader of [name]."))
 
 	return TRUE
 
@@ -105,7 +108,7 @@ var/global/list/squad/all_squads = list()
 	if(!leader)
 		return FALSE
 
-	leader.to_chat("You are no longer the leader of [name].")
+	leader.to_chat(span("warning","You are no longer the squad leader of [name]."))
 
 	leader = null
 

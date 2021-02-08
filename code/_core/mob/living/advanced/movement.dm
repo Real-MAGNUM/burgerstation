@@ -1,6 +1,15 @@
+/mob/living/advanced/dash(var/atom/dash_target,var/dash_direction=0x0,var/instances_left = 0)//Can either input dash target or dash direction.
+
+	if(driving)
+		return FALSE
+
+	return ..()
+
+
+
 /mob/living/advanced/on_sprint()
 
-	if(health && health.adjust_stamina(-SPRINT_STAMINA_LOSS))
+	if(health && health.adjust_stamina(-1))
 		update_health_element_icons(stamina=TRUE)
 		stamina_regen_delay = max(stamina_regen_delay,30)
 
@@ -21,10 +30,18 @@ mob/living/advanced/get_movement_delay()
 
 	. = ..()
 
-	if(health && health.health_current <= 0)
-		. *= 2
+	var/health_mul = 1
+	var/stamina_mul = 1
+	var/pain_mul = 1
+	var/adrenaline_bonus = 1 + ((get_status_effect_magnitude(ADRENALINE)/100)*(get_status_effect_duration(ADRENALINE)/100))
 
-	. *= slowdown_mul
+	if(health)
+		var/pain_bonus = min(1,get_status_effect_magnitude(PAINKILLER)/100) * min(1,get_status_effect_duration(PAINKILLER)/100) * health.health_max
+		health_mul = clamp(0.5 + ((health.health_current + pain_bonus)/health.health_max),0.5,1)
+		stamina_mul = clamp(0.75 + ((health.stamina_current + pain_bonus)/health.stamina_max),0.75,1)
+		pain_mul = clamp(0.1 + (1 - ((health.get_loss(PAIN) - pain_bonus)/health.health_max))*0.9,0.1,1)
+
+	. *= slowdown_mul * (1/adrenaline_bonus) * (1/pain_mul) * (1/stamina_mul) * (1/health_mul)
 
 	return .
 
@@ -40,7 +57,7 @@ mob/living/advanced/get_movement_delay()
 /mob/living/advanced/on_sneak()
 
 	if(health)
-		if(health.adjust_stamina( -(2-stealth_mod)*5 ))
+		if(health.adjust_stamina( -(2-stealth_mod)*2.5 ))
 			update_health_element_icons(stamina=TRUE)
 			stamina_regen_delay = max(stamina_regen_delay,30)
 		else

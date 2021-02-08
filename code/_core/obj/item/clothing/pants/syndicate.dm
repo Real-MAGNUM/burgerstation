@@ -5,11 +5,11 @@
 	icon = 'icons/obj/item/clothing/pants/syndicate.dmi'
 
 	defense_rating = list(
-		BLADE = 15,
-		BLUNT = 15,
-		PIERCE = 15,
-		MAGIC = 10,
-		COLD = 25,
+		BLADE = AP_SWORD,
+		BLUNT = AP_SWORD,
+		PIERCE = AP_SWORD,
+		COLD = AP_AXE,
+		HEAT = -AP_SWORD
 	)
 
 	value = 20

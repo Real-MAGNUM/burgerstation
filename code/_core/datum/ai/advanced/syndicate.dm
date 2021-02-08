@@ -1,9 +1,21 @@
 /ai/advanced/syndicate
-	enemy_tags = list("NanoTrasen","Skeleton")
+	enemy_tags = list("NanoTrasen")
 	should_find_weapon = TRUE
-	debug = TRUE
+	aggression = 1
+	retaliate = TRUE
 
-/*
+	var/language_to_use = LANGUAGE_BASIC
+
+
+/ai/advanced/syndicate/stress_test
+
+/ai/advanced/syndicate/stress_test/handle_movement()
+	owner.move_dir = pick(DIRECTIONS_ALL)
+	return TRUE
+
+/ai/advanced/syndicate/russian
+	language_to_use = LANGUAGE_RUSSIAN
+
 /ai/advanced/syndicate/on_damage_received(var/atom/atom_damaged,var/atom/attacker,var/atom/weapon,var/list/damage_table,var/damage_amount,var/critical_hit_multiplier,var/stealthy=FALSE)
 
 	. = ..()
@@ -11,7 +23,7 @@
 	if(damage_amount >= 10 && . && prob(25))
 		if(prob(10) && get_dist(owner,attacker) >= 3)
 			var/attack_dir = dir2text(get_dir(owner,attacker))
-			owner.say("Taking fire from the [attack_dir]!")
+			owner.do_say("Taking fire from the [attack_dir]!")
 		else
 			var/list/responses = list(
 				"I'm hit!",
@@ -22,7 +34,7 @@
 				"Taking fire, need assistance!",
 				"Fuck! I'm hit!"
 			)
-			owner.say(pick(responses))
+			owner.do_say(pick(responses),language_to_use = language_to_use)
 
 	return .
 
@@ -75,7 +87,6 @@
 			)
 
 		if(length(responses))
-			owner.say(pick(responses))
+			owner.do_say(pick(responses),language_to_use = language_to_use)
 
 	return .
-*/

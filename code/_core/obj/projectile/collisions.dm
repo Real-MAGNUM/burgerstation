@@ -32,6 +32,10 @@
 
 	return ..()
 
+/obj/effect/projectile_should_collide(var/obj/projectile/P,var/turf/new_turf,var/turf/old_turf)
+	return null
+
+
 /*
 /mob/living/advanced/player/projectile_should_collide(var/obj/projectile/P,var/turf/new_turf,var/turf/old_turf)
 
@@ -45,8 +49,9 @@
 
 /mob/living/projectile_should_collide(var/obj/projectile/P,var/turf/new_turf,var/turf/old_turf)
 
-	if(!P.hit_laying && src != P.target_atom && (dead || horizontal))
-		return null
+	if(!P.hit_laying)
+		if(dead && P.target_atom != src)
+			return null
 
 	if(P && !P.ignore_iff && P.iff_tag && src.iff_tag == P.iff_tag)
 		return null
@@ -58,7 +63,8 @@
 
 /turf/projectile_should_collide(var/obj/projectile/P,var/turf/new_turf,var/turf/old_turf)
 
-	for(var/atom/movable/M in contents)
+	for(var/k in P.contents)
+		var/atom/movable/M = k
 		if(!src.Enter(M))
 			return src
 

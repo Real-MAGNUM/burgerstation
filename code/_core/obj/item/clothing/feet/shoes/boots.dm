@@ -13,22 +13,24 @@
 	protected_limbs = list(BODY_FOOT_RIGHT)
 
 	defense_rating = list(
-		BLADE = 20,
-		BLUNT = 25,
-		PIERCE = 15,
-		LASER = -10,
-		MAGIC = -25,
-		HEAT = 10,
-		COLD = 10,
-		BOMB = 10
+		BLADE = AP_AXE,
+		BLUNT = AP_AXE,
+		PIERCE = AP_AXE,
+		LASER = -AP_AXE,
+		ARCANE = -AP_AXE,
+		COLD = AP_AXE,
+		BOMB = AP_AXE,
+		PAIN = AP_AXE
 	)
 
 	size = SIZE_2
-	weight = WEIGHT_2
 
-	value = 20
 
-	slowdown_mul_worn = 1.05
+	value = 60
+
+	speed_bonus = 0
+
+
 
 /obj/item/clothing/feet/shoes/black_boots/left
 	name = "left black boot"
@@ -37,5 +39,5 @@
 
 	item_slot = SLOT_FOOT_LEFT
 	protected_limbs = list(BODY_FOOT_LEFT)
-	blocks_clothing = SLOT_FOOT_LEFT_U
+	blocks_clothing = SLOT_FOOT_LEFT | SLOT_FOOT_LEFT_U
 

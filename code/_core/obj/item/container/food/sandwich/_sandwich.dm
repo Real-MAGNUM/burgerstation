@@ -3,57 +3,36 @@
 	desc = "A clusterfuck of food."
 	desc_extended = "SANDWICH MAKES ME STRONG!"
 
-	size = 3
+	size = SIZE_2
 
 	is_container = TRUE
-	container_max_size = 2
+	container_max_size = SIZE_1
 
-	dynamic_inventory_count = 8
+	dynamic_inventory_count = MAX_INVENTORY_X
+
+	dynamic_inventory_type = /obj/hud/inventory/dynamic/sandwich/
 
 	icon = 'icons/obj/item/consumable/food/dynamic_bread.dmi'
 	icon_state = "bun_bottom"
 
 	scale_sprite = FALSE
 
+/obj/item/container/food/sandwich/proc/sync_planes()
+	return TRUE
+
+/obj/item/container/food/sandwich/Finalize()
+	update_sprite()
+	return ..()
+
+
 /obj/item/container/food/sandwich/Generate()
 	reagents.add_reagent(/reagent/nutrition/bread/flour/processed,5)
 	return ..()
 
-/obj/item/container/food/sandwich/get_reagents_to_eat()
-
-	var/total_reagents = reagents.volume_current
-
-	for(var/i=1,i<=length(inventories),i++)
-		var/obj/hud/inventory/IN = inventories[i]
-		var/obj/item/IT = IN.get_top_held_object()
-		if(!IT || !IT.reagents)
-			continue
-		total_reagents += IT.reagents.volume_current
-
-	var/reagent_container/temp/T = new()
-
-	for(var/i=1,i<=length(inventories),i++)
-		var/obj/hud/inventory/IN = inventories[i]
-		var/obj/item/IT = IN.get_top_held_object()
-		if(!IT || !IT.reagents)
-			continue
-		IT.reagents.transfer_reagents_to(T, bite_size * (IT.reagents.volume_current/total_reagents), FALSE )
-		IT.reagents.update_container()
-
-	reagents.transfer_reagents_to(T, bite_size * (reagents.volume_current/total_reagents))
-
-	return T
-
-/obj/item/container/food/sandwich/update_icon()
+/obj/item/container/food/sandwich/update_sprite()
 
 	if(istype(reagents))
-		icon = initial(icon)
-		icon_state = initial(icon_state)
-
-		var/icon/I = new/icon(icon,icon_state)
-		I.Blend(reagents.color,ICON_MULTIPLY)
-
-		icon = I
+		src.color = reagents.color
 
 	return ..()
 
@@ -65,12 +44,14 @@
 
 	for(var/i=1,i<=length(inventories),i++)
 		var/obj/hud/inventory/IN = inventories[i]
-		var/obj/item/IT = IN.get_top_held_object()
+		var/obj/item/IT = IN.get_top_object()
 		if(!IT)
 			continue
 		var/image/IM = new/image(IT.icon,IT.icon_state)
-		IM.pixel_y = offset_y
-		IM.color = IT.color
+		IM.appearance = IT.appearance
+		IM.appearance_flags |= RESET_COLOR
+		IM.pixel_y = offset_y + IT.pixel_height_offset
+		IM.plane = FLOAT_PLANE
 		add_overlay(IM)
 		offset_y += IT.pixel_height
 
@@ -90,4 +71,4 @@
 
 /obj/item/container/food/sandwich/bread
 	name = "sandwich"
-	icon_state = "bun_bottom"
+	icon_state = "bread_slice"

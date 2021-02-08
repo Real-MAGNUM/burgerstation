@@ -23,9 +23,6 @@
 
 	var/display_menacing = FALSE
 
-	attack_delay = 1
-	attack_delay_max = 2
-
 	enable_medical_hud = FALSE
 	enable_security_hud = FALSE
 
@@ -33,7 +30,7 @@
 		STUN = TRUE,
 		SLEEP = TRUE,
 		PARALYZE = TRUE,
-		FATIGUE = TRUE,
+		STAMCRIT = TRUE,
 		STAGGER = TRUE,
 		CONFUSED = TRUE,
 		CRIT = TRUE,
@@ -151,7 +148,7 @@
 
 	. = ..()
 
-	var/species/S = all_species[species]
+	var/species/S = SPECIES(species)
 	var/skin_color = random_color()
 	var/hair_color = random_color()
 	change_organ_visual("skin", desired_color = skin_color)

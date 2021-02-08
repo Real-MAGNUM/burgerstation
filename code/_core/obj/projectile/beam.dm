@@ -2,7 +2,6 @@
 
 /obj/projectile/beam/
 	name = "beam"
-	id = "beam"
 	icon = 'icons/obj/projectiles/beam.dmi'
 	icon_state = "laser"
 
@@ -22,6 +21,7 @@
 	T.plane = plane
 	T.layer = layer - 0.1
 	T.icon = icon
+	T.mouse_opacity = 0
 	var/new_angle = ATAN2(vel_x,vel_y) - 90
 	T.transform = turn(matrix(),-new_angle)
 	if(.) //Hit!

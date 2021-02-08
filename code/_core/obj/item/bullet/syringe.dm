@@ -5,7 +5,6 @@
 	icon = 'icons/obj/item/bullet/syringe_gun.dmi'
 	icon_state = "syringe"
 
-	id = "syringe"
 	bullet_diameter = 18.5
 	bullet_length = 18.5
 
@@ -18,5 +17,4 @@
 	projectile_speed = BULLET_SPEED_PISTOL_HEAVY
 
 	size = 0.1
-	weight = 0.02
 	value = 0.5

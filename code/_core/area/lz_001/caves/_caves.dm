@@ -1,15 +1,19 @@
 /area/lz_001/caves
-	name = "Unexplored Caves"
+	name = "\improper Unexplored Caves"
 	icon_state = "cave"
+	tracks = TRACKS_CAVE
 	random_sounds = list(
 		'sound/ambient/cave_1.ogg',
 		'sound/ambient/cave_2.ogg',
 	)
 	cheese_type = /reagent/nutrition/cheese/gruyere
-	roof = TRUE
+
+	interior = TRUE
+
+	sound_environment = ENVIRONMENT_QUARRY
 
 /area/lz_001/caves/lava
-	name = "lava cave"
+	name = "\improper Magma Caves"
 	icon_state = "lava_cave"
 
 	//sunlight_power = 1
@@ -21,13 +25,13 @@
 		'sound/ambient/lavacaves_2.ogg',
 	)
 
-	cheese_type = /reagent/nutrition/cheese/guava
+	tracks = TRACKS_LAVA
 
-	roof = FALSE //I mean yes, but actually no.
+	cheese_type = /reagent/nutrition/cheese/guava
 
 
 /area/lz_001/caves/lava/brighter
-	name = "brighter"
+	name = "\improper Magma Caves Hellchamber"
 	icon_state = "volcanic"
 	weather = WEATHER_VOLCANIC
 	ambient_temperature = T0C + 80
@@ -39,47 +43,70 @@
 
 
 /area/lz_001/caves/crab
-	name = "\improper King Crab's Burrow"
+	name = "King Crab's Burrow"
 	icon_state = "king_crab"
 
+	tracks = null
+
 /area/lz_001/caves/ocean_pass
-	name = "\improper Ocean's Pass"
+	name = "Ocean's Pass"
 	icon_state = "ocean_pass"
 
+	tracks = null
+
 /area/lz_001/caves/diamond_cave
-	name = "\improper Diamond's Cave"
+	name = "Diamond's Cave"
 	icon_state = "diamond_cave"
 
+	tracks = null
+
 /area/lz_001/caves/glow_cave
-	name = "\improper Glowshroom Cave"
+	name = "Glowshroom Cave"
 	icon_state = "glow_cave"
 
+	tracks = null
+
 /area/lz_001/caves/desert_cave
-	name = "\improper Sandraider's Cave"
+	name = "Sandraider's Cave"
 	icon_state = "desert_cave"
 
+	tracks = null
+
 /area/lz_001/caves/lagoon
-	name = "\improper Pirate's Lagoon"
+	name = "Pirate's Lagoon"
 	icon_state = "lagoon"
-	roof = FALSE
 
 	sunlight_freq = 8
 	sunlight_color ="#8CB08F"
 
+	tracks = null
+
+/area/lz_001/caves/lagoon/ship
+	name = "Captain Condom's Ship"
+	icon_state = "ship"
+
+	sunlight_freq = 8
+	sunlight_color ="#8CB08F"
+
+	tracks = null
+
 /area/lz_001/caves/knight/
-	name = "\improper Knight's Landing"
+	name = "Knight's Landing"
 	icon_state = "day"
-	roof = FALSE
 
 	sunlight_freq = 8
 	sunlight_color ="#AEB05D"
 
+	tracks = null
+
 /area/lz_001/caves/knight/cave
-	name = "\improper Knight's Landing Cave"
+	name = "Knight's Landing Cave"
 	icon_state = "knight"
-	roof = TRUE
+
+	tracks = null
 
 /area/lz_001/caves/hive
 	name = "\improper Alien Hive"
 	icon_state = "hive"
-	roof = TRUE
+
+	tracks = null

@@ -30,7 +30,7 @@
 
 	health_base = 50
 
-	health_coefficient = 0.9
+	damage_coefficient = 0.9
 
 /obj/item/organ/groin/female
 	desc = "A groin. Female variant"
@@ -74,6 +74,7 @@
 	icon = 'icons/mob/living/advanced/species/cyborg.dmi'
 
 	defense_rating = CYBORG_ARMOR
+	health = /health/obj/item/organ/synthetic
 
 
 //Beefman
@@ -92,3 +93,12 @@
 	icon = 'icons/mob/living/advanced/species/skeleton.dmi'
 
 	defense_rating = SKELETON_ARMOR
+
+
+//Monkey
+/obj/item/organ/groin/monkey
+	name = "monkey groin"
+	icon = 'icons/mob/living/advanced/species/monkey.dmi'
+
+/obj/item/organ/groin/monkey/female
+	icon_state = BODY_GROIN_FEMALE

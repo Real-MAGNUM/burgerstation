@@ -41,10 +41,23 @@
 			if(ismovable(object_to_damage))
 				var/atom/movable/M = object_to_damage
 				if(M.reagents)
-					M.reagents.add_reagent(reagent_to_add,volume_to_add)
+					M.reagents.add_reagent(reagent_to_add,volume_to_add,caller=owner)
 				return TRUE
 
 	return ..()
+
+/obj/projectile/bullet/HE_40M
+
+	icon = 'icons/obj/projectiles/explosive.dmi'
+	icon_state = "HE"
+
+/obj/projectile/bullet/HE_40M/post_on_hit(var/atom/hit_atom)
+	. = ..()
+
+	if(.)
+		explode(get_turf(hit_atom),2,owner,src,iff_tag)
+
+	return .
 
 /obj/projectile/bullet/gyrojet
 	name = "gyrojet"
@@ -59,7 +72,7 @@
 
 	return .
 
-/obj/projectile/bullet/gyrojet/update_projectile()
+/obj/projectile/bullet/gyrojet/update_projectile(var/tick_rate=1)
 
 	. = ..()
 
@@ -77,5 +90,19 @@
 		if(abs(vel_x) <= 1	&& abs(vel_y) <= 1)
 			on_hit(current_loc,TRUE)
 			return FALSE
+
+	return .
+
+
+/obj/projectile/bullet/rocket
+	name = "rocket"
+	icon = 'icons/obj/projectiles/rocket.dmi'
+	icon_state = "rocket"
+
+/obj/projectile/bullet/rocket/post_on_hit(var/atom/hit_atom)
+	. = ..()
+
+	if(.)
+		explode(get_turf(hit_atom),2,owner,src,iff_tag)
 
 	return .

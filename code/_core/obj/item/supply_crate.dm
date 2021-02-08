@@ -14,11 +14,15 @@
 
 	var/loot
 
+	var/has_gibs = TRUE
+
 	value = 500
+
+	weight = 10
 
 /obj/item/supply_crate/on_thrown(var/atom/owner,var/atom/hit_atom,var/atom/hit_wall)
 
-	if(hit_wall)
+	if(hit_wall || hit_atom)
 		on_destruction(owner,TRUE)
 
 	return ..()
@@ -31,23 +35,27 @@
 /obj/item/supply_crate/can_be_attacked(var/atom/attacker,var/atom/weapon,var/params,var/damagetype/damage_type)
 	return TRUE
 
-/obj/item/supply_crate/on_destruction(var/atom/caller,var/damage = FALSE)
+/obj/item/supply_crate/on_destruction(var/mob/caller,var/damage = FALSE)
 
-	play('sound/effects/crate_break.ogg',get_turf(src))
-	create_alert(VIEW_RANGE,src,caller,ALERT_LEVEL_NOISE)
+	var/turf/T = get_turf(src)
+	play_sound('sound/effects/crate_break.ogg',T,range_max=VIEW_RANGE)
+	create_alert(VIEW_RANGE,T,caller,ALERT_LEVEL_NOISE)
 
 	if(loot)
-		var/list/spawned_loot = CREATE_LOOT(loot,src.loc)
-		for(var/obj/item/I in spawned_loot)
+		var/list/spawned_loot = CREATE_LOOT(loot,T)
+		for(var/k in spawned_loot)
+			var/obj/item/I = k
 			animate(I,pixel_x = rand(-8,8),pixel_y = rand(-8,8),time=5)
 
-	for(var/i=1,i<=5,i++)
-		new /obj/effect/temp/crate_gib/(src.loc,600)
+	if(has_gibs)
+		for(var/i=1,i<=5,i++)
+			new /obj/effect/temp/crate_gib(T,600)
 
+	. = ..()
 
 	qdel(src)
 
-	return TRUE
+	return .
 
 /obj/item/supply_crate/russian
 	loot = /loot/supply_crate/russian
@@ -64,3 +72,8 @@
 /obj/item/supply_crate/nanotrasen
 	loot = /loot/supply_crate/nanotrasen
 	icon_state = "supply_nanotrasen"
+
+/obj/item/supply_crate/magic
+	loot = /loot/supply_crate/magic
+	icon_state = "supply_magic"
+	value = 1000

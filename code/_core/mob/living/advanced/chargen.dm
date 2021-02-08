@@ -1,6 +1,7 @@
 /mob/living/advanced/proc/start_chargen()
 
 	INITIALIZE(src)
+	FINALIZE(src)
 	default_appearance()
 	equip_loadout(/loadout/new_player,TRUE)
 	stop_music_track(client)
@@ -8,7 +9,8 @@
 	nutrition *= RAND_PRECISE(0.5,0.75)
 	hydration *= RAND_PRECISE(0.5,0.75)
 
-	if(ENABLE_LORE && client)
+	/*
+	if(client)
 
 		show_hud(FALSE,FLAGS_HUD_ALL,FLAGS_HUD_WIDGET | FLAGS_HUD_CHARGEN,speed=0)
 
@@ -21,7 +23,7 @@
 			"They promise it won't be your last."
 		)
 
-		play_music_track("space_wayfarer",src.client)
+		play_music_track(/track/space_wayfarer,src.client)
 
 		client.disable_controls = TRUE
 		client.update_zoom(3)
@@ -59,6 +61,7 @@
 
 		client.update_zoom(2)
 		client.disable_controls = FALSE
+	*/
 
 
 
@@ -72,7 +75,7 @@
 
 	known_languages.Cut()
 	species = desired_species
-	var/species/S = all_species[species]
+	var/species/S = SPECIES(species)
 	if(S.genderless)
 		sex = MALE
 		gender = MALE
@@ -100,8 +103,9 @@
 	if(keep_items)
 		kept_items = drop_all_items(src,FALSE,TRUE)
 	else
-		for(var/obj/hud/inventory/I in inventory)
-			I.remove_all_objects()
+		for(var/k in inventory)
+			var/obj/hud/inventory/I = k
+			I.delete_objects()
 
 	remove_all_organs()
 	remove_all_buttons()
@@ -109,12 +113,13 @@
 	return kept_items
 
 /mob/living/advanced/proc/default_appearance()
-	var/species/S = all_species[species]
+	var/species/S = SPECIES(species)
 	handle_hairstyle_chargen(sex == MALE ? S.default_hairstyle_chargen_male : S.default_hairstyle_chargen_female,S.default_color_hair,FALSE)
 	handle_beardstyle_chargen(1,S.default_color_hair,FALSE)
 	handle_skincolor_chargen(S.default_color_skin,FALSE)
 	handle_eyecolor_chargen(S.default_color_eye,FALSE)
 	src.add_organ(/obj/item/organ/internal/implant/head/loyalty/nanotrasen)
+	src.add_organ(/obj/item/organ/internal/implant/hand/left/iff/nanotrasen)
 	update_all_blends()
 
 /mob/living/advanced/proc/post_perform_change(var/keep_items,var/chargen,var/list/kept_items = list())

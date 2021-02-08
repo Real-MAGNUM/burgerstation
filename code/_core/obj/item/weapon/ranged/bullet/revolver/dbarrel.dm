@@ -17,10 +17,11 @@
 
 	shoot_sounds = list('sound/weapons/combat_shotgun/shoot.ogg')
 
-	slowdown_mul_held = HELD_SLOWDOWN_SHOTGUN_SMALL
+
 
 	size = SIZE_2
-	weight = WEIGHT_2
+	weight = 8
+
 
 	bullet_length_min = 18
 	bullet_length_best = 18.5
@@ -35,11 +36,15 @@
 
 	value = 60
 
-/obj/item/weapon/ranged/bullet/revolver/dbarrel/get_base_spread()
-	return 0.1
+	inaccuracy_modifer = 1
 
-/obj/item/weapon/ranged/bullet/revolver/dbarrel/get_static_spread() //Base spread
+	firing_pin = /obj/item/firing_pin/electronic/iff/deathsquad
+
+/obj/item/weapon/ranged/bullet/revolver/dbarrel/get_base_spread()
+	return 0.12
+
+/obj/item/weapon/ranged/bullet/revolver/dbarrel/get_static_spread()
 	return 0.01
 
-/obj/item/weapon/ranged/bullet/revolver/dbarrel/get_skill_spread(var/mob/living/L) //Base spread
-	return max(0,0.03 - (0.12 * L.get_skill_power(SKILL_RANGED)))
+/obj/item/weapon/ranged/bullet/revolver/dbarrel/get_skill_spread(var/mob/living/L)
+	return max(0,0.03 - (0.06 * L.get_skill_power(SKILL_RANGED)))

@@ -3,6 +3,7 @@
 	icon = 'icons/debug/mobs.dmi'
 	icon_state = ""
 	layer = LAYER_MOB
+	plane = PLANE_MOB
 
 	var/ckey_last
 
@@ -11,6 +12,7 @@
 
 	var/list/obj/hud/button/buttons //List of HUD buttons
 	var/list/obj/hud/button/health_elements //List of health elements. This is an assoc list!
+	var/list/obj/hud/button/examine_butons //List of examine buttons.
 
 	//var/animation_pixel_x = 0
 	//var/animation_pixel_y = 0
@@ -26,26 +28,16 @@
 
 	var/auto_resist = FALSE
 
-	plane = PLANE_MOB
-
-	see_invisible = INVISIBILITY_LIGHTING
-
-	sight = 0x0
-
-	var/vision = 0x0
-
-	/*
-	var/list/quests/all_quests = list()
-	var/list/quests/active_quests = list()
-	*/
-
 	mouse_over_pointer = MOUSE_ACTIVE_POINTER
 	mouse_drop_zone = TRUE
 
 	var/move_mod = 2
 	var/move_mod_button = 0
 
+	var/vision = 0x0
+	sight = 0x0
 	see_invisible = INVISIBILITY_DEFAULT
+
 	invisibility = INVISIBILITY_MOBS
 
 	var/draw_buttons = TRUE
@@ -58,8 +50,6 @@
 	collision_flags = FLAG_COLLISION_NONE
 	collision_bullet_flags = FLAG_COLLISION_BULLET_NONE
 
-	var/obj/hud/screen/paralax
-
 	var/obj/plane_master/walls/plane_master_wall
 	var/obj/plane_master/mobs/plane_master_mob
 	var/obj/plane_master/darkness/plane_master_darkness
@@ -68,6 +58,7 @@
 	var/obj/plane_master/shuttle/plane_master_shuttle
 	var/obj/plane_master/scenery/plane_master_scenery
 	var/obj/plane_master/lighting/plane_master_lighting
+	var/obj/plane_master/floor/plane_master_floor
 
 	var/list/parallax
 
@@ -92,11 +83,18 @@
 	var/obj/hud/examine/examine_overlay
 
 	var/list/color_mods = list()
+	var/list/lighting_mods = list()
+
+	var/list/known_emotes = list()
+
+	var/last_hold = -1
+
+	var/next_emote = 0 //Prevents spam
 
 /mob/proc/update_eyes()
-	vision = 0x0
-	sight = SEE_BLACKNESS
-	see_invisible = INVISIBILITY_DEFAULT
+	vision = initial(vision)
+	sight = initial(sight)
+	see_invisible = initial(see_invisible)
 	return TRUE
 
 /mob/Destroy()
@@ -113,9 +111,9 @@
 	all_mobs -= src
 	all_mobs_with_clients -= src
 
+	QDEL_NULL(plane_master_floor)
 	QDEL_NULL(plane_master_wall)
 	QDEL_NULL(plane_master_mob)
-	QDEL_NULL(paralax)
 	QDEL_NULL(plane_master_darkness)
 	QDEL_NULL(plane_master_obj)
 	QDEL_NULL(plane_master_shuttle)
@@ -125,17 +123,19 @@
 
 	return ..()
 
-/mob/proc/do_mouse_wheel(object,delta_x,delta_y,location,control,params)
-	return TRUE
-
 /mob/Login()
 
 	. = ..()
 
 	var/client/C = src.client
 
-	for(var/obj/structure/interactive/localmachine/L in local_machines)
+	for(var/k in local_machines)
+		var/obj/structure/interactive/localmachine/L = k
 		L.update_for_mob(src)
+
+	if(!plane_master_floor)
+		plane_master_floor = new(src)
+	C.screen += plane_master_floor
 
 	if(!plane_master_wall)
 		plane_master_wall = new(src)
@@ -161,11 +161,9 @@
 		plane_master_scenery = new(src)
 	C.screen += plane_master_scenery
 
-	/* TODO: Find out why this make lighting invisible.
 	if(!plane_master_lighting)
 		plane_master_lighting = new(src)
 	C.screen += plane_master_lighting
-	*/
 
 	if(!examine_overlay)
 		examine_overlay = new(src)
@@ -199,7 +197,7 @@
 
 	return TRUE
 
-/mob/Initialize()
+/mob/Finalize()
 	. = ..()
 	force_move(src.loc)
 	return .
@@ -209,6 +207,7 @@
 	parallax = list()
 	buttons = list()
 	health_elements = list()
+	examine_butons = list()
 
 	if(C)
 		C.control_mob(src,FALSE)
@@ -218,4 +217,15 @@
 	return ..()
 
 /mob/is_player_controlled()
-	return ckey || (ckey_last && ckey_last != "")
+	return ckey || ckey_last
+
+
+/mob/proc/is_afk()
+
+	if(src.ckey_last && !src.ckey)
+		return TRUE
+
+	if(client && client.inactivity >= SECONDS_TO_TICKS(180))
+		return TRUE
+
+	return FALSE

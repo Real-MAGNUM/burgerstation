@@ -8,6 +8,12 @@ obj/structure/interactive/sheet_maker
 
 	bullet_block_chance = 50
 
+	density = TRUE
+
+	desired_light_power = 0.25
+	desired_light_range = 2
+	desired_light_color = "#0000FF"
+
 obj/structure/interactive/sheet_maker/PostInitialize()
 	. = ..()
 	update_sprite()
@@ -18,9 +24,10 @@ obj/structure/interactive/sheet_maker/update_icon()
 	icon_state = "sheet_maker"
 	return .
 
-obj/structure/interactive/sheet_maker/Cross(var/atom/movable/O)
-	make_sheet(O)
-	return TRUE
+obj/structure/interactive/sheet_maker/Cross(atom/movable/O)
+	if(make_sheet(O))
+		return FALSE
+	return ..()
 
 obj/structure/interactive/sheet_maker/proc/make_sheet(var/atom/movable/O)
 
@@ -30,6 +37,7 @@ obj/structure/interactive/sheet_maker/proc/make_sheet(var/atom/movable/O)
 		NM.item_count_current = M.item_count_current
 		NM.material_id = M.material_id
 		INITIALIZE(NM)
+		FINALIZE(NM)
 		NM.update_sprite()
 		qdel(M)
 		return TRUE

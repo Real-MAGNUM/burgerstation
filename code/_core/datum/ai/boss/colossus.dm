@@ -31,31 +31,6 @@
 
 	return .
 
-
-/ai/boss/colossus/handle_movement_reset()
-	owner.movement_flags = MOVEMENT_WALKING
-	//Don't reset dir.
-
-/ai/boss/colossus/handle_movement()
-
-	if(!objective_attack)
-		owner.move_dir = 0x0
-		return FALSE
-
-	if(slow_ticks > 0)
-		owner.move_dir = 0x0
-		slow_ticks--
-		return TRUE
-
-	if(steps_to_take >= 0)
-		steps_to_take -= 1
-	else
-		steps_to_take = rand(5,10)
-		slow_ticks = 30
-		owner.move_dir = pick(DIRECTIONS_ALL)
-
-	return TRUE
-
 /ai/boss/colossus/proc/handle_projectiles()
 
 	if(!objective_attack)
@@ -66,13 +41,13 @@
 		return FALSE
 
 	if(projectiles_to_shoot <= 0)
-		play('sound/effects/invoke_general.ogg',get_turf(owner), range_max = SOUND_RANGE * 3)
+		play_sound('sound/effects/invoke_general.ogg',get_turf(owner), range_max = SOUND_RANGE * 3)
 		switch(rand(1,10))
 			if(1 to 3)
 				projectile_mode = PROJECTILE_MODE_CLOCKWISE
 				projectiles_to_shoot = rand(30,60)
 				angle_mod = rand(3,20)
-				projectile_speed = 10
+				projectile_speed = TILE_SIZE-1
 				delay_mod = rand(2,4)
 				bullet_count = pick(1,1,1,1,2,3)
 				if(bullet_count > 1)
@@ -81,7 +56,7 @@
 				projectile_mode = PROJECTILE_MODE_COUNTER_CLOCKWISE
 				projectiles_to_shoot = rand(30,60)
 				angle_mod = rand(3,20)
-				projectile_speed = 10
+				projectile_speed = TILE_SIZE-1
 				delay_mod = rand(2,4)
 				bullet_count = pick(1,1,1,1,2,3)
 				if(bullet_count > 1)
@@ -116,7 +91,7 @@
 			if(PROJECTILE_MODE_BULLETHELL)
 				angle_ticks = rand(1,360)
 
-		play('sound/effects/invoke_short.ogg',get_turf(owner), range_max = SOUND_RANGE * 3)
+		play_sound('sound/effects/invoke_short.ogg',get_turf(owner), range_max = SOUND_RANGE * 3)
 
 		for(var/i=1,i<=bullet_count,i++)
 
@@ -125,7 +100,7 @@
 			if(bullet_count > 1)
 				local_angle = (i - (bullet_count / 2)) * (360/bullet_count)
 
-			new /obj/projectile/magic/crystal/ice(
+			var/obj/projectile/magic/crystal/ice/P = new(
 				get_turf(owner),
 				owner,
 				owner,
@@ -141,6 +116,8 @@
 				1,
 				owner.iff_tag
 			)
+			INITIALIZE(P)
+			FINALIZE(P)
 
 		projectile_ticks = delay_mod
 		projectiles_to_shoot -= 1

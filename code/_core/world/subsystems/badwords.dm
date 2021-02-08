@@ -13,7 +13,7 @@ SUBSYSTEM_DEF(badwords)
 /subsystem/badwords/proc/load_badwords()
 	bad_word_regex = list()
 	if(fexists(BADWORDS))
-		var/r_file = trim(file2text(BADWORDS))
+		var/r_file = trim(rustg_file_read(BADWORDS))
 		if(r_file)
 			for(var/r_text in splittext(r_file,"\n"))
 				bad_word_regex += regex(r_text,"i")
@@ -32,7 +32,8 @@ SUBSYSTEM_DEF(badwords)
 
 	. = null
 
-	for(var/regex/R in bad_word_regex)
+	for(var/k in bad_word_regex)
+		var/regex/R = k
 		var/result = R.Find(text_to_check)
 		if(result)
 			. = result

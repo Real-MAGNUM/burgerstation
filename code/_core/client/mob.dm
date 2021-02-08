@@ -8,7 +8,7 @@
 
 	var/mob/abstract/observer/ghost/O = new(desired_loc,src)
 	INITIALIZE(O)
-	O.force_move(desired_loc)
+	FINALIZE(O)
 
 /client/proc/make_observer(var/turf/desired_loc)
 	if(!desired_loc)
@@ -19,7 +19,7 @@
 
 	var/mob/abstract/observer/menu/O = new(desired_loc,src)
 	INITIALIZE(O)
-	O.force_move(desired_loc)
+	FINALIZE(O)
 
 /client/proc/control_mob(var/mob/M,var/delete_last_mob = FALSE)
 
@@ -37,7 +37,8 @@
 
 	mob = M
 	eye = M
-	all_mobs_with_clients += M
+	all_mobs_with_clients |= M
+	all_listeners |= M
 	view = M.view
 
 	update_zoom(2)
@@ -64,12 +65,15 @@
 		return FALSE
 
 	if(M.parallax)
-		for(var/obj/parallax/P in M.parallax)
+		for(var/k in M.parallax)
+			var/obj/parallax/P = M.parallax[k]
 			qdel(P)
 			M.parallax -= P
 		M.parallax.Cut()
 
 	all_mobs_with_clients -= M
+	if(!M.listener)
+		all_listeners -= M
 	M.client = null
 	if(hard)
 		M.ckey_last = null
@@ -79,6 +83,10 @@
 
 /client/proc/load(var/savedata/client/mob/U,var/file_num)
 
+	if(restricted)
+		src.to_chat(span("danger",restricted))
+		return FALSE
+
 	U.loaded_data = U.load_json_data_from_id(file_num)
 	U.loaded_data["id"] = file_num
 	to_chat(span("notice","Successfully loaded character [U.loaded_data["name"]]."))
@@ -86,5 +94,6 @@
 
 	var/mob/living/advanced/player/P = new(FALLBACK_TURF,src)
 	INITIALIZE(P)
+	FINALIZE(P)
 
 	return P

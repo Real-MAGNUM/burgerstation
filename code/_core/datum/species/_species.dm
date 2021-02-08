@@ -4,11 +4,14 @@
 	var/desc_extended = "Extended species description."
 	var/id = null
 
-	var/flags_species = SPECIES_NONE
+	var/bite_size = 5 //How large bites are.
+
+	var/flags_flavor_love = 0x0
+	var/flags_flavor_hate = 0x0
+
+	var/flags_species = SPECIES_NONE //The identifier of the species.
 	var/flags_species_traits = TRAIT_NONE
 	var/flags_chargen = CHARGEN_NONE
-
-	var/default_blood_color = COLOR_BLOOD
 
 	var/default_color_eye = "#FF0000"
 
@@ -23,8 +26,8 @@
 	var/list/all_hair_head = list()
 	var/list/all_hair_face = list()
 
-	var/default_icon_face = 'icons/mob/living/advanced/hair/human_hair_face.dmi'
-	var/default_icon_state_face = "none"
+	var/default_icon_hair_face = 'icons/mob/living/advanced/hair/human_hair_face.dmi'
+	var/default_icon_state_hair_face = "none"
 
 	var/default_hairstyle_chargen_male = 2
 	var/default_hairstyle_chargen_female = 16
@@ -33,6 +36,30 @@
 
 	var/list/languages = list(
 		LANGUAGE_BASIC
+	)
+
+	var/health/health = /health/mob/living/advanced
+
+	var/list/emote_sounds_male = list(
+		"laugh" = list('sound/voice/human/human_male_laugh_1.ogg','sound/voice/human/human_male_laugh_2.ogg'),
+		"cough" = list('sound/voice/human/human_male_cough_1.ogg','sound/voice/human/human_male_cough_2.ogg'),
+		"deathgasp" = list('sound/voice/human/human_male_deathgasp_1.ogg','sound/voice/human/human_male_deathgasp_2.ogg'),
+		"gasp" = list('sound/voice/human/human_male_gasp_1.ogg','sound/voice/human/human_male_gasp_2.ogg','sound/voice/human/human_male_gasp_3.ogg'),
+		"grenade" = list('sound/voice/human/human_male_grenadethrow_1.ogg','sound/voice/human/human_male_grenadethrow_2.ogg','sound/voice/human/human_male_grenadethrow_3.ogg'),
+		"medic" = list('sound/voice/human/human_male_medic_1.ogg','sound/voice/human/human_male_medic_2.ogg'),
+		"pain" = list('sound/voice/human/human_male_pain_1.ogg','sound/voice/human/human_male_pain_2.ogg','sound/voice/human/human_male_pain_3.ogg','sound/voice/human/human_male_pain_4.ogg','sound/voice/human/human_male_pain_5.ogg','sound/voice/human/human_male_pain_6.ogg','sound/voice/human/human_male_pain_7.ogg','sound/voice/human/human_male_pain_8.ogg'),
+		"scream" = list('sound/voice/human/human_male_scream_1.ogg','sound/voice/human/human_male_scream_2.ogg','sound/voice/human/human_male_scream_3.ogg','sound/voice/human/human_male_scream_4.ogg','sound/voice/human/human_male_scream_5.ogg','sound/voice/human/human_male_scream_6.ogg','sound/voice/human/human_male_scream_special.ogg')
+	)
+
+	var/list/emote_sounds_female = list(
+		"laugh" = list('sound/voice/human/human_female_laugh_1.ogg'),
+		"cough" = list('sound/voice/human/human_female_cough_1.ogg','sound/voice/human/human_female_cough_2.ogg'),
+		"deathgasp" = list('sound/voice/human/human_female_deathgasp_1.ogg','sound/voice/human/human_female_deathgasp_2.ogg'),
+		"gasp" = list('sound/voice/human/human_female_gasp_1.ogg','sound/voice/human/human_female_gasp_2.ogg'),
+		"grenade" = list('sound/voice/human/human_female_grenadethrow_1.ogg','sound/voice/human/human_female_grenadethrow_2.ogg','sound/voice/human/human_female_grenadethrow_3.ogg'),
+		"medic" = list('sound/voice/human/human_female_medic_1.ogg'),
+		"pain" = list('sound/voice/human/human_female_pain_1.ogg','sound/voice/human/human_female_pain_2.ogg','sound/voice/human/human_female_pain_3.ogg'),
+		"scream" = list('sound/voice/human/human_female_scream_1.ogg','sound/voice/human/human_female_scream_2.ogg','sound/voice/human/human_female_scream_3.ogg','sound/voice/human/human_female_scream_4.ogg','sound/voice/human/human_female_scream_5.ogg')
 	)
 
 	var/list/accent = null
@@ -72,6 +99,8 @@
 
 		/obj/hud/button/toggle_cash_money,
 		/obj/hud/button/cash_money,
+		/obj/hud/button/microstransactions,
+		/obj/hud/button/toggle_microtransactions,
 
 		/obj/hud/button/boss_health,
 
@@ -90,13 +119,15 @@
 
 		//obj/hud/button/ping,
 
-		/obj/hud/button/message,
+		//obj/hud/button/message,
 
 		/obj/hud/button/rest,
 
+		/*
 		/obj/hud/button/evade/block,
 		/obj/hud/button/evade/dodge,
 		/obj/hud/button/evade/parry,
+		*/
 
 		/obj/hud/button/hunger,
 
@@ -111,7 +142,7 @@
 		/obj/hud/button/health/body
 	)
 
-/species/proc/mod_speech(var/mob/M,var/text,var/intensity=50)
+/species/proc/mod_speech(var/mob/living/M,var/text,var/intensity=50)
 
 	if(!accent || !length(accent))
 		return text
@@ -121,3 +152,19 @@
 		text = replacetextEx(text,k,v)
 
 	return text
+
+
+/species/proc/generate_blood_type()
+
+	var/list/blood_types = list(
+		/reagent/blood/human/ab_negative = 6,
+		/reagent/blood/human/b_negative = 15,
+		/reagent/blood/human/ab_positive = 34,
+		/reagent/blood/human/a_negative = 63,
+		/reagent/blood/human/o_negative = 66,
+		/reagent/blood/human/b_positive = 85,
+		/reagent/blood/human/a_positive = 357,
+		/reagent/blood/human/o_positive = 374,
+	)
+
+	return pickweight(blood_types)

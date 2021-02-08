@@ -1,5 +1,5 @@
 
-/mob/living/advanced/Move(var/atom/NewLoc,Dir=0,desired_step_x=0,desired_step_y=0,var/silent=FALSE)
+/mob/living/advanced/Move(NewLoc,Dir=0,step_x=0,step_y=0)
 
 	var/OldLoc = loc
 
@@ -12,52 +12,19 @@
 	. = ..()
 
 	if(.)
-
 		//Right hand
 		if(right_hand && right_hand.grabbed_object)
 			var/distance = get_dist(src,right_hand.grabbed_object)
 			if(distance > 1)
 				right_hand.grabbed_object.glide_size = glide_size
-				right_hand.grabbed_object.Move(OldLoc,Dir,silent=TRUE)
+				right_hand.grabbed_object.Move(OldLoc)
 
 		//Left hand
 		if(left_hand && left_hand.grabbed_object)
 			var/distance = get_dist(src,left_hand.grabbed_object)
 			if(distance > 1)
 				left_hand.grabbed_object.glide_size = glide_size
-				left_hand.grabbed_object.Move(OldLoc,Dir,silent=TRUE)
-
-
-		/*
-		if(right_hand && right_hand.grabbed_object)
-			var/distance = get_dist(src,right_hand.grabbed_object)
-			if(distance > 2)
-				right_hand.release_object(src)
-
-		if(left_hand && left_hand.grabbed_object)
-			var/distance = get_dist(src,left_hand.grabbed_object)
-			if(distance > 2)
-				left_hand.release_object(src)
-
-		spawn()
-			if(left_hand && left_hand.grabbed_object)
-				var/distance = get_dist(src,left_hand.grabbed_object)
-				if(distance > 2)
-					left_hand.release_object(src)
-				else if(distance > 1)
-					left_hand.grabbed_object.glide_size = glide_size
-					if(!left_hand.grabbed_object.Move(OldLoc,Dir,silent=TRUE))
-						left_hand.release_object(src)
-
-			if(right_hand && right_hand.grabbed_object)
-				var/distance = get_dist(src,right_hand.grabbed_object)
-				if(distance > 2)
-					right_hand.release_object(src)
-				else if(distance > 1)
-					right_hand.grabbed_object.glide_size = glide_size
-					if(!right_hand.grabbed_object.Move(OldLoc,Dir,silent=TRUE))
-						right_hand.release_object(src)
-		*/
+				left_hand.grabbed_object.Move(OldLoc)
 
 	return .
 
@@ -67,12 +34,15 @@
 	if(!ismovable(object) || !object.can_be_grabbed(caller))
 		return FALSE
 
-	if(length(held_objects) || grabbed_object)
+	if(!isturf(caller.loc))
+		return FALSE
+
+	if(is_occupied())
 		caller.to_chat(span("notice","You need an empty hand to grab this!"))
 		return FALSE
 
 	if(grabbed_object == object)
-		caller.to_chat(span("notice","You cannot grab yourself!"))
+		caller.to_chat(span("notice","You cannot grab yourself, ERP is against the rules!"))
 		return FALSE
 
 	if(grabbed_object)
@@ -84,7 +54,7 @@
 	caller.set_dir(get_dir(caller,object))
 
 	grabbed_object = object
-	caller.to_chat(span("notice","You grab \the [object.name]."))
+	caller.visible_message(span("warning","\The [caller.name] grabs \the [object.name]."),span("notice","You grab \the [object.name]."))
 	animate(grabbed_object,pixel_x = initial(grabbed_object.pixel_x), pixel_y = initial(grabbed_object.pixel_y), time = SECONDS_TO_DECISECONDS(1))
 	grabbed_object.grabbing_hand = src
 
@@ -105,6 +75,8 @@
 	return TRUE
 
 /obj/hud/inventory/proc/release_object(var/mob/caller as mob)
+	if(!grabbed_object)
+		return FALSE
 	if(caller) caller.to_chat(span("notice","You release \the [grabbed_object.name]."))
 	if(is_living(grabbed_object))
 		var/mob/living/L = grabbed_object

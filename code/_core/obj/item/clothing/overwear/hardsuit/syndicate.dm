@@ -6,26 +6,27 @@
 	rarity = RARITY_UNCOMMON
 
 	defense_rating = list(
-		BLADE = 50,
-		BLUNT = 50,
-		PIERCE = 50,
-		LASER = 25,
-		MAGIC = -100,
-		HEAT = 75,
-		COLD = 75,
-		BOMB = 75,
-		BIO = 75,
-		RAD = 25
+		BLADE = AP_SWORD,
+		BLUNT = AP_AXE,
+		PIERCE = AP_AXE,
+		LASER = AP_AXE,
+		ARCANE = -AP_AXE,
+		HEAT = AP_AXE,
+		COLD = AP_AXE,
+		BOMB = AP_AXE,
+		BIO = AP_SWORD,
+		RAD = AP_SWORD,
+		PAIN = AP_CLUB
 	)
 
 	size = SIZE_7
-	weight = WEIGHT_7
+
 
 	additional_clothing = list(/obj/item/clothing/head/helmet/hardsuit/syndie)
 
-	slowdown_mul_worn = 1.2
+	value = 400
 
-	value = 120
+	loyalty_tag = "Syndicate"
 
 /obj/item/clothing/overwear/hardsuit/syndie/advanced
 	name = "mauler hardsuit mk2"
@@ -35,26 +36,25 @@
 	rarity = RARITY_RARE
 
 	defense_rating = list(
-		BLADE = 50,
-		BLUNT = 75,
-		PIERCE = 75,
-		LASER = 25,
-		MAGIC = -100,
-		HEAT = 75,
-		COLD = 75,
-		BOMB = 75,
-		BIO = 75,
-		RAD = 25
+		BLADE = AP_AXE,
+		BLUNT = AP_CLUB,
+		PIERCE = AP_CLUB,
+		LASER = AP_CLUB,
+		ARCANE = -AP_CLUB,
+		HEAT = AP_AXE,
+		COLD = AP_AXE,
+		BOMB = AP_AXE,
+		BIO = AP_SWORD,
+		RAD = AP_SWORD,
+		PAIN = AP_CLUB
 	)
 
 	size = SIZE_6
-	weight = WEIGHT_6
+
 
 	additional_clothing = list(/obj/item/clothing/head/helmet/hardsuit/syndie/advanced)
 
-	slowdown_mul_worn = 1.2
-
-	value = 180
+	value = 600
 
 /obj/item/clothing/overwear/hardsuit/syndie/elite
 	name = "mauler hardsuit mk3"
@@ -64,22 +64,23 @@
 	rarity = RARITY_MYTHICAL
 
 	defense_rating = list(
-		BLADE = 25,
-		BLUNT = 75,
-		PIERCE = 75,
-		LASER = 50,
-		MAGIC = -100,
-		HEAT = 75,
-		COLD = 75,
-		BOMB = 75,
-		BIO = 75,
-		RAD = 25
+		BLADE = AP_AXE,
+		BLUNT = AP_AXE,
+		PIERCE = AP_AXE,
+		LASER = AP_CLUB,
+		ARCANE = -AP_CLUB,
+		HEAT = AP_AXE,
+		COLD = AP_AXE,
+		BOMB = AP_AXE,
+		BIO = AP_SWORD,
+		RAD = AP_SWORD,
+		PAIN = AP_CLUB
 	)
 
 	additional_clothing = list(/obj/item/clothing/head/helmet/hardsuit/syndie/elite)
 
 	size = SIZE_6
-	weight = WEIGHT_5
-	slowdown_mul_worn = 1
 
-	value = 360
+	value = 1200
+
+	speed_bonus = 0.1

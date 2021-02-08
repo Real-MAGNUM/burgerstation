@@ -1,11 +1,11 @@
-/obj/item/weapon/ranged/bullet/magazine/smg/nanotech
-	name = ".40 NanoTech submachine gun"
-	desc = "It's how you use it that matters!"
-	desc_extended = "Nanotrasen's answer to the fearsome C-20r, this one has a higher firerate at the cost of a smaller round."
+/obj/item/weapon/ranged/bullet/magazine/smg/p69
+	name = ".40 Prototype NT-SMG"
+	desc = "This looks ugly."
+	desc_extended = "An early prototype of the 9x22mm NanoTech SMG. This one uses .40 ammo."
 	icon = 'icons/obj/item/weapons/ranged/smg/40.dmi'
 	icon_state = "inventory"
 
-	shoot_delay = 1.25
+	shoot_delay = 1.5
 
 	automatic = TRUE
 
@@ -17,12 +17,12 @@
 
 	view_punch = 6
 
-	slowdown_mul_held = HELD_SLOWDOWN_SMG
+
 
 	size = SIZE_3
-	weight = WEIGHT_3
+	weight = 8
 
-	heat_per_shot = 0.01
+	heat_per_shot = 0.03
 	heat_max = 0.05
 
 	bullet_length_min = 21
@@ -37,7 +37,36 @@
 
 	ai_heat_sensitivity = 0.5
 
-/obj/item/weapon/ranged/bullet/magazine/smg/nanotech/update_icon()
+	attachment_whitelist = list(
+		/obj/item/attachment/barrel/charger = TRUE, /obj/item/attachment/barrel/charger/advanced = TRUE,
+		/obj/item/attachment/barrel/compensator = TRUE,
+		/obj/item/attachment/barrel/extended = TRUE,
+		/obj/item/attachment/barrel/gyro = TRUE,
+		/obj/item/attachment/barrel/laser_charger = FALSE,
+		/obj/item/attachment/barrel/suppressor = TRUE,
+
+		/obj/item/attachment/sight/laser_sight = TRUE,
+		/obj/item/attachment/sight/quickfire_adapter = TRUE,
+		/obj/item/attachment/sight/red_dot = TRUE,
+		/obj/item/attachment/sight/scope = FALSE,
+		/obj/item/attachment/sight/scope/large = FALSE,
+		/obj/item/attachment/sight/targeting_computer = TRUE,
+
+		/obj/item/attachment/stock/c20r = FALSE
+	)
+
+	attachment_barrel_offset_x = 29 - 16
+	attachment_barrel_offset_y = 19 - 16
+
+	attachment_sight_offset_x = 25 - 16
+	attachment_sight_offset_y = 21 - 16
+
+	attachment_undermount_offset_x = 0
+	attachment_undermount_offset_y = 0
+
+	firing_pin = /obj/item/firing_pin/electronic/iff/deathsquad
+
+/obj/item/weapon/ranged/bullet/magazine/smg/p69/update_icon()
 	if(stored_magazine)
 		var/obj/item/magazine/M = stored_magazine
 		var/bullet_num = FLOOR((length(M.stored_bullets)/M.bullet_count_max)*17,1)
@@ -47,8 +76,9 @@
 
 	..()
 
-/obj/item/weapon/ranged/bullet/magazine/smg/nanotech/get_static_spread() //Base spread
+/obj/item/weapon/ranged/bullet/magazine/smg/p69/get_static_spread()
 	return 0.02
 
-/obj/item/weapon/ranged/bullet/magazine/smg/nanotech/get_skill_spread(var/mob/living/L) //Base spread
-	return 0.03 - (0.03 * L.get_skill_power(SKILL_RANGED))
+/obj/item/weapon/ranged/bullet/magazine/smg/p69/get_skill_spread(var/mob/living/L)
+	if(!heat_current) return 0
+	return 0.02 - (0.04 * L.get_skill_power(SKILL_RANGED))

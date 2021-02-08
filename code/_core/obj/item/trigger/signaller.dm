@@ -18,6 +18,8 @@ var/global/obj/item/device/signaller/all_signalers = list()
 
 	var/mode = FALSE
 
+	value = 20
+
 /obj/item/device/signaller/save_item_data(var/save_inventory = TRUE)
 	. = ..()
 	SAVEVAR("frequency")
@@ -42,14 +44,15 @@ var/global/obj/item/device/signaller/all_signalers = list()
 	all_signalers -= src
 	return ..()
 
-/obj/item/device/signaller/attack(var/atom/attacker,var/atom/victim,var/list/params=list(),var/atom/blamed,var/ignore_distance = FALSE) //The src attacks the victim, with the blamed taking responsibility
+/obj/item/device/signaller/attack(var/atom/attacker,var/atom/victim,var/list/params=list(),var/atom/blamed,var/ignore_distance = FALSE, var/precise = FALSE,var/damage_multiplier=1) //The src attacks the victim, with the blamed taking responsibility
 	trigger(attacker,src,-1,-1)
 	return TRUE
 
 /obj/item/device/signaller/trigger(var/mob/caller,var/atom/source,var/signal_freq,var/signal_code)
 
 	if(signal_freq == -1 && signal_code == -1)
-		for(var/obj/item/device/signaller/S in all_signalers)
+		for(var/k in all_signalers)
+			var/obj/item/device/signaller/S = k
 			if(S == src)
 				continue
 			S.trigger(caller,src,frequency_current,signal_current)
@@ -62,12 +65,14 @@ var/global/obj/item/device/signaller/all_signalers = list()
 	return TRUE
 
 /obj/item/device/signaller/click_self(var/mob/caller)
+	INTERACT_CHECK
+	INTERACT_DELAY(1)
 	mode = !mode
-	caller.to_chat("You change the mode to [mode ? "frequency" : "signal"].")
+	caller.to_chat(span("notice","You change the mode to [mode ? "frequency" : "signal"]."))
 	spam_fix_time = 0
 	return TRUE
 
-/obj/item/device/signaller/on_mouse_wheel(var/mob/caller,delta_x,delta_y,location,control,params)
+/obj/item/device/signaller/mouse_wheel_on_object(var/mob/caller,delta_x,delta_y,location,control,params)
 
 	var/fixed_delta = delta_y ? 1 : -1
 

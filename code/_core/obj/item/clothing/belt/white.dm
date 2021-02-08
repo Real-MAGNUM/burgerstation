@@ -19,3 +19,9 @@
 
 /obj/item/clothing/belt/storage/colored/orange
 	color = COLOR_ORANGE
+
+/obj/item/clothing/belt/storage/colored/chemistry
+	color = COLOR_CHEMISTRY
+
+/obj/item/clothing/belt/storage/colored/janitor
+	color = COLOR_JANITOR

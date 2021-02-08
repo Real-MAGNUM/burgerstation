@@ -7,11 +7,11 @@
 	item_slot = SLOT_TORSO
 
 	defense_rating = list(
-		BLADE = 15,
-		BLUNT = 15,
-		PIERCE = 15,
-		MAGIC = 10,
-		COLD = 25,
+		BLADE = AP_DAGGER,
+		BLUNT = AP_DAGGER,
+		PIERCE = AP_DAGGER,
+		ARCANE = AP_SWORD,
+		COLD = AP_DAGGER
 	)
 
 	dyeable = TRUE
@@ -19,9 +19,6 @@
 	polymorphs = list(
 		"shirt" = COLOR_WHITE
 	)
-
-	value = 20
-
 
 /obj/item/clothing/shirt/normal/striped
 	name = "striped shirt"
@@ -50,6 +47,44 @@
 		"shoulders" = COLOR_WHITE
 	)
 
+/obj/item/clothing/shirt/normal/uniform/science
+	name = "science uniformed shirt"
+	desc = "Nerd."
+	desc_extended = "The shirt of choice for people who hate Casual Fridays."
+	polymorphs = list(
+		"shirt" = COLOR_WHITE,
+		"shoulders" = COLOR_SCIENCE
+	)
+
+/obj/item/clothing/shirt/normal/uniform/botanty
+	name = "botany uniformed shirt"
+	desc = "Blue and green."
+	desc_extended = "The shirt of choice for botanists."
+	polymorphs = list(
+		"shirt" = COLOR_BLUE,
+		"shoulders" = COLOR_GREEN
+	)
+
+/obj/item/clothing/shirt/normal/uniform/janitor
+	name = "janitor uniformed shirt"
+	desc = "Purple and grey."
+	desc_extended = "The shirt of choice for janitor."
+	polymorphs = list(
+		"shirt" = COLOR_GREY,
+		"shoulders" = COLOR_JANITOR
+	)
+
+
+/obj/item/clothing/shirt/normal/uniform/chemistry
+	name = "chemistry uniformed shirt"
+	desc = "Orange and white."
+	desc_extended = "The shirt of choice for botanists."
+	polymorphs = list(
+		"shirt" = COLOR_WHITE,
+		"shoulders" = COLOR_CHEMISTRY
+	)
+
+
 /obj/item/clothing/shirt/normal/security
 	name = "security shirt"
 	desc = "HALT HALT HALT"
@@ -57,6 +92,15 @@
 	polymorphs = list(
 		"shirt" = COLOR_SECURITY_LIGHT,
 	)
+
+/obj/item/clothing/shirt/normal/security/ancient
+	name = "ancient security shirt"
+	desc = "Redshirts!"
+	desc_extended = "An old outdated variant of the security shirt."
+	polymorphs = list(
+		"shirt" = COLOR_CRIMSON,
+	)
+
 
 /obj/item/clothing/shirt/normal/engineering
 	name = "engineering shirt"
@@ -82,4 +126,39 @@
 	desc_extended = "The signature shirt of the gray tide."
 	polymorphs = list(
 		"shirt" = COLOR_GREY
+	)
+
+/obj/item/clothing/shirt/normal/military_green
+	name = "military shirt"
+	desc = "No stains here."
+	desc_extended = "The signature shirt of the revolutionary."
+	polymorphs = list(
+		"shirt" = COLOR_GREY
+	)
+
+/obj/item/clothing/shirt/normal/janitor
+	name = "janitor shirt"
+	desc = "Offensively janitor."
+	desc_extended = "A shirt that is purple as heck."
+	polymorphs = list(
+		"shirt" = COLOR_JANITOR,
+	)
+
+/obj/item/clothing/shirt/normal/reinforced
+	name = "reinforced shirt"
+	icon = 'icons/obj/item/clothing/shirts/reinforced.dmi'
+
+	defense_rating = list(
+		BLADE = AP_SWORD,
+		BLUNT = AP_DAGGER,
+		PIERCE = AP_SWORD,
+		ARCANE = -AP_DAGGER,
+		COLD = AP_DAGGER,
+	)
+
+/obj/item/clothing/shirt/normal/reinforced/ntops
+	name = "NT ops reinforced shirt"
+	polymorphs = list(
+		"shirt" = COLOR_WHITE,
+		"shoulders" = COLOR_BLACK
 	)

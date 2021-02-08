@@ -1,9 +1,13 @@
-/obj/structure/interactive/server
+/obj/structure/interactive/server //TODO MAKE THIS DO SOMETHING
 	name = "??????"
 	icon = 'icons/obj/structure/telecomms.dmi'
 	icon_state = "hub"
 
 	bullet_block_chance = 50
+
+	desired_light_power = 0.25
+	desired_light_range = 2
+	desired_light_color = "#0000FF"
 
 
 

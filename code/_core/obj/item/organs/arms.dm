@@ -23,7 +23,7 @@
 
 	health_base = 50
 
-	health_coefficient = 0.75
+	damage_coefficient = 0.75
 
 	has_pain = TRUE
 
@@ -110,6 +110,7 @@
 	icon = 'icons/mob/living/advanced/species/cyborg.dmi'
 
 	defense_rating = CYBORG_ARMOR
+	health = /health/obj/item/organ/synthetic
 
 /obj/item/organ/arm/cyborg/left
 	name = "cyborg left arm"
@@ -176,6 +177,25 @@
 
 /obj/item/organ/arm/stand/left
 	name = "stand left arm"
+	id = BODY_ARM_LEFT
+	icon_state = BODY_ARM_LEFT
+
+	hud_id = "body_arm_left"
+
+	target_bounds_x_min = 21
+	target_bounds_x_max = 24
+
+	target_bounds_y_min = 15
+	target_bounds_y_max = 22
+
+
+//Monkey
+/obj/item/organ/arm/monkey
+	name = "monkey right arm"
+	icon = 'icons/mob/living/advanced/species/monkey.dmi'
+
+/obj/item/organ/arm/monkey/left
+	name = "monkey left arm"
 	id = BODY_ARM_LEFT
 	icon_state = BODY_ARM_LEFT
 

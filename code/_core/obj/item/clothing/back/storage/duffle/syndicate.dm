@@ -1,5 +1,5 @@
 /obj/item/clothing/back/storage/dufflebag/syndicate
-	name = "dufflebag"
+	name = "syndicate dufflebag"
 	icon = 'icons/obj/item/clothing/back/dufflebag/syndicate.dmi'
 	desc = "EVIL!"
 	desc_extended = "A sturdy, yet lightweight black dufflebag. Doesn't slow you down at all for some reason."
@@ -10,25 +10,11 @@
 	size = MAX_INVENTORY_X*3*SIZE_3
 	container_max_size = SIZE_4
 
-	weight = WEIGHT_3
-
 	value = 200
 
-	slowdown_mul_worn = 1
-	slowdown_mul_held = 1
+	weight = 0
 
-/obj/item/clothing/back/storage/dufflebag/syndicate/pre_fill_inventory(var/obj/item/I)
 
-	if(istype(I,/obj/item/weapon/ranged/))
-		var/obj/item/weapon/ranged/R = I
-		R.firing_pin = /obj/item/firing_pin/electronic/iff/syndicate
-
-	if(istype(I,/obj/item/weapon/ranged/bullet/magazine))
-		var/obj/item/weapon/ranged/bullet/magazine/M = I
-		if(SSweapons.weapon_to_magazine[M.type])
-			M.stored_magazine = pick(SSweapons.weapon_to_magazine[M.type])
-
-	return ..()
 
 
 /obj/item/clothing/back/storage/dufflebag/syndicate/medical
@@ -68,7 +54,7 @@
 	new /obj/item/magazine/shotgun_auto/empty(src)
 	new /obj/item/magazine/shotgun_auto/empty(src)
 	//1 weapon
-	new /obj/item/weapon/ranged/bullet/magazine/shotgun/bull(src)
+	new /obj/item/weapon/ranged/bullet/magazine/shotgun/bulldog(src)
 	return ..()
 
 /obj/item/clothing/back/storage/dufflebag/syndicate/ammo
@@ -95,7 +81,7 @@
 	new /obj/item/grenade/timed/explosive(src)
 	new /obj/item/grenade/timed/explosive(src)
 	new /obj/item/grenade/timed/explosive(src)
-	new /obj/item/weapon/melee/tool/rcd(src)
+	new /obj/item/rcd(src)
 	new /obj/item/disk/rcd/metal_wall(src)
 	new /obj/item/matter_cartridge(src)
 	new /obj/item/matter_cartridge(src)
@@ -143,4 +129,41 @@
 	new /obj/item/magazine/rifle_308(src)
 	new /obj/item/magazine/rifle_308(src)
 	new /obj/item/magazine/rifle_308(src)
+	return ..()
+
+
+/obj/item/clothing/back/storage/dufflebag/syndicate/ammo/anti_tank
+	name = "anti-tank sniper dufflebag"
+	desc = "Fuck mechs."
+	desc_extended = "A sturdy, yet lightweight black dufflebag. This one has am ammo logo on it."
+	icon = 'icons/obj/item/clothing/back/dufflebag/syndicate_ammo.dmi'
+
+/obj/item/clothing/back/storage/dufflebag/syndicate/ammo/anti_tank/fill_inventory()
+	//8 normal shit
+	new /obj/item/weapon/melee/energy/shield/classic(src)
+	new /obj/item/grenade/landmine/proximity/explosive(src)
+	new /obj/item/grenade/landmine/proximity/explosive(src)
+	new /obj/item/grenade/landmine/proximity/explosive(src)
+	new /obj/item/grenade/landmine/proximity/explosive(src)
+	new /obj/item/grenade/landmine/proximity/explosive(src)
+	new /obj/item/grenade/landmine/proximity/explosive(src)
+	new /obj/item/grenade/landmine/proximity/explosive(src)
+	//13 primary weapon shit
+	new /obj/item/weapon/ranged/bullet/magazine/rifle/heavy_sniper(src)
+	new /obj/item/magazine/sniper_50(src)
+	new /obj/item/magazine/sniper_50(src)
+	new /obj/item/magazine/sniper_50(src)
+	new /obj/item/magazine/sniper_50/explosive(src)
+	new /obj/item/magazine/sniper_50/explosive(src)
+	new /obj/item/magazine/sniper_50/ion(src)
+	new /obj/item/magazine/sniper_50/ion(src)
+	new /obj/item/magazine/sniper_50/ion(src)
+	new /obj/item/magazine/sniper_50/incendiary(src)
+	new /obj/item/magazine/sniper_50/incendiary(src)
+	new /obj/item/magazine/sniper_50/ap(src)
+	new /obj/item/magazine/sniper_50/ap(src)
+	//3 secondary weapon shit
+	new /obj/item/weapon/ranged/energy/iongun(src)
+	new /obj/item/powercell/industrial(src)
+	new /obj/item/powercell/industrial(src)
 	return ..()

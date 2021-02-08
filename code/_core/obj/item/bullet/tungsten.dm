@@ -8,7 +8,6 @@
 	item_count_max_icon = 5
 	icon_state = "t"
 
-	id = "tungsten"
 	bullet_length = 20
 	bullet_diameter = 5
 
@@ -21,5 +20,4 @@
 	projectile_speed = BULLET_SPEED_MAX
 
 	size = 0.5
-	weight = 1
 	value = 3

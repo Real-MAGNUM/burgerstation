@@ -10,12 +10,13 @@
 	size = MAX_INVENTORY_X*3*SIZE_2
 	container_max_size = SIZE_3
 
-	weight = WEIGHT_3
+
+	weight = 10
 
 	value = 40
 
-	slowdown_mul_worn = 1.3
-	slowdown_mul_held = 1.2
+
+
 
 /obj/item/clothing/back/storage/backpack/white
 	icon = 'icons/obj/item/clothing/back/backpack/white.dmi'

@@ -2,18 +2,20 @@
 	name = "skull codpiece"
 	desc = "Spooky."
 	desc_extended = "You may be expecting a joke about 'bone'rs. Nope. Not gonna happen."
+	rarity = RARITY_UNCOMMON
 	icon = 'icons/obj/item/clothing/belts/skull_codpiece.dmi'
 
-	weight = WEIGHT_2
+
 
 	defense_rating = list(
-		BLADE = 10,
-		BLUNT = 10,
-		PIERCE = 10,
-		MAGIC = 25,
-		HOLY = -25,
-		DARK = 25
+		BLADE = AP_AXE,
+		BLUNT = AP_AXE,
+		PIERCE = AP_AXE,
+		ARCANE = AP_AXE,
+		HOLY = -AP_AXE,
+		DARK = AP_AXE,
+		PAIN = AP_AXE
 	)
 
 	rarity = RARITY_UNCOMMON
-	value = 40
+	value = 100

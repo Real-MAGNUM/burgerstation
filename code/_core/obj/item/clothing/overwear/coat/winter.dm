@@ -5,13 +5,10 @@
 	icon = 'icons/obj/item/clothing/suit/winter_coat.dmi'
 
 	defense_rating = list(
-		BLADE = 15,
-		BLUNT = 10,
-		PIERCE = 10,
-		LASER = -25,
-		MAGIC = 25,
-		HEAT = -75,
-		COLD = 75
+		LASER = -AP_AXE,
+		ARCANE = AP_AXE,
+		HEAT = -AP_AXE,
+		COLD = AP_GREATSWORD
 	)
 
 	protection_cold = list(
@@ -21,10 +18,10 @@
 		BODY_GROIN = 2
 	)
 
-	additional_clothing = list(/obj/item/clothing/head/hood/winter)
+	additional_clothing = list(/obj/item/clothing/head/hat/winter)
 
 	size = SIZE_3
-	weight = WEIGHT_3
+
 
 	value = 20
 
@@ -35,17 +32,19 @@
 	icon = 'icons/obj/item/clothing/suit/bomberjacket.dmi'
 	additional_clothing = list() // no hood
 
+	rarity = RARITY_UNCOMMON
+
 	defense_rating = list(
 		BLADE = 15,
 		BLUNT = 10,
 		PIERCE = 10,
 		LASER = -25,
-		HEAT = -50,
-		COLD = 50,
+		ARCANE = 50,
+		HEAT = -25,
+		COLD = 75,
 		BOMB = 25
 	)
 
 	size = SIZE_3
-	weight = WEIGHT_3
 
-	value = 20
+	value = 120

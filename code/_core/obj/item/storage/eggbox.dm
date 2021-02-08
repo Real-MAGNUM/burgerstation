@@ -6,22 +6,23 @@
 	icon_state = "eggbox"
 
 	dynamic_inventory_count = 12
-	container_held_slots = 1
+	container_max_slots = 1
 
 	container_whitelist = list(
 		/obj/item/container/food/egg/chicken,
 	)
 
 	size = SIZE_3
-	weight = WEIGHT_1
+
 
 /obj/item/storage/egg_carton/update_icon()
 
 	. = ..()
 
 	var/filled_slots = 0
-	for(var/obj/hud/inventory/I in src.inventories)
-		filled_slots += length(I.held_objects)
+	for(var/k in src.inventories)
+		var/obj/hud/inventory/I = k
+		filled_slots += length(I.contents)
 
 	icon_state = "[initial(icon_state)][clamp(filled_slots,0,12)]"
 

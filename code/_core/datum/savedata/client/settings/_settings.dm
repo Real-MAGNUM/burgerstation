@@ -22,15 +22,16 @@
 	var/full_path = "[get_folder(ckey)][get_file()]"
 
 	if(!fexists(full_path))
-		text2file(json_encode(loaded_data),full_path)
+		rustg_file_append(json_encode(loaded_data),full_path)
 
-	var/file_contents = file2text(full_path)
+	var/file_contents = rustg_file_read(full_path)
 	loaded_data = json_decode(file_contents)
 	if(loaded_data["fps_client"])
 		owner.fps = loaded_data["fps_client"]
 
 	if(owner.mob)
-		for(var/obj/hud/button/B in owner.mob.buttons)
+		for(var/k in owner.mob.buttons)
+			var/obj/hud/button/B = k
 			B.update_sprite()
 
 		for(var/k in owner.mob.health_elements)
@@ -39,7 +40,8 @@
 
 		if(is_advanced(owner))
 			var/mob/living/advanced/A = owner.mob
-			for(var/obj/hud/inventory/I in A.inventory)
+			for(var/k in A.inventory)
+				var/obj/hud/inventory/I = k
 				I.update_sprite()
 
 	owner.update_window()
@@ -55,5 +57,4 @@
 	var/client/owner = CLIENT(ckey)
 	var/full_path = "[get_folder(ckey)][get_file()]"
 	owner.mob.to_chat(span("notice","Your settings have been saved."))
-	fdel(full_path)
-	text2file(json_encode(loaded_data),full_path)
+	rustg_file_write(json_encode(loaded_data),full_path)

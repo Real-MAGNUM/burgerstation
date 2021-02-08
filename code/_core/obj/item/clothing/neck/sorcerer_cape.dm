@@ -8,22 +8,21 @@
 	protected_limbs = list(BODY_TORSO)
 
 	defense_rating = list(
-		MAGIC = 75,
-		COLD = 25,
-		HEAT = 15,
-		HOLY = -75,
-		DARK = 75
+		ARCANE = AP_GREATSWORD,
+		COLD = AP_SWORD,
+		HOLY = -AP_AXE,
+		DARK = AP_AXE
 	)
 
 	rarity = RARITY_RARE
 
 	size = SIZE_2
-	weight = WEIGHT_2
+
 
 	worn_layer = LAYER_MOB_CLOTHING_NECK_OVER
 
-	additional_clothing = list(/obj/item/clothing/head/hood/sorcerer_hood)
+	additional_clothing = list(/obj/item/clothing/head/hat/sorcerer_hood)
 
 	dyeable = TRUE
 
-	value = 950
+	value = 200

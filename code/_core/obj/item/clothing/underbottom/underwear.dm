@@ -4,7 +4,7 @@
 	desc_extended = "A regular pait of underwear."
 
 	size = SIZE_1
-	weight = WEIGHT_0
+
 
 /obj/item/clothing/underbottom/underwear/boxers
 	name = "boxers"
@@ -14,11 +14,13 @@
 	flags_clothing = FLAG_CLOTHING_NOBEAST_FEET
 
 	defense_rating = list(
-		MAGIC = 15,
-		COLD = 15,
+		ARCANE = AP_DAGGER,
+		COLD = AP_DAGGER,
 	)
 
 	dyeable = TRUE
+
+	value = 10
 
 /obj/item/clothing/underbottom/underwear/boxers/random/Generate()
 	color = random_color()
@@ -59,12 +61,14 @@
 	rarity = RARITY_UNCOMMON
 
 	defense_rating = list(
-		MAGIC = 15,
-		HEAT = -25,
-		COLD = 50,
+		ARCANE = AP_DAGGER,
+		HEAT = -AP_SWORD,
+		COLD = AP_SWORD,
 	)
 
 	dyeable = TRUE
+
+	value = 30
 
 /obj/item/clothing/underbottom/underwear/long_johns/grey
 	color = "#888888"
@@ -75,11 +79,13 @@
 	desc_extended = "A pair of slim underwear."
 
 	defense_rating = list(
-		MAGIC = 25,
-		COLD = 10,
+		ARCANE = AP_DAGGER,
+		COLD = AP_DAGGER,
 	)
 
 	dyeable = TRUE
+
+	value = 10
 
 
 /obj/item/clothing/underbottom/underwear/panty/pink
@@ -102,16 +108,15 @@
 	icon = 'icons/obj/item/clothing/underwear/thong.dmi'
 	color = COLOR_WHITE
 	defense_rating = list(
-		BLADE = -10,
-		BLUNT = -10,
-		PIERCE = -10,
-		MAGIC = 25,
-		COLD = 10,
+		ARCANE = AP_SWORD,
+		COLD = -AP_SWORD,
 	)
 
 	dyeable = TRUE
 
 	dyeable = TRUE
+
+	value = 30
 
 /obj/item/clothing/underbottom/underwear/loincloth
 	name = "loincloth"
@@ -120,8 +125,10 @@
 	icon = 'icons/obj/item/clothing/underwear/loincloth.dmi'
 
 	defense_rating = list(
-		MAGIC = 25
+		ARCANE = AP_SWORD
 	)
+
+	value = 5
 
 
 /obj/item/clothing/underbottom/underwear/loincloth/brown

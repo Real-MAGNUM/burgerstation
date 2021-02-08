@@ -19,7 +19,7 @@
 	icon_state = "xp_new"
 	screen_loc = "RIGHT-1,TOP"
 
-/obj/hud/button/widget/experience/clicked_on_by_object(var/mob/caller,object,location,control,params)
+/obj/hud/button/widget/experience/clicked_on_by_object(var/mob/caller,var/atom/object,location,control,params)
 
 	. = ..()
 
@@ -36,7 +36,11 @@
 			var/current_xp = A.get_xp()
 			var/last_xp = A.level_to_xp(current_level)
 			var/next_xp = A.level_to_xp(min(current_level+1,L.max_level))
-			final_text += div("notice","[A.name]: [A.get_current_level(current_level)] ([current_xp - last_xp]/[next_xp - last_xp]xp)\n")
+			var/information_link = "<a href='?examine=\ref[A]'>?</a>"
+			if(next_xp - last_xp > 0)
+				final_text += div("notice","[A.name] ([information_link]): [A.get_current_level(current_level)] ([current_xp - last_xp]/[next_xp - last_xp]xp)\n")
+			else
+				final_text += div("notice","[A.name] ([information_link]): <b>[A.get_current_level(current_level)]</b>\n")
 
 		final_text += div("bold underlined","Skills\n")
 		for(var/k in L.skills)
@@ -45,8 +49,11 @@
 			var/current_xp = A.get_xp()
 			var/last_xp = A.level_to_xp(current_level)
 			var/next_xp = A.level_to_xp(min(current_level+1,L.max_level))
-			final_text += div("notice","[A.name]: [A.get_current_level(current_level)] ([current_xp - last_xp]/[next_xp - last_xp]xp)\n")
-
+			var/information_link = "<a href='?examine=\ref[A]'>?</a>"
+			if(next_xp - last_xp > 0)
+				final_text += div("notice","[A.name] ([information_link]): [A.get_current_level(current_level)] ([current_xp - last_xp]/[next_xp - last_xp]xp)\n")
+			else
+				final_text += div("notice","[A.name] ([information_link]): <b>[A.get_current_level(current_level)]</b>\n")
 		L.to_chat(final_text)
 
 	return .
@@ -56,7 +63,7 @@
 	icon_state = "logout_new"
 	screen_loc = "RIGHT,TOP"
 
-/obj/hud/button/widget/logout/clicked_on_by_object(var/mob/caller,object,location,control,params)
+/obj/hud/button/widget/logout/clicked_on_by_object(var/mob/caller,var/atom/object,location,control,params)
 
 	. = ..()
 
@@ -71,7 +78,7 @@
 	icon_state = "theme_new"
 	screen_loc = "RIGHT-2,TOP"
 
-/obj/hud/button/widget/change_theme/clicked_on_by_object(var/mob/caller,object,location,control,params)
+/obj/hud/button/widget/change_theme/clicked_on_by_object(var/mob/caller,var/atom/object,location,control,params)
 
 	if(!is_player(caller))
 		return ..()

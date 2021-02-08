@@ -7,7 +7,7 @@
 
 	use_cone_vision = FALSE
 
-	var/mob/living/simple/npc/can_man/owner_as_can_man
+	var/mob/living/simple/can_man/owner_as_can_man
 
 	var/projectile_count = 15
 	var/projectile_delay = 10
@@ -17,6 +17,10 @@
 
 /ai/boss/can_man/New(var/mob/living/desired_owner)
 	owner_as_can_man = desired_owner
+	return ..()
+
+/ai/boss/can_man/Destroy()
+	owner_as_can_man = null
 	return ..()
 
 /ai/boss/can_man/handle_movement()
@@ -79,8 +83,8 @@
 		return FALSE
 
 	if(projectile_count > 0)
-		play('sound/weapons/canman_shot.ogg',get_turf(owner))
-		owner.shoot_projectile(owner,objective_attack,null,null,/obj/projectile/bullet/firearm/pistol,/damagetype/ranged/bullet/can_man,16,16,0,TILE_SIZE*0.5,1,"#FF4A00",0,0,1,owner.iff_tag,owner.loyalty_tag)
+		play_sound('sound/weapons/canman_shot.ogg',get_turf(owner))
+		owner.shoot_projectile(owner,objective_attack,null,null,/obj/projectile/bullet/firearm/pistol,/damagetype/ranged/bullet/pistol_8mm,16,16,0,TILE_SIZE*0.5,1,"#FF4A00",0,0,1,owner.iff_tag,owner.loyalty_tag)
 		owner.set_dir(get_dir(owner,objective_attack))
 		projectile_count--
 	else

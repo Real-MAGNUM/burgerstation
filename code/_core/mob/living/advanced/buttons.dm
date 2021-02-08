@@ -1,6 +1,6 @@
 /mob/living/advanced/proc/add_species_buttons()
 
-	var/species/S = all_species[species]
+	var/species/S = SPECIES(species)
 
 	for(var/v in S.spawning_buttons)
 		var/obj/hud/button/B = new v
@@ -12,13 +12,14 @@
 		B.update_owner(src)
 
 /mob/living/advanced/proc/remove_color_scheme_buttons()
-	for(var/obj/hud/button/B in buttons)
+	for(var/k in buttons)
+		var/obj/hud/button/B = k
 		if(B.type in color_scheme_buttons)
 			B.update_owner(null)
 
 /mob/living/advanced/proc/add_chargen_buttons()
 
-	var/species/S = all_species[species]
+	var/species/S = SPECIES(species)
 
 	for(var/v in chargen_buttons)
 		var/obj/hud/button/chargen/B = v
@@ -28,12 +29,14 @@
 			B.update_owner(src)
 
 /mob/living/advanced/proc/remove_chargen_buttons()
-	for(var/obj/hud/button/chargen/B in buttons)
+	for(var/k in buttons)
+		var/obj/hud/button/B = k
 		if(B.type in chargen_buttons)
 			B.update_owner(null)
 
 /mob/living/advanced/proc/remove_all_buttons()
-	for(var/obj/hud/button/B in buttons)
+	for(var/k in buttons)
+		var/obj/hud/button/B = k
 		B.update_owner(null)
 
 

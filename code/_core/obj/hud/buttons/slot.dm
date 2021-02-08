@@ -1,5 +1,6 @@
 /obj/hud/button/slot
 	name = "slot button"
+	var/id = null
 	desc = "Slot button for quick actions."
 	desc_extended = "Press this button to activate that item on the tile you're pointing."
 	icon_state = "square_trim"
@@ -87,15 +88,15 @@
 		//animate(src,alpha=100,time=SECONDS_TO_DECISECONDS(1))
 	return TRUE
 
-/obj/hud/button/slot/dropped_on_by_object(var/atom/caller,var/atom/object)
+/obj/hud/button/slot/dropped_on_by_object(var/mob/caller,var/atom/object,location,control,params)
 
 	if(stored_atom)
-		stored_atom.dropped_on_by_object(caller,object)
+		stored_atom.dropped_on_by_object(caller,object,location,control,params)
 		return TRUE
 
 	return clicked_on_by_object(caller,object)
 
-/obj/hud/button/slot/clicked_on_by_object(caller,object,location,control,params)
+/obj/hud/button/slot/clicked_on_by_object(var/mob/caller,var/atom/object,location,control,params)
 	. = ..()
 
 	if(.)
@@ -103,7 +104,7 @@
 
 	return .
 
-/obj/hud/button/slot/proc/store_atom(var/mob/caller,object,location,control,params)
+/obj/hud/button/slot/proc/store_atom(var/mob/caller,var/atom/object,location,control,params)
 
 	if(!is_advanced(caller))
 		return ..()
@@ -116,7 +117,7 @@
 	var/obj/item/I = object
 
 	if(!istype(I) || !I.has_quick_function)
-		A.to_chat(span("notice","\The [I.name] doesn't have a quick bind function."))
+		A.to_chat(span("warning","\The [I.name] doesn't have a quick bind function."))
 		return TRUE
 
 	clear_object(A)
@@ -192,7 +193,7 @@
 
 	has_quick_function = FALSE
 
-/obj/hud/button/close_slots/clicked_on_by_object(var/mob/caller,object,location,control,params)
+/obj/hud/button/close_slots/clicked_on_by_object(var/mob/caller,var/atom/object,location,control,params)
 
 	if(!is_player(caller))
 		return TRUE

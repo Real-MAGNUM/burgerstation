@@ -1,6 +1,7 @@
 /client/proc/on_life()
 
 	spam_protection_chat = max(0,spam_protection_chat - TICKS_TO_DECISECONDS(CLIENT_TICK))
+	spam_protection_interact = max(0,spam_protection_interact - TICKS_TO_DECISECONDS(CLIENT_TICK))
 
 	if(queued_chat_messages && length(queued_chat_messages) && queued_chat_messages[1])
 
@@ -13,32 +14,25 @@
 
 		queued_chat_messages.Cut(1,2)
 
-	//ping()
-
 	if(mob)
 		mob.on_life_client()
+		handle_camera()
 
-
-	handle_camera()
-
-	/*
-	if(is_zoomed)
-		var/list/dir_to_pixel = direction_to_pixel_offset(mob.dir)
-		pixel_x += clamp(dir_to_pixel[1]*TILE_SIZE*ZOOM_RANGE - pixel_x,-8,8)
-		pixel_y += clamp(dir_to_pixel[2]*TILE_SIZE*ZOOM_RANGE - pixel_y,-8,8)
-	else
-		pixel_x -= clamp(pixel_x,-12,12)
-		pixel_y -= clamp(pixel_y,-12,12)
-	*/
+	if(restricted && inactivity <= TICKS_TO_DECISECONDS(CLIENT_TICK)*3)
+		del(src)
 
 	return TRUE
 
 /client/proc/on_life_slow()
 
 	if(!mob)
-		return TRUE
+		src << span("danger","Uhh... it seems like your mob was deleted unexpectedly. Contact Burger on Discord to tell them how you encountered this.")
+		src << span("danger","As a precaution, you were kicked. You can rejoin again.")
+		del(src)
+		return FALSE
 
-	for(var/image/I in stored_hud_images)
+	for(var/k in stored_hud_images)
+		var/image/I = k
 		images -= I
 		stored_hud_images -= I
 
@@ -48,30 +42,20 @@
 				stored_hud_images += L.medical_hud_image
 				images += L.medical_hud_image
 			if(mob.vision & FLAG_VISION_SECURITY && L.security_hud_image && L.alpha >= 255)
-				stored_hud_images += L.security_hud_image
-				images += L.security_hud_image
+				var/should_draw = TRUE
+				if(is_living(mob))
+					var/mob/living/L2 = mob
+					if(L2.loyalty_tag != L.loyalty_tag)
+						should_draw = FALSE
+				if(should_draw)
+					stored_hud_images += L.security_hud_image
+					images += L.security_hud_image
 			if(mob.vision & FLAG_VISION_MEDICAL_ADVANCED && L.medical_hud_image_advanced && L.alpha >= 255)
 				stored_hud_images += L.medical_hud_image_advanced
 				images += L.medical_hud_image_advanced
 
 	update_color_mods()
-
-	/*
-	if(is_zoomed)
-
-		var/list/params_list = params2list(last_params)
-		var/list/screen_loc = parse_screen_loc(params_list["screen-loc"])
-
-		animate(
-			src,
-			pixel_x = clamp( (screen_loc[1] - VIEW_RANGE*TILE_SIZE)*3, -ZOOM_RANGE*TILE_SIZE, ZOOM_RANGE*TILE_SIZE),
-			pixel_y = clamp( (screen_loc[2] - VIEW_RANGE*TILE_SIZE)*3, -ZOOM_RANGE*TILE_SIZE, ZOOM_RANGE*TILE_SIZE),
-			time = TICKS_TO_DECISECONDS(CLIENT_TICK_SLOW)
-		)
-
-		if(mob)
-			mob.face_atom(last_location)
-	*/
+	update_lighting_mods()
 
 	return TRUE
 

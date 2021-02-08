@@ -12,8 +12,6 @@ SUBSYSTEM_DEF(obj)
 
 /subsystem/obj/Initialize()
 
-	set background = 1
-
 	for(var/obj/O in world)
 		if(O.initialize_type == INITIALIZE_EARLY)
 			initialize_early += O
@@ -25,21 +23,27 @@ SUBSYSTEM_DEF(obj)
 			initialize_none += O
 			log_error("ERROR: [O.get_debug_name()] did not have a valid initialize_type ([O.initialize_type]) set!")
 
-	for(var/obj/O in initialize_early)
+	for(var/k in initialize_early)
+		var/obj/O = k
 		INITIALIZE(O)
 		GENERATE(O)
+		FINALIZE(O)
 
 	log_subsystem(name,"Early: Initialized and spawned [length(initialize_early)] objects in world.")
 
-	for(var/obj/O in initialize_normal)
+	for(var/k in initialize_normal)
+		var/obj/O = k
 		INITIALIZE(O)
 		GENERATE(O)
+		FINALIZE(O)
 
 	log_subsystem(name,"Normal: Initialized and spawned [length(initialize_normal)] objects in world.")
 
-	for(var/obj/O in initialize_late)
+	for(var/k in initialize_late)
+		var/obj/O = k
 		INITIALIZE(O)
 		GENERATE(O)
+		FINALIZE(O)
 
 	log_subsystem(name,"Late: Initialized and spawned [length(initialize_late)] objects in world.")
 
@@ -54,15 +58,19 @@ SUBSYSTEM_DEF(obj)
 
 /subsystem/obj/on_life()
 
-	for(var/obj/structure/smooth/S in queued_smooth)
-		S.update_sprite()
+	for(var/k in queued_smooth)
+		var/obj/structure/smooth/S = k
+		CHECK_TICK(tick_usage_max,FPS_SERVER*5)
 		queued_smooth -= S
+		S.update_sprite()
+		//This doesn't need to be "processed" as the only thing that could go wrong is update sprite.
 
 	return TRUE
 
-/proc/queue_update_smooth_edges(var/obj/structure/smooth/S)
+/proc/queue_update_smooth_edges(var/obj/structure/smooth/S,var/include_self=TRUE)
 
-	SSobj.queued_smooth |= S
+	if(include_self)
+		SSobj.queued_smooth |= S
 
 	for(var/direction in DIRECTIONS_ALL)
 		var/turf/T = get_step(S,direction)

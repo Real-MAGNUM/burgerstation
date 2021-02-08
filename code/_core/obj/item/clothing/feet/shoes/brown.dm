@@ -12,16 +12,16 @@
 	protected_limbs = list(BODY_FOOT_RIGHT)
 
 	defense_rating = list(
-		BLADE = 15,
-		BLUNT = 10,
-		PIERCE = 10,
-		MAGIC = 25,
-		HEAT = 10,
-		COLD = 10
+		BLADE = AP_SWORD,
+		BLUNT = AP_SWORD,
+		PIERCE = AP_SWORD,
+		ARCANE = AP_SWORD,
+		COLD = AP_SWORD,
+		PAIN = AP_SWORD
 	)
 
 	size = SIZE_1
-	weight = WEIGHT_1
+
 
 	value = 15
 
@@ -32,4 +32,4 @@
 
 	item_slot = SLOT_FOOT_LEFT
 	protected_limbs = list(BODY_FOOT_LEFT)
-	blocks_clothing = SLOT_FOOT_LEFT_U
+	blocks_clothing = SLOT_FOOT_LEFT | SLOT_FOOT_LEFT_U

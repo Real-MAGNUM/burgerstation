@@ -1,5 +1,7 @@
 /turf/simulated/floor/grass/
-	name = "colored floor"
+	name = " dense grass"
+	desc = "Some grass on the ground"
+	desc_extended = "Damn daniel back at it agian with the green grass"
 
 	icon = 'icons/turf/floor/icons.dmi'
 	icon_state = "grass_new"
@@ -8,9 +10,24 @@
 	real_icon_state = "floor"
 	corner_icons = TRUE
 
-/turf/simulated/floor/grass/jungle
-	color = "#969696"
+	footstep = /footstep/grass
 
+	destruction_turf = /turf/simulated/floor/colored/grass
+
+	layer = LAYER_FLOOR_GRASS
+
+	corner_category = "dense_grass"
+
+	material_id = /material/grass/
+
+/turf/simulated/floor/grass/jungle
+	name = "dense jungle grass"
+	color = "#969696"
+	destruction_turf = /turf/simulated/floor/colored/grass/jungle
+	desc = "Some junglely grass"
+	desc_extended = "unlike what some people believe, jungle grass isn't just grass that likes to listen to jungle music"
+
+/*
 /turf/simulated/floor/grass/smooth_turfs()
 
 	var/list/smooth_code = get_smooth_code()
@@ -30,3 +47,4 @@
 	layer = initial(layer) + 0.1
 
 	return TRUE
+*/

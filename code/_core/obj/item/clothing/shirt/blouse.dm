@@ -7,11 +7,11 @@
 	item_slot = SLOT_TORSO
 
 	defense_rating = list(
-		BLADE = 15,
-		BLUNT = 15,
-		PIERCE = 15,
-		MAGIC = 10,
-		COLD = 25,
+		BLADE = AP_DAGGER,
+		BLUNT = AP_DAGGER,
+		PIERCE = AP_DAGGER,
+		ARCANE = AP_SWORD,
+		COLD = AP_DAGGER
 	)
 
 	dyeable = TRUE

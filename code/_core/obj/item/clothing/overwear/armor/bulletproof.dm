@@ -9,14 +9,15 @@
 	rarity = RARITY_UNCOMMON
 
 	defense_rating = list(
-		BLADE = 25,
-		BLUNT = 50,
-		PIERCE = 50,
-		LASER = -25,
-		MAGIC = -25
+		BLADE = AP_SWORD,
+		BLUNT = AP_CLUB,
+		PIERCE = AP_AXE,
+		LASER = -AP_AXE,
+		ARCANE = -AP_AXE,
+		PAIN = AP_AXE
 	)
 
 	size = SIZE_4
-	weight = WEIGHT_4
 
-	value = 50
+
+	value = 200

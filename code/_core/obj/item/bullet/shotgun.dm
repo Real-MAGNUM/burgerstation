@@ -1,6 +1,5 @@
 /obj/item/bullet_cartridge/shotgun_12/
 	rarity = RARITY_COMMON
-	id = "shotgun"
 	icon = 'icons/obj/item/bullet/shotgun.dmi'
 	item_count_max = 5
 	item_count_max_icon = 5
@@ -16,10 +15,9 @@
 	projectile_speed = BULLET_SPEED_LARGE_PROJECTILE
 
 	size = 0.04
-	weight = 0.04
 	value = 2
 
-/obj/item/bullet_cartridge/shotgun_12/can_be_worn(var/mob/living/advanced/owner,var/obj/hud/inventory/I)
+/obj/item/bullet_cartridge/shotgun_12/can_be_worn(var/mob/living/advanced/owner,var/obj/hud/inventory/I,var/messages=FALSE)
 	return TRUE
 
 /obj/item/bullet_cartridge/shotgun_12/Generate()
@@ -41,7 +39,6 @@
 	projectile_speed = BULLET_SPEED_PISTOL_LIGHT
 
 	size = 0.04
-	weight = 0.04
 	value = 1.8
 
 /obj/item/bullet_cartridge/shotgun_12/buckshot
@@ -59,7 +56,6 @@
 	projectile_speed = BULLET_SPEED_LARGE_PROJECTILE
 
 	size = 0.04
-	weight = 0.04
 	value = 1.6
 
 	inaccuracy_modifer = 1.5
@@ -81,7 +77,29 @@
 	projectile_speed = 8
 
 	size = 0.04
-	weight = 0.04
 	value = 5
 
 	inaccuracy_modifer = 1
+
+
+/obj/item/bullet_cartridge/shotgun_12/flechette
+	name = "\improper 12 gauge flechette shell"
+	desc = "Shoots a lot of small shards at once."
+	desc_extended = "This shell is not very accurate and has many projectiles. Lower damage but pierces armor better."
+	icon_state = "flechette"
+
+	projectile_count = 5
+	base_spread = 0.025
+
+	projectile = /obj/projectile/bullet/firearm/shotgun_flechette
+	damage_type_bullet = /damagetype/ranged/bullet/shotgun/flechette
+
+	projectile_speed = BULLET_SPEED_PISTOL_LIGHT
+
+	size = 0.04
+	value = 1.8
+
+	inaccuracy_modifer = 1.3
+
+
+

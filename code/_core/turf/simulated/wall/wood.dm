@@ -12,19 +12,17 @@
 
 	color = COLOR_WOOD
 
-/turf/simulated/wall/wood/on_destruction(var/atom/caller,var/damage = FALSE)
-
-	. = ..()
+/turf/simulated/wall/wood/on_destruction(var/mob/caller,var/damage = FALSE)
 
 	var/obj/structure/interactive/construction/girder/G = new(src)
 	G.material_id = material_id
 	G.color = color
 	INITIALIZE(G)
-	GENERATE(G)
+	FINALIZE(G)
 
 	create_destruction(src,list(/obj/item/material/wood/ = 4),material_id)
 
-	return .
+	return ..()
 
 
 /turf/simulated/wall/wood/brown

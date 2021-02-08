@@ -4,20 +4,21 @@
 	desc_extended = "Shift-click this, or any other item that has a hood to bring it up and down. Click the hood or shift-click the hoodie again to bring down the hood."
 	icon = 'icons/obj/item/clothing/suit/hoodie.dmi'
 
-	additional_clothing = list(/obj/item/clothing/head/hood/hoodie)
+	additional_clothing = list(/obj/item/clothing/head/hat/hoodie)
 
 	dyeable = TRUE
 
 	size = SIZE_3
-	weight = WEIGHT_3
+
 
 	value = 40
 
 	dyeable = TRUE
 
 	defense_rating = list(
-		HEAT = -25,
-		COLD = 50
+		ARCANE = AP_SWORD,
+		HEAT = -AP_SWORD,
+		COLD = AP_CLUB
 	)
 
 

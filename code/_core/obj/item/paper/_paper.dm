@@ -10,33 +10,42 @@
 
 	var/list/data = list("There is nothing here.","Oh god oh fuck.")
 
-	value = 1
+	value = 10
+
+	drop_sound = 'sound/items/drop/paper.ogg'
+
+	var/editable = TRUE
+
+	weight = 0.01
 
 /obj/item/paper/click_self(var/mob/caller,location,control,params)
 
 	if(!is_player(caller))
 		return ..()
 
+	INTERACT_CHECK
+	INTERACT_DELAY(2)
+
 	var/mob/living/advanced/player/P = caller
 
 	if(P.active_paper)
-		close_menu(P,"paper")
+		close_menu(P,/menu/paper/)
 
 	if(P.active_paper == src)
 		P.active_paper = null
 		return TRUE
 
 	P.active_paper = src
-	open_menu(P,"paper")
+	open_menu(P,/menu/paper/)
 
 	return TRUE
 
-/obj/item/paper/on_drop(var/obj/hud/inventory/old_inventory,var/atom/new_loc)
+/obj/item/paper/on_drop(var/obj/hud/inventory/old_inventory,var/atom/new_loc,var/silent=FALSE)
 
 	if(old_inventory && old_inventory.owner && is_player(old_inventory.owner))
 		var/mob/living/advanced/player/P = old_inventory.owner
 		if(P.active_paper == src)
-			close_menu(P,"paper")
+			close_menu(P,/menu/paper/)
 			P.active_paper = null
 
 	return ..()

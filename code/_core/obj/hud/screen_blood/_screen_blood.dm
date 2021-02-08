@@ -58,6 +58,7 @@
 		if(L.dead)
 			alpha = 200
 			maptext = "<center>You have died.</center>"
+			health = 0
 		else
 			alpha = clamp(100 - (100*(1/0.4))*(health/max_health),0,100)
 			maptext = null
@@ -88,8 +89,11 @@
 		var/max_mana = owner.health.mana_max
 		var/mana = owner.health.mana_current
 
-		alpha = max(1 - health/max_health, 1 - stamina/max_stamina, 1 - mana/max_mana)*255
-		color = rgb(255 - (health/max_health)*255,255 - (stamina/max_stamina)*255,255 - (mana/max_mana)*255)
+		var/max_pain = owner.health.health_max
+		var/pain = owner.health.get_loss(PAIN)
+
+		alpha = max(1 - health/max_health, 1 - stamina/max_stamina, 1 - mana/max_mana,pain/max_pain)*255
+		color = rgb(255*(1 - pain/max_pain) - (health/max_health)*255,255*(1 - pain/max_pain) - (stamina/max_stamina)*255,255*(1 - pain/max_pain) - (mana/max_mana)*255)
 
 	else
 		alpha = 255 - 255*(health/max_health)

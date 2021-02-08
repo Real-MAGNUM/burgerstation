@@ -4,6 +4,8 @@
 	id = "reptile_advanced"
 	flags_species = SPECIES_REPTILE_ADVANCED
 
+	bite_size = 10
+
 	flags_chargen = CHARGEN_SKIN | CHARGEN_EYE | CHARGEN_HAIR | CHARGEN_BEARD | CHARGEN_SEX
 
 	default_hairstyle_chargen_male = 1
@@ -64,3 +66,6 @@
 		BODY_INTESTINTES = /obj/item/organ/internal/intestines,
 		BODY_KIDNEYS = /obj/item/organ/internal/kidneys
 	)
+
+/species/reptile/advanced/generate_blood_type()
+	return /reagent/blood/reptile

@@ -8,13 +8,12 @@
 	desc_extended = "A somehow effective armor made from duct tape, metal plates, leather straps, and prayers. It just werks."
 
 	size = SIZE_3
-	weight = WEIGHT_4
+
 
 	defense_rating = list(
-		BLADE = 25,
-		BLUNT = 25,
-		PIERCE = 25,
-		LASER = 10,
-		MAGIC = -25,
-		HEAT = -25
+		BLADE = AP_CLUB,
+		BLUNT = AP_AXE,
+		PIERCE = AP_SWORD,
+		LASER = AP_DAGGER,
+		ARCANE = -AP_SWORD
 	)

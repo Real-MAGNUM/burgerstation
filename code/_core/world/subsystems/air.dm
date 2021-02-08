@@ -3,7 +3,7 @@
 //Atmos should only update if and only if the surrounding NORTH|EAST|SOUTH|WEST has a GREATER gas composition (more gas, more air, ect) than the source tile.
 //The above is checked if the density of the turf is changed in some way or the turf's gas was also changed.
 
-//TODO: has_opaque_atom
+//TODO: has_opaque_atom (WTF DOES THIS MEAN)
 
 SUBSYSTEM_DEF(air)
 	name = "Atmospherics Subsystem"
@@ -22,7 +22,7 @@ SUBSYSTEM_DEF(air)
 	var/bad_count = 0
 
 	for(var/turf/simulated/T in world)
-		CHECK_TICK
+		CHECK_TICK(tick_usage_max,FPS_SERVER)
 		if(update_turf_air(T))
 			queued_atmos_updates += T
 			bad_count++
@@ -77,7 +77,7 @@ SUBSYSTEM_DEF(air)
 		return FALSE
 
 	for(var/k in queued_atmos_updates)
-		CHECK_TICK
+		CHECK_TICK(tick_usage_max,FPS_SERVER)
 		update_turf_air(k)
 
 	return TRUE

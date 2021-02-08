@@ -8,20 +8,31 @@ SUBSYSTEM_DEF(discord)
 	desc = "Handles the discord API."
 	priority = SS_ORDER_PRELOAD
 
-	var/private_webhook
+	var/discord_webhook_key
 
-/subsystem/recipe/Initialize()
-
+/subsystem/discord/Initialize()
 
 	if(!fexists(WEBHOOK_FILE))
 		log_subsystem(name,"Could not find a webhook file in [WEBHOOK_FILE].")
 		return TRUE
 
-	private_webhook = file2text(WEBHOOK_FILE)
-	log_subsystem(name,"Sucessfully Loaded Discord Webhook!")
+	discord_webhook_key = file2text(WEBHOOK_FILE)
 
-	var/list/result = Export("[private_webhook]/channels/693563558155255900/webhooks?name",null)
+	return TRUE
 
-	print_list(result)
+/subsystem/discord/proc/send_message(var/message_to_send)
+
+	if(world.port == 0) //Don't send to local servers.
+		return FALSE
+
+	var/list/webhook_forum_params = list(
+		"content" = message_to_send
+	)
+
+	var/list/webhook_header_params = list(
+		"Content-Type" = "application/json"
+	)
+
+	rustg_http_request_blocking(RUSTG_HTTP_METHOD_POST,"https://discordapp.com/api/webhooks/[discord_webhook_key]",json_encode(webhook_forum_params),json_encode(webhook_header_params))
 
 	return TRUE

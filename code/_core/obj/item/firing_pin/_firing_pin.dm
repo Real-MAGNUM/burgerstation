@@ -8,6 +8,8 @@
 
 	value = 100
 
+	weight = 0.25
+
 /obj/item/firing_pin/proc/can_shoot(var/mob/caller,var/obj/item/weapon)
 	return TRUE
 
@@ -26,18 +28,18 @@
 
 /obj/item/firing_pin/electronic/iff/can_shoot(var/mob/caller,var/obj/item/weapon)
 
-	if(!is_advanced(caller))
-		caller.to_chat("The firing pin doesn't detect your IFF signature and refuses to fire!")
+	if(!is_living(caller))
+		caller.to_chat(span("danger","The firing pin doesn't detect your IFF signature and refuses to fire!"))
 		return FALSE
 
 	var/mob/living/advanced/A = caller
 
 	if(!A.iff_tag)
-		caller.to_chat("The firing pin doesn't detect your IFF signature and refuses to fire!")
+		caller.to_chat(span("danger","The firing pin doesn't detect your IFF signature and refuses to fire!"))
 		return FALSE
 
 	if(A.iff_tag != iff_tag)
-		caller.to_chat("The firing pin doesn't recognize your IFF signature and refuses to fire!")
+		caller.to_chat(span("danger","The firing pin doesn't recognize your IFF signature and refuses to fire!"))
 		return FALSE
 
 	return ..()
@@ -57,7 +59,7 @@
 
 	var/area/A = get_area(caller)
 	if(A.flags_area & FLAGS_AREA_TUTORIAL)
-		caller.to_chat("The firing pin refuses to fire in this area!")
+		caller.to_chat(span("danger","\The [src.name] refuses to fire in this area!"))
 		return FALSE
 
 	return TRUE
@@ -81,3 +83,16 @@
 	desc_extended = "Acts as a trigger mechanism for the gun. The gun can only be fired by those with a registered Revolutionary IFF implant, and prevents firing at those with one."
 	iff_tag = "Revolutionary"
 	icon_state = "revolution"
+
+
+/obj/item/firing_pin/electronic/iff/deathsquad
+	name = "deathsquad firing pin"
+	desc_extended = "Acts as a trigger mechanism for the gun. The gun can only be fired by those with a registered Deathsquad IFF implant, and prevents firing at those with one."
+	iff_tag = "Deathsquad"
+	icon_state = "deathsquad"
+
+/obj/item/firing_pin/electronic/iff/space_cop
+	name = "space police firing pin"
+	desc_extended = "Acts as a trigger mechanism for the gun. The gun can only be fired by those with a registered Space Cop IFF implant, and prevents firing at those with one."
+	iff_tag = "Space Cop"
+	icon_state = "deathsquad"

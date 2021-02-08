@@ -11,14 +11,15 @@
 	protected_limbs = list(BODY_HAND_RIGHT)
 
 	defense_rating = list(
-		BLADE = 25,
-		BLUNT = 25,
-		PIERCE = 10,
-		MAGIC = -10
+		BLADE = AP_AXE,
+		BLUNT = AP_AXE,
+		PIERCE = AP_AXE,
+		ARCANE = -AP_AXE
 	)
 
-	size = SIZE_1
-	weight = WEIGHT_0
+	size = SIZE_3
+
+
 
 	value = 20
 

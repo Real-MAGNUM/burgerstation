@@ -13,7 +13,7 @@
 
 	reagents = /reagent_container/medical_spray
 
-	value = 10
+	value = 5
 
 /obj/item/container/spray/update_icon()
 
@@ -39,12 +39,13 @@
 
 /obj/item/container/spray/click_on_object(var/mob/caller as mob,var/atom/object,location,control,params)
 
-	if(is_inventory(object))
+	if(object.plane >= PLANE_HUD)
 		return ..()
 
 	if(is_advanced(object) && is_advanced(caller))
-		if(get_dist(caller,object) > 1)
-			return FALSE
+		INTERACT_CHECK
+		INTERACT_CHECK_OBJECT
+		INTERACT_DELAY(2)
 		var/mob/living/advanced/victim = object
 		var/mob/living/advanced/attacker = caller
 		var/list/new_x_y = attacker.get_current_target_cords(params)
@@ -59,15 +60,15 @@
 
 		var/reagent_transfer = min(5,reagents.volume_current)
 		if(reagent_transfer <= 0)
-			caller.to_chat(span("notice","\The [src.name] is empty."))
+			caller.to_chat(span("warning","\The [src.name] is empty!"))
 			return TRUE
 
-		reagents.transfer_reagents_to(O.reagents,reagent_transfer)
+		reagents.transfer_reagents_to(O.reagents,reagent_transfer, caller = caller)
 
 		if(caller == O.loc)
-			caller.visible_message("\The [caller.name] sprays their [O.name] with \the [src].")
+			caller.visible_message(span("notice","\The [caller.name] sprays their [O.name] with \the [src]."),span("notice","You spray your [O.name] with \the [src.name]."))
 		else
-			caller.visible_message("\The [caller.name] sprays \the [O.loc.name]'s [O.name] with \the [src].")
+			caller.visible_message(span("warning","\The [caller.name] sprays \the [O.loc.name]'s [O.name] with \the [src]."),span("notice","You spray \the [O.loc.name]'s [O.name] with \the [src.name]."))
 
 		update_sprite()
 

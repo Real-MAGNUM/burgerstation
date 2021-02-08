@@ -7,15 +7,25 @@
 	set name = "Suicide"
 	set category = "Game"
 
+	var/area/A = get_area(src)
+
+	if(A.flags_area & FLAGS_AREA_TUTORIAL)
+		var/question = input("Are you sure you want to cancel character creation? Your character won't be saved, and it will be deleted from the game.") in list("Yes","No")
+		if(question == "Yes" && A.flags_area & FLAGS_AREA_TUTORIAL)
+			client.make_ghost(get_turf(src))
+			qdel(src)
+			return TRUE
+		return FALSE
+
 	var/choice = input("Are you sure you want to kill yourself?","Suicide","Cancel") in list("Yes","No","Cancel")
 
 	if(dead)
-		to_chat("You are already dead!")
+		to_chat(span("danger","You are already dead!"))
 		return FALSE
 
 	if(choice == "Yes")
 		death()
-		visible_message("[src.name] kills themselves!")
+		visible_message(span("danger","[src.name] kills themselves!"),span("danger","You kill yourself!"))
 		suicide = TRUE
 		client.make_ghost(get_turf(src))
 

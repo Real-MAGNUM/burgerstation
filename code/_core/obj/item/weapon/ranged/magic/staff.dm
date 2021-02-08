@@ -1,6 +1,19 @@
 /obj/item/weapon/ranged/magic/staff
 	var/cost_charge = 100
 	var/total_charge = 1000
+	weight = 10
+
+
+/obj/item/weapon/ranged/magic/staff/save_item_data(var/save_inventory = TRUE)
+	. = ..()
+	SAVEVAR("total_charge")
+	return .
+
+/obj/item/weapon/ranged/magic/staff/load_item_data_pre(var/mob/living/advanced/player/P,var/list/object_data)
+	. = ..()
+	LOADVAR("total_charge")
+	return .
+
 
 /obj/item/weapon/ranged/magic/staff/can_gun_shoot(var/mob/caller)
 
@@ -40,6 +53,8 @@
 
 	shoot_sounds = list('sound/weapons/magic/fireball.ogg')
 
+	shoot_delay = 10
+
 	value = 1200
 
 /obj/item/weapon/ranged/magic/staff/fire/New()
@@ -60,7 +75,7 @@
 	cost_charge = 250
 	total_charge = 1000
 
-	shoot_delay = 20
+	shoot_delay = 15
 
 	projectile_speed = 4
 
@@ -75,9 +90,9 @@
 
 	value = 900
 
-/obj/item/weapon/ranged/magic/staff/chaos/get_projectile_offset(var/initial_offset_x,var/initial_offset_y,var/bullet_num,var/accuracy)
+/obj/item/weapon/ranged/magic/staff/chaos/get_projectile_offset(var/initial_offset_x,var/initial_offset_y,var/bullet_num,var/bullet_num_max,var/accuracy)
 
-	var/num = bullet_num/bullet_count
+	var/num = bullet_num/bullet_num_max
 
 	var/norm_x = initial_offset_x + sin(num*360)
 	var/norm_y = initial_offset_y + cos(num*360)
@@ -86,14 +101,14 @@
 
 	return list(norm_x/mul,norm_y/mul)
 
-/obj/item/weapon/ranged/magic/staff/chaos/get_static_spread() //Base spread
+/obj/item/weapon/ranged/magic/staff/chaos/get_static_spread()
 	return 0
 
 
 /obj/item/weapon/ranged/magic/staff/basic
 
 	name = "Staff of Magic Missile"
-	desc = "MAGIC MISSILE!."
+	desc = "ARCANE MISSILE!."
 	desc_extended = "Point the orb end at the enemy for best result."
 	cost_charge = 100
 	total_charge = 1000
@@ -108,8 +123,11 @@
 
 	shoot_sounds = list('sound/weapons/magic/magic_missile.ogg')
 
+	shoot_delay = 10
+
 	value = 1000
 
+/*
 /obj/item/weapon/ranged/magic/staff/focus
 
 	name = "Staff of the Rift"
@@ -120,6 +138,7 @@
 
 	projectile_speed = 31
 	bullet_count = 1
+	shoot_delay = 10
 
 	icon = 'icons/obj/item/weapons/ranged/magic/focus.dmi'
 
@@ -127,4 +146,29 @@
 	ranged_damage_type = /damagetype/ranged/magic/chaos
 
 	shoot_sounds = list('sound/weapons/magic/teleport_out.ogg')
+*/
+
+/obj/item/weapon/ranged/magic/staff/blackflame
+	name = "Staff of the Blackflame"
+	desc = "Draw unholy power to cast a flame that burns black!"
+	desc_extended = "You can also use it to reheat soup in a pinch."
+	cost_charge = 50
+	total_charge = 2000
+
+	projectile_speed = 15
+	bullet_count = 1
+	shoot_delay = 10
+
+	can_wield = TRUE
+
+	dan_mode = TRUE
+
+	icon = 'icons/obj/item/weapons/ranged/magic/blackflame.dmi'
+
+	projectile = /obj/projectile/magic/blackflame
+	ranged_damage_type = /damagetype/ranged/magic/blackflame
+
+	shoot_sounds = list('sound/weapons/magic/fireball.ogg')
+
+	value = 1400
 

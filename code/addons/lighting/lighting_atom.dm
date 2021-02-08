@@ -13,9 +13,6 @@
 	var/tmp/light_source/light // Our light source. Don't fuck with this directly unless you have a good reason!
 	var/tmp/list/light_sources       // Any light sources that are "inside" of us, for example, if src here was a mob that's carrying a flashlight, that flashlight's light source would be part of this list.
 
-// Nonesensical value for l_color default, so we can detect if it gets set to null.
-#define NONSENSICAL_VALUE -99999
-
 // The proc you should always use to set the light of this atom.
 /atom/proc/set_light(l_range, l_power, l_color = NONSENSICAL_VALUE, angle = NONSENSICAL_VALUE, no_update = FALSE,debug = FALSE)
 
@@ -50,20 +47,20 @@
 /atom/proc/update_light(debug)
 
 	if(qdeleting)
-		if(debug) LOG_DEBUG("Light for [src.get_debug_name()] is being deleted as the object is being deleted.")
+		if(debug) log_debug("Light for [src.get_debug_name()] is being deleted as the object is being deleted.")
 		QDEL_NULL(light) //TODO: Does this work?
 		return
 
 	if (!light_power || !light_range) // We won't emit light anyways, destroy the light source.
-		if(debug) LOG_DEBUG("Light for [src.get_debug_name()] is being deleted as there is no light power ([light_power]) or light range ([light_range]).")
+		if(debug) log_debug("Light for [src.get_debug_name()] is being deleted as there is no light power ([light_power]) or light range ([light_range]).")
 		QDEL_NULL(light)
 	else
 		if(light)
 			light.update()
-			if(debug) LOG_DEBUG("Light for [src.get_debug_name()] is being updated.")
+			if(debug) log_debug("Light for [src.get_debug_name()] is being updated.")
 		else
 			light = new /light_source(src)
-			if(debug) LOG_DEBUG("Light for [src.get_debug_name()] is being created.")
+			if(debug) log_debug("Light for [src.get_debug_name()] is being created.")
 
 // If we have opacity, make sure to tell (potentially) affected light sources.
 /atom/movable/Destroy()
@@ -108,34 +105,7 @@
 
 	return TRUE
 
-/atom/movable/Move(var/atom/NewLoc,Dir=0,desired_step_x=0,desired_step_y=0,var/silent=FALSE)
-
-	. = ..()
-
-	if (. && light_sources)
-		var/light_source/L
-		var/thing
-		for (thing in light_sources)
-			L = thing
-			L.source_atom.update_light()
-
-	return .
-
-/atom/movable/force_move(var/atom/new_loc)
-
-	. = ..()
-
-	var/light_source/L
-	var/thing
-	for (thing in light_sources)
-		L = thing
-		L.source_atom.update_light()
-
-	return .
-
-
 /atom/set_dir(var/desired_dir,var/force = FALSE)
-
 
 	. = ..()
 

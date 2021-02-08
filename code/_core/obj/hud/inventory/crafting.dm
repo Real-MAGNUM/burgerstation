@@ -1,10 +1,8 @@
 /obj/hud/inventory/crafting/
-	worn_slots = 0
-	held_slots = 1
+	max_slots = 1
 	icon_state = "square_round"
 
 	max_size = SIZE_8
-	max_weight = WEIGHT_8
 
 	flags = FLAGS_HUD_INVENTORY | FLAGS_HUD_SPECIAL | FLAGS_HUD_CRAFTING
 

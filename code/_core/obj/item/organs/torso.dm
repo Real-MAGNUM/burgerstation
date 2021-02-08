@@ -27,7 +27,7 @@
 
 	health_base = 100
 
-	health_coefficient = 1
+	damage_coefficient = 1
 
 /obj/item/organ/torso/unattach_from_parent(var/turf/T)
 	. = ..()
@@ -90,6 +90,7 @@
 	desc = "An organ."
 
 	defense_rating = CYBORG_ARMOR
+	health = /health/obj/item/organ/synthetic
 
 /obj/item/organ/torso/beefman
 	name = "beefman torso"
@@ -105,3 +106,13 @@
 	desc = "An organ."
 
 	defense_rating = SKELETON_ARMOR
+
+
+
+/obj/item/organ/torso/monkey
+	name = "monkey torso"
+	icon = 'icons/mob/living/advanced/species/monkey.dmi'
+	desc = "An organ."
+
+/obj/item/organ/torso/monkey/female
+	icon_state = BODY_TORSO_FEMALE

@@ -12,15 +12,15 @@
 
 	interaction_flags = FLAG_INTERACTION_LIVING | FLAG_INTERACTION_DEAD | FLAG_INTERACTION_NO_DISTANCE
 
-/obj/hud/button/close_inventory/clicked_on_by_object(var/mob/caller,object,location,control,params)
 
-	. = ..()
+/obj/hud/button/close_inventory/proc/close(var/mob/caller)
 
-	if(. && is_advanced(caller))
+	if(is_advanced(caller))
 
 		var/mob/living/advanced/A = caller
 
-		for(var/obj/hud/inventory/I in A.inventory)
+		for(var/k in A.inventory)
+			var/obj/hud/inventory/I = k
 			if(!(I.flags & FLAGS_HUD_CONTAINER))
 				continue
 			animate(I,alpha=0,time=4)
@@ -28,6 +28,15 @@
 
 		animate(src,alpha=0,time=4)
 		src.mouse_opacity = 0
+
+	return TRUE
+
+/obj/hud/button/close_inventory/clicked_on_by_object(var/mob/caller,var/atom/object,location,control,params)
+
+	. = ..()
+
+	if(.)
+		close(caller)
 
 	return .
 
@@ -46,7 +55,7 @@
 	screen_loc = "CENTER+1.5,BOTTOM"
 	left = 1
 
-/obj/hud/button/drop/clicked_on_by_object(var/mob/caller,object,location,control,params)
+/obj/hud/button/drop/clicked_on_by_object(var/mob/caller,var/atom/object,location,control,params)
 
 	if(!is_advanced(caller))
 		return TRUE
@@ -55,11 +64,11 @@
 
 	if(left)
 		if(A.left_hand)
-			A.left_hand.drop_held_objects(A.loc)
+			A.left_hand.drop_objects(A.loc)
 
 	else
 		if(A.right_hand)
-			A.right_hand.drop_held_objects(A.loc)
+			A.right_hand.drop_objects(A.loc)
 
 	return TRUE
 */
@@ -75,7 +84,7 @@
 
 	has_quick_function = FALSE
 
-/obj/hud/button/hide_show_inventory/clicked_on_by_object(var/mob/caller,object,location,control,params)
+/obj/hud/button/hide_show_inventory/clicked_on_by_object(var/mob/caller,var/atom/object,location,control,params)
 
 	. = ..()
 

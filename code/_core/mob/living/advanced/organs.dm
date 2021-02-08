@@ -1,11 +1,16 @@
 /mob/living/advanced/proc/remove_organ(var/obj/item/organ/O,var/do_delete = FALSE)
 
 	if(length(O.inventories))
-		for(var/obj/hud/inventory/I in O.inventories)
-			I.remove_all_objects()
+		for(var/k in O.inventories)
+			var/obj/hud/inventory/I = k
+			I.delete_objects()
 			I.remove_from_owner()
 
-	remove_overlay("\ref[O]")
+	if(is_tail(O))
+		remove_overlay("tail_behind")
+		remove_overlay("tail_front")
+	else
+		remove_overlay("\ref[O]")
 	organs -= O
 	labeled_organs -= O.id
 
@@ -14,23 +19,15 @@
 
 	O.on_organ_remove(src)
 
-/mob/living/advanced/proc/remove_all_organs()
+/mob/living/advanced/proc/remove_all_organs(var/do_delete=TRUE)
 
-	for(var/obj/item/organ/O in organs)
-		remove_organ(O,TRUE)
-
-
-/*
-/mob/living/advanced/proc/update_all_organs()
-	labeled_organs = list()
-	for(var/obj/item/organ/O in organs)
-		if(O.id)
-			labeled_organs[O.id] = O
-*/
+	for(var/k in organs)
+		var/obj/item/organ/O = k
+		remove_organ(O,do_delete)
 
 /mob/living/advanced/proc/add_species_organs()
 
-	var/species/S = all_species[species]
+	var/species/S = SPECIES(species)
 
 	if(!S)
 		log_error("WARNING: INVALID SPECIES: [species].")
@@ -87,6 +84,7 @@
 
 	if(initialize)
 		INITIALIZE(O)
+		FINALIZE(O)
 
 	if(is_tail(O))
 		add_overlay_tracked("tail_behind",O,desired_layer = LAYER_MOB_TAIL_BEHIND, desired_icon_state = "tail_behind")

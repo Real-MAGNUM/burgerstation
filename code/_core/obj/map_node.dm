@@ -2,7 +2,6 @@ var/global/list/obj/marker/map_node/all_map_nodes = list()
 
 var/global/mob/abstract/node_checker
 
-
 /mob/abstract/node_checker
 	name = "node checker"
 	collision_flags = FLAG_COLLISION_WALKING
@@ -13,14 +12,12 @@ var/global/mob/abstract/node_checker
 	alpha        = 0
 	opacity      = 0
 	see_in_dark  = 1e6 // Literally arbitrary.
+	density = TRUE
 
-
-/mob/abstract/node_checker/New(var/desired_loc)
-	node_checker = src
+/mob/abstract/node_checker/Bump(atom/Obstacle)
+	if(istype(Obstacle,/obj/structure/interactive/door))
+		return TRUE
 	return ..()
-
-/mob/abstract/node_checker/Bump(atom/movable/O)
-	return !isturf(O) && !is_wall(O)
 
 /obj/marker/map_node
 	name = "map node"
@@ -28,6 +25,16 @@ var/global/mob/abstract/node_checker
 	icon_state = "path"
 	var/list/adjacent_map_nodes = list()
 	invisibility = 0
+	anchored = TRUE
+
+/obj/marker/map_node/get_examine_list(var/mob/examiner)
+	. = ..()
+
+	for(var/k in adjacent_map_nodes)
+		var/obj/marker/map_node/MN = adjacent_map_nodes[k]
+		. += div("notice",MN.get_debug_name())
+
+	return .
 
 /obj/marker/map_node/New(var/desired_loc)
 	plane = PLANE_HIDDEN
@@ -39,7 +46,7 @@ var/global/mob/abstract/node_checker
 
 	var/found = FALSE
 
-	for(var/obj/marker/map_node/M in oview(VIEW_RANGE*2,src))
+	for(var/obj/marker/map_node/M in orange(VIEW_RANGE,src))
 		var/mob/abstract/node_checker/NC = node_checker
 		NC.loc = src.loc
 		var/invalid = FALSE
@@ -50,15 +57,16 @@ var/global/mob/abstract/node_checker
 				break
 			if(NC.loc == M.loc)
 				break
-			sleep(-1)
 		if(invalid)
 			continue
-		src.adjacent_map_nodes += M
+		var/direction = dir2text(get_dir(src,M))
+		if(src.adjacent_map_nodes[direction] && get_dist(src,M) > get_dist(src,src.adjacent_map_nodes[direction]))
+			continue
+		src.adjacent_map_nodes[direction] = M
 		found = TRUE
 
 	if(!found)
-		var/turf/T = get_turf(src)
-		log_error("WARNING: Node at [T.x], [T.y], [T.z] is invalid!")
+		log_error("Invalid node! [src.get_debug_name()].")
 
 	return found
 
@@ -76,9 +84,10 @@ var/global/list/stored_paths = list()
 	checked_nodes[src] = TRUE
 	current_path += src
 
-	sort_by_closest(adjacent_map_nodes,desired_node)
+	sort_by_closest_assoc(adjacent_map_nodes,desired_node)
 
-	for(var/obj/marker/map_node/M in adjacent_map_nodes)
+	for(var/k in adjacent_map_nodes)
+		var/obj/marker/map_node/M = adjacent_map_nodes[k]
 		if(M == desired_node)
 			return current_path
 		if(checked_nodes[M])
@@ -93,7 +102,34 @@ var/global/list/stored_paths = list()
 
 	return null
 
-/proc/find_closest_node(var/atom/A,var/distance = VIEW_RANGE,var/debug = FALSE)
+/proc/get_obstructions(var/turf/point_A,var/turf/point_B)
+
+	. = list()
+
+	if(!point_A || !point_B)
+		return .
+
+	var/mob/abstract/node_checker/NC = new /mob/abstract/node_checker(point_A)
+	var/limit = 10
+	while(NC.loc != point_B && limit > 0)
+		limit--
+		CHECK_TICK(75,FPS_SERVER)
+		var/desired_dir = get_dir(NC,point_B)
+		var/turf/T = get_step(NC,desired_dir)
+		if(!T.Enter(NC,NC.loc))
+			. |= T
+		for(var/k in T.contents)
+			var/atom/movable/M = k
+			if(!M.Cross(NC))
+				. |= M
+		NC.loc = T
+
+	qdel(NC)
+
+	return .
+
+
+/proc/find_closest_node(var/atom/A,var/distance = VIEW_RANGE)
 
 	var/obj/marker/map_node/best_node = null
 	var/best_distance = INFINITY

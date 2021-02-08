@@ -18,7 +18,7 @@ var/global/list/obj/hud/button/color_scheme_buttons = list(
 
 	interaction_flags = FLAG_INTERACTION_LIVING | FLAG_INTERACTION_DEAD | FLAG_INTERACTION_NO_DISTANCE
 
-/obj/hud/button/close_color_scheme/clicked_on_by_object(var/mob/caller,object,location,control,params)
+/obj/hud/button/close_color_scheme/clicked_on_by_object(var/mob/caller,var/atom/object,location,control,params)
 
 	. = ..()
 
@@ -36,7 +36,7 @@ var/global/list/obj/hud/button/color_scheme_buttons = list(
 
 	has_quick_function = FALSE
 
-/obj/hud/button/default_color_scheme/clicked_on_by_object(var/mob/caller,object,location,control,params)
+/obj/hud/button/default_color_scheme/clicked_on_by_object(var/mob/caller,var/atom/object,location,control,params)
 
 	. = ..()
 
@@ -44,14 +44,16 @@ var/global/list/obj/hud/button/color_scheme_buttons = list(
 		var/mob/living/advanced/A = caller
 		A.client.settings.loaded_data["hud_colors"] = DEFAULT_COLORS
 
-		for(var/obj/hud/button/B in A.buttons)
+		for(var/k in A.buttons)
+			var/obj/hud/button/B = k
 			B.update_sprite()
 
 		for(var/k in A.health_elements)
 			var/obj/hud/button/B = A.health_elements[k]
 			B.update_sprite()
 
-		for(var/obj/hud/inventory/I in A.inventory)
+		for(var/k in A.inventory)
+			var/obj/hud/inventory/I = k
 			I.update_sprite()
 
 		A.client.update_window()
@@ -73,7 +75,7 @@ var/global/list/obj/hud/button/color_scheme_buttons = list(
 
 	has_quick_function = FALSE
 
-/obj/hud/button/color_scheme/clicked_on_by_object(var/mob/caller,object,location,control,params)
+/obj/hud/button/color_scheme/clicked_on_by_object(var/mob/caller,var/atom/object,location,control,params)
 
 	. = ..()
 
@@ -83,14 +85,16 @@ var/global/list/obj/hud/button/color_scheme_buttons = list(
 		if(desired_color)
 			A.client.settings.loaded_data["hud_colors"][color_id] = desired_color
 
-			for(var/obj/hud/button/B in A.buttons)
+			for(var/k in A.buttons)
+				var/obj/hud/button/B = k
 				B.update_sprite()
 
 			for(var/k in A.health_elements)
 				var/obj/hud/button/B = A.health_elements[k]
 				B.update_sprite()
 
-			for(var/obj/hud/inventory/I in A.inventory)
+			for(var/k in A.inventory)
+				var/obj/hud/inventory/I = k
 				I.update_sprite()
 
 			A.client.update_window()

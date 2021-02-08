@@ -1,4 +1,3 @@
-
 /damagetype/ranged/
 	name = "ranged weapon"
 
@@ -31,15 +30,11 @@
 
 	attribute_damage = list()
 
-	bonus_experience = list(
-		SKILL_RANGED = 100 //100%
-	)
-
 	skill_damage = list()
 
 	throw_mul = 0.25
 
-	allow_parry = FALSE
+	can_be_parried = FALSE
 
 /damagetype/ranged/get_block_power_penetration(var/atom/attacker,var/atom/victim,var/atom/weapon,var/atom/hit_object)
 	return 0.5
@@ -47,8 +42,8 @@
 /damagetype/ranged/get_attack_type()
 	return ATTACK_TYPE_RANGED
 
-/damagetype/ranged/do_attack_animation(var/atom/attacker,var/atom/victim,var/atom/weapon,var/atom/hit_object,var/was_critical_hit)
-	return
+/damagetype/ranged/do_attack_animation(var/atom/attacker,var/atom/victim,var/atom/weapon,var/atom/hit_object)
+	return FALSE
 
 /*
 /damagetype/ranged/get_attack_message_3rd(var/atom/attacker,var/atom/victim,var/atom/weapon,var/atom/hit_object)

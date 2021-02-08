@@ -23,13 +23,17 @@
 	screen_loc = "CENTER+2,TOP-3"
 
 
-/obj/hud/button/crafting/craft/clicked_on_by_object(var/mob/caller,object,location,control,params)
+/obj/hud/button/crafting/craft/clicked_on_by_object(var/mob/caller,var/atom/object,location,control,params)
 
 	. = ..()
 
-	if(. && is_advanced(caller) && stored_crafting_table)
+	if(. && is_advanced(caller))
 		var/mob/living/advanced/A = caller
-		stored_crafting_table.attempt_to_craft(A)
+		if(stored_crafting_table)
+			stored_crafting_table.attempt_to_craft(A)
+		else
+			log_error("Warning: [A.get_debug_name()] tried to craft without a stored crafting table!")
+
 
 	return .
 
@@ -38,7 +42,7 @@
 	icon_state = "close_crafting"
 	screen_loc = "CENTER-2,TOP-3"
 
-/obj/hud/button/crafting/close/clicked_on_by_object(var/mob/caller,object,location,control,params)
+/obj/hud/button/crafting/close/clicked_on_by_object(var/mob/caller,var/atom/object,location,control,params)
 
 	. = ..()
 
@@ -52,5 +56,6 @@
 		for(var/obj/hud/button/crafting/B in A.buttons)
 			animate(B,alpha=0,time=4)
 			B.mouse_opacity = 0
+			B.stored_crafting_table = null
 
 	return .

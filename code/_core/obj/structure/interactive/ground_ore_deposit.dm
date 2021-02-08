@@ -1,28 +1,36 @@
 /obj/structure/interactive/ground_ore_deposit
 	name = "deep ore deposit"
-	icon = 'icons/lighting.dmi'
-	icon_state = "white"
+	icon = 'icons/obj/structure/ore.dmi'
+	icon_state = "deposit"
 	var/ore_score = 1
-	//invisibility = 101
 	var/material_id
-	plane = PLANE_OBJ
-	layer = LAYER_FLOOR_DECAL
+	plane = PLANE_FLOOR
+	layer = 0
 	initialize_type = INITIALIZE_LATE
 
+	desired_light_range = 1
+	desired_light_power = 0.25
+	desired_light_color = "#FFFFFF"
+
 /obj/structure/interactive/ground_ore_deposit/Initialize(var/desired_loc)
+
+	if(!istype(loc,/turf/simulated/floor/))
+		qdel(src)
+		return TRUE
 
 	. = ..()
 
 	if(ore_score > 10)
-		for(var/turf/simulated/floor/T in orange(1,src))
+		for(var/turf/simulated/floor/T in orange(1,src)) //Floors only. Yes it can spawn on tiles and reinforced plating, but that's fine.
 			if(locate(/obj/structure/interactive/ground_ore_deposit/) in T.contents)
 				continue
-			if(prob(50 + ore_score))
+			if(prob(25 + ore_score))
 				var/obj/structure/interactive/ground_ore_deposit/GOD = new(T)
 				GOD.material_id = material_id
 				GOD.ore_score = ore_score * RAND_PRECISE(0.1,0.75)
 				GOD.initialize_type = INITIALIZE_NONE
 				INITIALIZE(GOD)
+				FINALIZE(GOD)
 
 	return .
 /obj/structure/interactive/ground_ore_deposit/PostInitialize()
@@ -39,11 +47,12 @@
 	O.material_id = src.material_id
 	INITIALIZE(O)
 	GENERATE(O)
+	FINALIZE(O)
 	var/obj/structure/interactive/ore_box/OB = locate() in range(1,src)
 	if(OB)
-		O.force_move(OB)
+		O.drop_item(OB)
 	else
-		O.force_move(get_step(src,pick(DIRECTIONS_ALL)))
+		O.drop_item(get_step(src,pick(DIRECTIONS_ALL)))
 	if(ore_score <= 0)
 		qdel(src)
 	update_sprite()
@@ -54,13 +63,29 @@
 	. += div("notice","The meter detects an ore concentration of [ore_score]%.")
 	return .
 
-/obj/structure/interactive/ground_ore_deposit/update_icon()
-	var/color_mod = (clamp(ore_score,0,100)/100)*255
-	color = rgb(255 - color_mod,color_mod,0)
-	return ..()
+/obj/structure/interactive/ground_ore_deposit/update_sprite()
+
+	. = ..()
+
+	var/material/M = SSmaterials.all_materials[material_id]
+
+	if(!M)
+		log_error("Warning: Material id [material_id] does not exist for ground deposit!")
+		return .
+
+
+	if(M.icon_state_ore_deposit)
+		icon_state = M.icon_state_ore_deposit
+		color = "#FFFFFF"
+	else
+		icon_state = "deposit"
+		color = M.color
+
+	alpha = min(40 + (ore_score/100)*255,255)
+
+	return .
 
 /obj/structure/interactive/ground_ore_deposit/map
-	color = "#00FF00"
 	ore_score = 200
 
 /obj/structure/interactive/ground_ore_deposit/map/iron
@@ -83,7 +108,6 @@
 	)
 
 	var/material_to_choose = pickweight(possible_materials)
-
 	material_id = material_to_choose
 	ore_score *= possible_materials[material_to_choose]/100
 

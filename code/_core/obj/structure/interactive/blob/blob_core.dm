@@ -1,7 +1,7 @@
 /obj/structure/interactive/blob/core
 	name = "blob core"
 	icon_state = "core"
-	health_base = 1000
+	health_base = 500
 	var/list/obj/structure/interactive/blob/linked_walls = list()
 	var/list/obj/structure/interactive/blob/node/linked_nodes = list()
 	var/list/obj/structure/interactive/blob/damaged_walls = list()
@@ -21,11 +21,8 @@
 		var/turf/T = get_step(src,d)
 		var/obj/structure/interactive/blob/node/N = new(T,src)
 		INITIALIZE(N)
+		FINALIZE(N)
 		linked_nodes += N
-
-	SShorde.tracked_objectives += src
-	if(SShorde.state == HORDE_STATE_FIGHTING)
-		SShorde.update_objectives()
 
 	return ..()
 
@@ -36,11 +33,9 @@
 
 /obj/structure/interactive/blob/core/Destroy()
 
-	if(src in SShorde.tracked_objectives)
-		SShorde.queue_objectives_update()
-
-	for(var/obj/structure/interactive/blob/B in linked_walls)
-		B.health.adjust_brute_loss(max(0,B.health.health_current - 10))
+	for(var/k in linked_walls)
+		var/obj/structure/interactive/blob/B = k
+		B.health.adjust_loss_smart(brute=max(0,B.health.health_current - 1))
 		B.health.update_health()
 		B.color = null
 
@@ -53,13 +48,14 @@
 	. = list()
 
 	if(length(linked_walls))
-		for(var/list/obj/structure/interactive/blob/B in linked_walls)
+		for(var/k in linked_walls)
+			var/list/obj/structure/interactive/blob/B = k
 			for(var/d in DIRECTIONS_CARDINAL)
 				var/turf/T = get_step(B,d)
 				if(!T)
 					continue
 				var/obj/structure/interactive/blob/B2 = locate() in T.contents
-				if(!B2 && !is_wall(T))
+				if(!B2 && !is_wall(T) && !istype(T,/turf/simulated/hazard/))
 					. += T
 
 	for(var/d in DIRECTIONS_CARDINAL)
@@ -67,7 +63,7 @@
 		if(!T)
 			continue
 		var/obj/structure/interactive/blob/B = locate() in T.contents
-		if(!B && !is_wall(T))
+		if(!B && !is_wall(T) && !istype(T,/turf/simulated/hazard/))
 			. += T
 
 	return .
@@ -84,7 +80,7 @@
 			return ..()
 		var/list/valid_turfs = get_valid_turfs()
 		for(var/i=1,i<=CEILING(length(linked_nodes),1),i++)
-			CHECK_TICK
+			CHECK_TICK(75,0)
 			var/obj/structure/interactive/blob/node/N = linked_nodes[i]
 			if(N.check_jugs())
 				resources_to_spend -= 5
@@ -100,10 +96,12 @@
 				var/obj/structure/interactive/blob/node/B = new(F,src)
 				resources_to_spend -= 5
 				INITIALIZE(B)
+				FINALIZE(B)
 			else
 				var/obj/structure/interactive/blob/wall/B = new(F,src)
 				resources_to_spend -= 1
 				INITIALIZE(B)
+				FINALIZE(B)
 			valid_turfs -= F
 
 	return ..()

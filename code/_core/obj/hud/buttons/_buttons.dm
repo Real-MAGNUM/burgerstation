@@ -66,7 +66,7 @@
 	update_sprite()
 	return TRUE
 
-/obj/hud/button/clicked_on_by_object(var/mob/caller,object,location,control,params)
-	play('sound/ui/tap-muted.ogg',caller, sound_setting = SOUND_SETTING_UI)
+/obj/hud/button/clicked_on_by_object(var/mob/caller,var/atom/object,location,control,params)
+	play_sound_target('sound/ui/tap-muted.ogg',caller, sound_setting = SOUND_SETTING_UI)
 	INTERACT_CHECK
 	return TRUE

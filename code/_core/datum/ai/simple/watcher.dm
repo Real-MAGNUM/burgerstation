@@ -1,5 +1,4 @@
 /ai/watcher
-	var/mob/living/simple/npc/watcher/owner_as_watcher
 	attack_distance_min = 4
 	attack_distance_max = 8
 
@@ -23,8 +22,32 @@
 		return FALSE
 
 	if(projectile_count > 0)
-		play('sound/weapons/freeze.ogg',get_turf(owner))
+		play_sound('sound/weapons/freeze.ogg',get_turf(owner))
 		owner.shoot_projectile(owner,objective_attack,null,null,/obj/projectile/magic/crystal/ice,/damagetype/ranged/laser/freezegun,16,16,0,TILE_SIZE*0.5,1,"#FFFFFF",0,0,1,owner.iff_tag,owner.loyalty_tag)
+		owner.set_dir(get_dir(owner,objective_attack))
+		projectile_count--
+	else
+		projectile_count = initial(projectile_count)
+		projectile_delay = initial(projectile_delay)
+
+	return TRUE
+
+/ai/watcher/clockwork
+	projectile_count = 3
+	projectile_delay = SECONDS_TO_DECISECONDS(2)
+
+/ai/watcher/clockwork/handle_projectiles()
+
+	if(!objective_attack)
+		return FALSE
+
+	if(projectile_delay > 0)
+		projectile_delay--
+		return FALSE
+
+	if(projectile_count > 0)
+		play_sound('sound/weapons/freeze.ogg',get_turf(owner))
+		owner.shoot_projectile(owner,objective_attack,null,null,/obj/projectile/bullet/laser,/damagetype/ranged/laser/rifle,16,16,0,TILE_SIZE*0.9,1,"#FF0000",0,0,1,owner.iff_tag,owner.loyalty_tag)
 		owner.set_dir(get_dir(owner,objective_attack))
 		projectile_count--
 	else

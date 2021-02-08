@@ -1,8 +1,9 @@
 SUBSYSTEM_DEF(hook)
-	name = "Enviromental Hazard Subsystem"
-	desc = "Controls hazards, like extreme cold or extreme heat."
-	tick_rate = DECISECONDS_TO_TICKS(1)
-	priority = SS_ORDER_IMPORTANT
+	name = "Hook Subsystem"
+	desc = "Controls the callback of hooks and whatnot."
+	priority = SS_ORDER_FIRST
+
+	//We don't really need a subsystem for this but whatever.
 
 //GMOD, anyone? Doesn't need a priority var as people should just add/overwrite the proc it calls.
 //Adds a hook to an event.
@@ -57,7 +58,7 @@ SUBSYSTEM_DEF(hook)
 		var/list/list_info = datum_to_use.hooks[event_name][identifier]
 		var/proc_owner = list_info[1]
 		var/proc_to_use = list_info[2]
-		call(proc_owner,proc_to_use)(args)
+		call(proc_owner,proc_to_use)(datum_to_use,args)
 		total_calls++
 
 	return total_calls

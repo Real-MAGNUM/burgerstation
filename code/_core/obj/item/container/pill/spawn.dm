@@ -19,6 +19,20 @@
 	reagents.add_reagent(/reagent/medicine/dylovene,20)
 	return ..()
 
+/obj/item/container/pill/calomel
+	name = "calomel pill (20u)"
+
+/obj/item/container/pill/calomel/Generate()
+	reagents.add_reagent(/reagent/medicine/purge,20)
+	return ..()
+
+/obj/item/container/pill/charcoal
+	name = "charcoal pill (20u)"
+
+/obj/item/container/pill/charcoal/Generate()
+	reagents.add_reagent(/reagent/medicine/charcoal,20)
+	return ..()
+
 /obj/item/container/pill/iron
 	name = "iron pill (20u)"
 
@@ -49,4 +63,11 @@
 
 /obj/item/container/pill/omnizine/Generate()
 	reagents.add_reagent(/reagent/medicine/omnizine,20)
+	return ..()
+
+/obj/item/container/pill/antihol
+	name = "antihol pill (20u)"
+
+/obj/item/container/pill/antihol/Generate()
+	reagents.add_reagent(/reagent/medicine/antihol,20)
 	return ..()

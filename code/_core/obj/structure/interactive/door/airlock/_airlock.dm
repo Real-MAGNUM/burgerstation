@@ -30,7 +30,29 @@
 
 	var/safeties = TRUE
 
+	health = /health/construction/
+
+	health_base = 500
+
+/obj/structure/interactive/door/airlock/locked
+	locked = TRUE
+
+/obj/structure/interactive/door/airlock/on_destruction(var/mob/caller,var/damage = FALSE)
+	if(door_state == DOOR_STATE_BROKEN)
+		set_door_state(caller,DOOR_STATE_BROKEN,TRUE)
+		health.restore()
+		return ..()
+	else
+		. = ..()
+		qdel(src)
+		return .
+
+
+
 /obj/structure/interactive/door/airlock/trigger(var/mob/caller,var/atom/source,var/signal_freq,var/signal_code)
+
+	if(door_state == DOOR_STATE_BROKEN)
+		return FALSE
 
 	if(door_state == DOOR_STATE_CLOSED)
 		if(locked)
@@ -44,6 +66,12 @@
 	return TRUE
 
 /obj/structure/interactive/door/airlock/think()
+
+	if(door_state == DOOR_STATE_BROKEN)
+		return FALSE
+
+	if(!loc)
+		return FALSE
 
 	if(door_state == DOOR_STATE_OPENED)
 		opened_time += 1
@@ -65,7 +93,10 @@
 
 	return TRUE
 
-obj/structure/interactive/door/airlock/open(var/atom/caller,var/lock = FALSE,var/force = FALSE)
+obj/structure/interactive/door/airlock/open(var/mob/caller,var/lock = FALSE,var/force = FALSE)
+
+	if(door_state == DOOR_STATE_BROKEN)
+		return FALSE
 
 	if(!force)
 		if(locked || no_access)
@@ -83,7 +114,10 @@ obj/structure/interactive/door/airlock/open(var/atom/caller,var/lock = FALSE,var
 	set_door_state(caller,DOOR_STATE_START_OPENING,lock)
 	return TRUE
 
-obj/structure/interactive/door/airlock/close(var/atom/caller,var/lock = FALSE,var/force = FALSE)
+obj/structure/interactive/door/airlock/close(var/mob/caller,var/lock = FALSE,var/force = FALSE)
+
+	if(door_state == DOOR_STATE_BROKEN)
+		return FALSE
 
 	if(!force)
 		if(locked)
@@ -100,10 +134,10 @@ obj/structure/interactive/door/airlock/close(var/atom/caller,var/lock = FALSE,va
 	set_door_state(caller,DOOR_STATE_CLOSING_01,lock)
 	return TRUE
 
-/obj/structure/interactive/door/proc/set_door_state(var/atom/caller=null,var/desired_door_state,var/should_lock=FALSE)
+/obj/structure/interactive/door/proc/set_door_state(var/mob/caller=null,var/desired_door_state,var/should_lock=FALSE)
 	return TRUE
 
-/obj/structure/interactive/door/airlock/set_door_state(var/atom/caller=null,var/desired_door_state,var/should_lock=FALSE)
+/obj/structure/interactive/door/airlock/set_door_state(var/mob/caller=null,var/desired_door_state,var/should_lock=FALSE)
 
 	door_state = desired_door_state
 	update_sprite()
@@ -112,14 +146,14 @@ obj/structure/interactive/door/airlock/close(var/atom/caller,var/lock = FALSE,va
 		if(DOOR_STATE_DENY)
 			CALLBACK("door_state_\ref[src]",6,src,.proc/set_door_state,caller,DOOR_STATE_CLOSED,should_lock)
 			if(deny_sound)
-				play(deny_sound, src)
-				if(caller) create_alert(VIEW_RANGE,src,caller,ALERT_LEVEL_NOISE)
+				play_sound(deny_sound, src.loc,range_max=VIEW_RANGE)
+				if(caller) create_alert(VIEW_RANGE,src.loc,caller,ALERT_LEVEL_NOISE)
 
 		if(DOOR_STATE_START_OPENING)
 			CALLBACK("door_state_\ref[src]",open_wait_time,src,.proc/set_door_state,caller,DOOR_STATE_OPENING_01,should_lock)
 			if(open_sound)
-				play(open_sound, src)
-				if(caller) create_alert(VIEW_RANGE,src,caller,ALERT_LEVEL_NOISE)
+				play_sound(open_sound, src.loc,range_max=VIEW_RANGE)
+				if(caller) create_alert(VIEW_RANGE,src.loc,caller,ALERT_LEVEL_NOISE)
 
 		if(DOOR_STATE_OPENING_01)
 			CALLBACK("door_state_\ref[src]",open_time_01,src,.proc/set_door_state,caller,DOOR_STATE_OPENING_02,should_lock)
@@ -130,8 +164,8 @@ obj/structure/interactive/door/airlock/close(var/atom/caller,var/lock = FALSE,va
 		if(DOOR_STATE_CLOSING_01)
 			CALLBACK("door_state_\ref[src]",close_time_01,src,.proc/set_door_state,caller,DOOR_STATE_CLOSING_02,should_lock)
 			if(close_sound)
-				play(close_sound, src)
-				if(caller) create_alert(VIEW_RANGE,src,caller,ALERT_LEVEL_NOISE)
+				play_sound(close_sound, src.loc,range_max=VIEW_RANGE)
+				if(caller) create_alert(VIEW_RANGE,src.loc,caller,ALERT_LEVEL_NOISE)
 
 		if(DOOR_STATE_CLOSING_02)
 			var/has_living = FALSE
@@ -141,7 +175,7 @@ obj/structure/interactive/door/airlock/close(var/atom/caller,var/lock = FALSE,va
 					break
 				else
 					for(var/d in DIRECTIONS_ALL)
-						if(L.Move(get_step(L,d),d))
+						if(L.Move(get_step(L,d)))
 							break
 			if(has_living)
 				set_door_state(has_living,DOOR_STATE_OPENING_02,FALSE)
@@ -236,20 +270,32 @@ obj/structure/interactive/door/airlock/close(var/atom/caller,var/lock = FALSE,va
 			light_state = "light_special_static"
 			light_color = "#00FF00"
 
+		if(DOOR_STATE_BROKEN)
+			icon_state = "broken"
+			light_state = "broken_light"
+			light_color = "#FF0000"
+			desc = "The door is broken."
+			update_collisions(FLAG_COLLISION_NONE,FLAG_COLLISION_BULLET_NONE,a_dir = 0x0)
+			set_opacity(0)
+
 	if(filler)
 		var/image/fill = new/image(icon,"[icon_state]_[filler]")
 		fill.appearance_flags = RESET_COLOR
 		fill.color = fill_color
+		if(filler == "glass")
+			fill.alpha = 150
 		underlays += fill
 
 	if(panel)
 		var/image/panel = new /image(icon,"[icon_state]_panel")
+		panel.appearance_flags = RESET_COLOR
 		add_overlay(panel)
 
-	var/image/light_fixtures = new /image(icon,light_state)
-	light_fixtures.appearance_flags = RESET_COLOR
-	light_fixtures.color = light_color ? light_color : "#FFFFFF"
-	add_overlay(light_fixtures)
+	if(light_state)
+		var/image/light_fixtures = new /image(icon,light_state)
+		light_fixtures.appearance_flags = RESET_COLOR
+		light_fixtures.color = light_color ? light_color : "#FFFFFF"
+		add_overlay(light_fixtures)
 
 	var/image/frame = new /icon(icon,"frame")
 	add_overlay(frame)
@@ -260,14 +306,14 @@ obj/structure/interactive/door/airlock/close(var/atom/caller,var/lock = FALSE,va
 
 
 
-/obj/structure/interactive/door/airlock/Cross(var/atom/movable/A,var/atom/NewLoc,var/atom/OldLoc)
+/obj/structure/interactive/door/airlock/Cross(atom/movable/O)
 
 	. = ..()
 
-	if(!. && is_living(A) && door_state == DOOR_STATE_CLOSED && door_state != DOOR_STATE_DENY)
-		var/mob/living/L = A
+	if(!. && is_living(O) && door_state == DOOR_STATE_CLOSED && door_state != DOOR_STATE_DENY)
+		var/mob/living/L = O
 		if(!L.dead)
-			open(A)
+			open(L)
 
 	return .
 

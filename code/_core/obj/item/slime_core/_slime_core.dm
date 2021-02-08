@@ -8,23 +8,28 @@
 
 	value = 3
 
+	weight = 0.25
+
 /obj/item/slime_core/New(var/desired_loc)
 	generate_name()
 	return ..()
 
 /obj/item/slime_core/click_on_object(var/mob/caller as mob,var/atom/object,location,control,params)
 
-	object = object.defer_click_on_object(location,control,params)
+
 
 	if(is_item(object))
+		INTERACT_CHECK
+		INTERACT_CHECK_OBJECT
+		INTERACT_DELAY(1)
 		var/obj/item/I = object
-		if(I.dye_self(caller,src,src.color,alpha/255))
-			return TRUE
+		I.dye_self(caller,src,src.color,alpha/255)
+		return TRUE
 
 	return ..()
 
 
-/obj/item/slime_core/calculate_value()
+/obj/item/slime_core/get_value()
 	return ..() * (1 + (alpha/255)) ** 2
 
 /obj/item/slime_core/proc/generate_name()
@@ -45,13 +50,15 @@
 	alpha = 255
 
 /obj/item/slime_core/custom/click_self(var/mob/caller)
+	INTERACT_CHECK
+	INTERACT_DELAY(10)
 	var/choice = input("What would you like the color to be?") as color|null
 	if(choice)
 		color = choice
 		update_sprite()
 	return TRUE
 
-/obj/item/slime_core/calculate_value()
+/obj/item/slime_core/get_value()
 	return value
 
 /obj/item/slime_core/red

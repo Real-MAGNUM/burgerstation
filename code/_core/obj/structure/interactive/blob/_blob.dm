@@ -7,7 +7,7 @@
 	var/obj/structure/interactive/blob/core/linked_core
 	color = "#80CC2A"
 
-	plane = PLANE_WALL_ATTACHMENTS
+	plane = PLANE_OBJ
 
 	anchored = TRUE
 
@@ -18,18 +18,24 @@
 	damage_type = /damagetype/blob_attack/
 
 	health = /health/construction/
-	health_base = 250
+	health_base = 125
+
+	density = TRUE
 
 	var/health_states = 0
 
-/obj/structure/interactive/blob/on_destruction(var/atom/caller,var/damage = FALSE)
+/obj/structure/interactive/blob/on_destruction(var/mob/caller,var/damage = FALSE)
+	. = ..()
 	qdel(src)
-	return TRUE
+	return .
 
 /obj/structure/interactive/blob/can_attack(var/atom/victim,var/atom/weapon,var/params,var/damagetype/damage_type)
 
+	if(!health || health.health_current <= 0 || !color || color == "#FFFFFF")
+		return FALSE
+
 	if(is_living(victim))
-		if(istype(victim,/mob/living/simple/npc/blobbernaught))
+		if(istype(victim,/mob/living/simple/blobbernaught))
 			return FALSE
 		var/mob/living/L = victim
 		if(L.dead)
@@ -46,6 +52,8 @@
 	for(var/mob/living/L in range(1,src))
 		if(!src.can_attack(L,src,null,damage_type))
 			continue
+		if(!L.can_be_attacked(src,src,null,damage_type))
+			continue
 		src.attack(src,L,precise = TRUE)
 		if(L.loc != src.loc && src.loc.Enter(L,L.loc) && get_dist(linked_core,L) >= get_dist(linked_core,src))
 			L.force_move(src.loc)
@@ -54,7 +62,7 @@
 	if(. && !CALLBACK_EXISTS("check_mobs_\ref[src]"))
 		CALLBACK("check_mobs_\ref[src]",30,src,.proc/check_mobs)
 
-/obj/structure/interactive/blob/Crossed(var/atom/movable/O,var/atom/new_loc,var/atom/old_loc)
+/obj/structure/interactive/blob/Crossed(atom/movable/O)
 	if(is_living(O))
 		check_mobs()
 	return ..()
@@ -76,8 +84,8 @@
 
 	return .
 
-/obj/structure/interactive/blob/Cross(var/atom/movable/O,var/atom/new_loc,var/atom/old_loc)
-	if(istype(O,/mob/living/simple/npc/blobbernaught))
+/obj/structure/interactive/blob/Cross(atom/movable/O)
+	if(istype(O,/mob/living/simple/blobbernaught))
 		return TRUE
 	return ..()
 
@@ -118,12 +126,15 @@
 
 	. = ..()
 
-	var/icon_mul = health && health_states ? FLOOR( (health.health_current / health.health_max) * health_states,1) : 0
-	var/desired_state = "[initial(icon_state)]_[icon_mul]"
-	if(desired_state != icon_state)
-		if(icon_state != initial(icon_state))
-			play(pick('sound/effects/impacts/flesh_01.ogg','sound/effects/impacts/flesh_02.ogg','sound/effects/impacts/flesh_03.ogg'),get_turf(src))
-		icon_state = desired_state
+	var/turf/T = get_turf(src)
+
+	if(T)
+		var/icon_mul = health && health_states ? FLOOR( (health.health_current / health.health_max) * health_states,1) : 0
+		var/desired_state = "[initial(icon_state)]_[icon_mul]"
+		if(desired_state != icon_state)
+			if(icon_state != initial(icon_state))
+				play_sound(pick('sound/effects/impacts/flesh_01.ogg','sound/effects/impacts/flesh_02.ogg','sound/effects/impacts/flesh_03.ogg'),T)
+			icon_state = desired_state
 
 	return .
 

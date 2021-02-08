@@ -11,17 +11,16 @@
 	protected_limbs = list(BODY_HAND_RIGHT)
 
 	defense_rating = list(
-		BLADE = 10,
-		BLUNT = 10,
-		PIERCE = 10,
-		MAGIC = 25,
-		HEAT = 25,
-		COLD = 25,
-		BIO = 10
+		BLADE = AP_DAGGER,
+		BLUNT = AP_DAGGER,
+		PIERCE = AP_DAGGER,
+		ARCANE = AP_SWORD,
+		COLD = AP_DAGGER,
+		BIO = AP_SWORD
 	)
 
 	size = SIZE_1
-	weight = WEIGHT_0
+
 
 	value = 20
 
@@ -46,15 +45,15 @@
 	rarity = RARITY_UNCOMMON
 
 	defense_rating = list(
-		BLADE = 25,
-		BLUNT = 10,
-		PIERCE = 25,
-		LASER = -10,
-		MAGIC = -25,
-		HEAT = 25,
-		COLD = 25,
-		BOMB = 10,
-		BIO = 10
+		BLADE = AP_SWORD,
+		BLUNT = AP_SWORD,
+		PIERCE = AP_SWORD,
+		LASER = -AP_DAGGER,
+		ARCANE = -AP_SWORD,
+		HEAT = AP_SWORD,
+		COLD = AP_SWORD,
+		BOMB = AP_SWORD,
+		BIO = AP_DAGGER
 	)
 
 	protection_cold = list(
@@ -62,7 +61,7 @@
 	)
 
 	size = SIZE_1
-	weight = WEIGHT_2
+
 
 /obj/item/clothing/hands/gloves/colored/combat/left
 	name = "left combat glove"
@@ -83,20 +82,21 @@
 
 /obj/item/clothing/hands/gloves/colored/insulated
 	name = "right insulated glove"
-	desc = "Hack airlocks with theese."
+	desc = "Hack airlocks with these."
 	desc_extended = "Someday, someone declared that the insulated gloves looked like shit. They turned into insulted gloves, but they got over it now. Also has infinite fatigue resist, hell if i know why."
 	color = "#FFFF00"
 	rarity = RARITY_RARE
 
 	defense_rating = list(
-		BLADE = 5,
-		BLUNT = 5,
-		PIERCE = 5,
-		MAGIC = 50,
-		HEAT = 50,
-		COLD = -25,
-		BIO = 10,
-		FATIGUE = INFINITY
+		BLADE = AP_DAGGER,
+		BLUNT = AP_DAGGER,
+		PIERCE = AP_DAGGER,
+		ARCANE = -AP_CLUB,
+		HEAT = AP_AXE,
+		COLD = AP_AXE,
+		BIO = AP_DAGGER,
+		FATIGUE = INFINITY,
+		PAIN = AP_SWORD
 	)
 
 	protection_cold = list(
@@ -104,9 +104,9 @@
 	)
 
 	size = SIZE_1
-	weight = WEIGHT_1
 
-	value = 60
+
+	value = 150
 
 /obj/item/clothing/hands/gloves/colored/insulated/left
 	name = "left insulated glove"
@@ -125,24 +125,22 @@
 		BODY_HAND_RIGHT = 2
 	)
 
-	value = 40
-
 /obj/item/clothing/hands/gloves/colored/padded
-	name = "padded glove"
+	name = "right padded tactical glove"
 	desc = "Be tactical with theese."
 	desc_extended = "A padded glove. Equipped with a fancier icon for extra tactical-ness."
 	icon = 'icons/obj/item/clothing/gloves/padded.dmi'
 	rarity = RARITY_UNCOMMON
 
 	defense_rating = list(
-		BLADE = 25,
-		BLUNT = 25,
-		PIERCE = 25,
-		LASER = -25,
-		MAGIC = -50,
-		HEAT = 50,
-		COLD = 50,
-		BIO = 10
+		BLADE = AP_AXE,
+		BLUNT = AP_AXE,
+		PIERCE = AP_AXE,
+		LASER = -AP_AXE,
+		ARCANE = -AP_CLUB,
+		HEAT = AP_CLUB,
+		COLD = AP_CLUB,
+		BIO = AP_DAGGER
 	)
 
 	protection_cold = list(
@@ -150,10 +148,12 @@
 	)
 
 	size = SIZE_1
-	weight = WEIGHT_1
+
+	value = 120
+
 
 /obj/item/clothing/hands/gloves/colored/padded/left
-	name = "left padded glove"
+	name = "left padded tactical glove"
 	desc = "Be tactical with theese."
 	desc_extended = "A padded glove. Equipped with a fancier texture for extra tactical-ness."
 	icon_state = "inventory_left"

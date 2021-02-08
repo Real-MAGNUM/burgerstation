@@ -1,4 +1,4 @@
-obj/structure/scenery
+/obj/structure/scenery
 	mouse_opacity = 0
 
 obj/structure/scenery/grass_bush
@@ -10,17 +10,11 @@ obj/structure/scenery/grass_bush/New()
 	..()
 	icon_state = "grassybush_[rand(1,4)]"
 
-
-obj/structure/scenery/grass_bush/clicked_on_by_object(caller,object,location,control,params)
-	//Give loot
-
-	return TRUE
-
 obj/structure/scenery/flowers
 	name = "flowers"
 	icon = 'icons/obj/structure/flora/ausflora.dmi'
 	icon_state = "ywflowers_1"
-	layer = LAYER_GROUND_SCENERY
+	layer = LAYER_FLOOR_SCENERY
 
 obj/structure/scenery/flowers/New()
 	..()
@@ -36,7 +30,7 @@ obj/structure/scenery/grass
 	name = "uncut grass"
 	icon = 'icons/obj/structure/flora/ausflora.dmi'
 	icon_state = "sparsegrass_1"
-	layer = LAYER_GROUND_SCENERY
+	layer = LAYER_FLOOR_SCENERY
 
 obj/structure/scenery/grass/New()
 	..()
@@ -50,12 +44,13 @@ obj/structure/scenery/rocks
 	name = "rocks"
 	icon = 'icons/obj/structure/flora/rocks_new.dmi'
 	icon_state = "rock_1"
-	layer = LAYER_GROUND_SCENERY
+	layer = LAYER_FLOOR_SCENERY
 
 obj/structure/scenery/rocks/New()
 	..()
 	icon_state = "rock_[rand(1,10)]"
 
+/*
 obj/structure/scenery/evergreen
 	name = "evergreen tree"
 	icon = 'icons/obj/structure/flora/evergreen.dmi'
@@ -75,6 +70,7 @@ obj/structure/scenery/evergreen
 obj/structure/scenery/evergreen/New()
 	..()
 	icon_state = "evergreen_[rand(1,3)]"
+*/
 
 
 
@@ -128,7 +124,7 @@ obj/structure/scenery/peppermint
 	name = "red peppermint"
 	icon = 'icons/obj/structure/flora/peppermint.dmi'
 	icon_state = "peppermint_red"
-	layer = LAYER_GROUND_SCENERY
+	layer = LAYER_FLOOR_SCENERY
 
 
 obj/structure/scenery/peppermint/green

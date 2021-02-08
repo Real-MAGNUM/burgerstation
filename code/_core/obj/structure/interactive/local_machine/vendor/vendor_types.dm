@@ -1,35 +1,3 @@
-/obj/structure/interactive/vending/ammo
-	name = "ammo vendor"
-	icon_state = "liberationstation"
-
-/obj/structure/interactive/vending/ammo/pistol
-	name = "pistol ammo vendor"
-	stored_types = list(
-		/obj/item/magazine/gyrojet,
-		/obj/item/magazine/smp_9mm,
-		/obj/item/magazine/pistol_12mm/nt,
-		/obj/item/magazine/pistol_10mm,
-		/obj/item/magazine/pistol_9mm,
-	)
-
-/obj/structure/interactive/vending/ammo/auto
-	name = "smg, rifle ammo vendor"
-	stored_types = list(
-		/obj/item/magazine/sniper_762,
-		/obj/item/magazine/lmg_762,
-		/obj/item/magazine/rifle_556,
-		/obj/item/magazine/smg_46
-	)
-
-/obj/structure/interactive/vending/ammo/shotgun
-	name = "shotgun ammo vendor"
-	stored_types = list(
-		/obj/item/bullet_cartridge/shotgun_12/buckshot,
-		/obj/item/bullet_cartridge/shotgun_12/slug,
-		/obj/item/storage/ammo/buckshot,
-		/obj/item/storage/ammo/slug
-	)
-
 /obj/structure/interactive/vending/clothes
 	name = "clothes vendor"
 	icon_state = "clothes"
@@ -66,7 +34,8 @@
 	stored_types = list(
 		/obj/item/clothing/overwear/coat/hoodie,
 		/obj/item/clothing/overwear/coat/labcoat,
-		/obj/item/clothing/overwear/coat/polymorphic
+		/obj/item/clothing/overwear/coat/polymorphic,
+		/obj/item/clothing/overwear/coat/wizard
 	)
 
 
@@ -113,11 +82,12 @@
 	name = "accessories vendor"
 	icon_state = "accessories"
 	stored_types = list(
-		/obj/item/clothing/back/storage/backpack/,
-		/obj/item/clothing/back/storage/dufflebag/,
+		/obj/item/clothing/back/storage/satchel/poly,
+		/obj/item/clothing/back/storage/backpack/poly,
+		/obj/item/clothing/back/storage/dufflebag/poly,
 		/obj/item/clothing/belt/storage/colored,
-		/obj/item/clothing/head/hood/bandana,
-		/obj/item/clothing/head/hood/skimask,
+		/obj/item/clothing/head/hat/bandana,
+		/obj/item/clothing/head/hat/skimask,
 		/obj/item/clothing/neck/cape,
 		/obj/item/clothing/neck/cloak,
 		/obj/item/clothing/neck/tie,
@@ -146,23 +116,33 @@
 	name = "medicine vendor"
 	icon_state = "med"
 	stored_types = list(
+		/obj/item/analyzer/health,
 		/obj/item/container/medicine/bandage,
 		/obj/item/container/medicine/ointment,
 		/obj/item/container/medicine/trauma_kit,
 		/obj/item/container/medicine/burn_kit,
 		/obj/item/container/spray/silver_sulfadiazine,
 		/obj/item/container/spray/styptic_powder,
-		/obj/item/container/syringe/epinephrine,
-		/obj/item/storage/pillbottle/iron_small,
+		/obj/item/container/syringe,
+		/obj/item/container/beaker/bottle/epinephrine,
+		/obj/item/container/beaker/bottle/calomel,
+		/obj/item/container/beaker/bottle/charcoal,
+		/obj/item/container/beaker/vial/zombie_antidote,
+		/obj/item/storage/pillbottle/bicaridine_small,
 		/obj/item/storage/pillbottle/kelotane_small,
 		/obj/item/storage/pillbottle/dylovene_small,
-		/obj/item/storage/pillbottle/bicaridine_small
+		/obj/item/storage/pillbottle/iron_small,
+		/obj/item/storage/pillbottle/antihol_small,
+		/obj/item/container/blood_pack/full/o_negative,
+		/obj/item/container/blood_pack/full/reptile,
+		/obj/item/container/medicine/nanopaste
 	)
 
 /obj/structure/interactive/vending/medical/chemistry
 	name = "chemistry vendor"
 	icon_state = "chem"
 	stored_types = list(
+		/obj/item/paper/book/chemistry,
 		/obj/item/storage/bags/chemistry,
 		/obj/item/storage/pillbottle,
 		/obj/item/container/syringe,
@@ -171,8 +151,7 @@
 		/obj/item/container/beaker/bottle,
 		/obj/item/container/beaker,
 		/obj/item/container/beaker/large,
-		/obj/item/crafting/alchemy,
-		/obj/item/crafting/pill_press
+		/obj/item/container/blood_pack/
 	)
 
 /obj/structure/interactive/vending/medical/wardrobe
@@ -187,85 +166,67 @@
 		/obj/item/storage/glovebox/white
 	)
 
-
-
-/obj/structure/interactive/vending/engineering
-	name = "engineering vendor"
-	icon_state = "engivend"
-
-/obj/structure/interactive/vending/engineering/tool
-	name = "tool vendor"
-	icon_state = "tool"
-	stored_types = list(
-		/obj/item/weapon/melee/toolbox/blue,
-		/obj/item/weapon/melee/toolbox/red,
-		/obj/item/weapon/melee/toolbox/green,
-		/obj/item/weapon/melee/toolbox/yellow,
-		/obj/item/weapon/melee/tool/crowbar,
-		/obj/item/weapon/melee/tool/multitool,
-		/obj/item/weapon/melee/tool/screwdriver,
-		/obj/item/weapon/melee/tool/wirecutters,
-		/obj/item/weapon/melee/tool/wrench,
-		/obj/item/weapon/melee/torch/flashlight
-	)
-
-
-/obj/structure/interactive/vending/engineering/material
-	name = "material vendor"
-	icon_state = "engivend"
-	stored_types = list(
-		/obj/item/material/sheet/steel/spawn_50,
-		/obj/item/material/sheet/glass/spawn_50
-
-	)
-
-/obj/structure/interactive/vending/engineering/engidrobe
-	name = "engineering clothing vendor"
-	icon_state = "engidrobe"
-	stored_types = list(
-		/obj/item/clothing/feet/socks/knee,
-		/obj/item/clothing/underbottom/underwear/boxers/engineering,
-		/obj/item/clothing/undertop/underwear/shirt,
-		/obj/item/clothing/pants/normal/engineering,
-		/obj/item/clothing/shirt/normal/engineering
-	)
-
-
 /obj/structure/interactive/vending/robotics
 	name = "robotics vendor"
-	icon_state = "robotics"
+
+/*
+/obj/structure/interactive/vending/robotics/mech_gun_fabricator
+	name = "mech fabricator"
+	icon_state = "mech"
+	stored_types = list(
+		/obj/item/mech_part/equipment/weapon/smg,
+		/obj/item/mech_part/equipment/weapon/rifle,
+		/obj/item/mech_part/equipment/weapon/laser,
+		/obj/item/mech_part/equipment/weapon/ion,
+		/obj/item/mech_part/equipment/weapon/missile_pod,
+
+		/obj/item/mech_part/legs/loader,
+		/obj/item/mech_part/legs/light,
+		/obj/item/mech_part/legs/combat,
+		/obj/item/mech_part/legs/heavy,
+		/obj/item/mech_part/legs/spiderlegs,
+		/obj/item/mech_part/legs/tracks,
+
+		/obj/item/mech_part/body/loader,
+		/obj/item/mech_part/body/light,
+		/obj/item/mech_part/body/combat,
+		/obj/item/mech_part/body/heavy,
+		/obj/item/mech_part/body/pod,
+
+		/obj/item/mech_part/head/light,
+		/obj/item/mech_part/head/combat,
+		/obj/item/mech_part/head/heavy,
+
+		/obj/item/mech_part/arms/loader,
+		/obj/item/mech_part/arms/light,
+		/obj/item/mech_part/arms/combat,
+		/obj/item/mech_part/arms/heavy,
+
+		/obj/item/weapon/melee/tool/wrench,
+		/obj/item/weapon/melee/tool/screwdriver,
+		/obj/item/weapon/melee/tool/multitool,
+		/obj/item/powercell/vehicle
+	)
+*/
 
 /obj/structure/interactive/vending/chaplain/wardrobe
 	name = "chaplain wardrobe vendor"
 	icon_state = "chapdrobe"
 
-/obj/structure/interactive/vending/security
-	name = "security vendor"
-	icon_state = "sec"
-
-/obj/structure/interactive/vending/security/wardrobe
-	name = "security wardrobe vendor"
-	icon_state = "secdrobe"
-
-	stored_types = list(
-		/obj/item/clothing/feet/socks/knee/white,
-		/obj/item/clothing/underbottom/underwear/boxers/security,
-		/obj/item/clothing/undertop/underwear/shirt/security,
-		/obj/item/clothing/pants/normal/security,
-		/obj/item/clothing/shirt/normal/security,
-		/obj/item/storage/shoebox/jackboot/,
-		/obj/item/storage/glovebox/padded/,
-		/obj/item/clothing/head/hood/skimask/black,
-		/obj/item/clothing/mask/gas,
-		/obj/item/clothing/back/storage/satchel/poly/security,
-		/obj/item/clothing/back/storage/dufflebag/poly/security,
-		/obj/item/clothing/back/storage/backpack/poly/security
-	)
-
-
 /obj/structure/interactive/vending/chemistry/wardrobe
 	name = "chemist wardrobe vendor"
 	icon_state = "chemdrobe"
+
+	stored_types = list(
+		/obj/item/clothing/back/storage/satchel/poly/chemistry,
+		/obj/item/clothing/belt/storage/colored/chemistry,
+		/obj/item/clothing/mask/gas/poly/chemistry,
+		/obj/item/clothing/shirt/normal/uniform/chemistry,
+		/obj/item/clothing/pants/normal/chemistry,
+		/obj/item/clothing/overwear/coat/labcoat/chemist,
+		/obj/item/storage/shoebox/colored/,
+		/obj/item/storage/glovebox/white
+	)
 
 /*
 /obj/structure/interactive/vending/clown/
@@ -286,25 +247,26 @@
 	)
 */
 
-/obj/structure/interactive/vending/clown/wardrobe
-	name = "clown wardrobe vendor"
-	icon_state = "theater"
-
+/obj/structure/interactive/vending/hydroponics/nutri
+	name = "nutriment vendor"
+	icon_state = "nutri"
 	stored_types = list(
-		/obj/item/clothing/mask/gas/clown,
-		/obj/item/clothing/uniform/clown,
-		/obj/item/storage/shoebox/clown,
-		/obj/item/fluff/bikehorn
+		/obj/item/container/beaker/bucket/water
 	)
 
-/obj/structure/interactive/vending/hydroponics/nutri
-	name = "garden vendor"
-	icon_state = "nutri"
+/obj/structure/interactive/vending/hydroponics/seeds
+	name = "seeds vendor"
+	icon_state = "seeds"
 
-/obj/structure/interactive/vending/mining
-	name = "mining vendor"
-	icon_state = "mining"
-
+/obj/structure/interactive/vending/hydroponics/seeds
+	stored_types = list(
+		/obj/item/seed/cabbage,
+		/obj/item/seed/lettuce,
+		/obj/item/seed/tomato,
+		/obj/item/seed/chanterelle,
+		/obj/item/seed/wheat,
+		/obj/item/seed/poppy
+	)
 
 /obj/structure/interactive/vending/soda
 	name = "soda vendor"
@@ -379,21 +341,72 @@
 /obj/structure/interactive/vending/smart_fridge
 	name = "smart fridge"
 	icon_state = "smartfridge"
-	plane = PLANE_WALL_ATTACHMENTS
+	plane = PLANE_OBJ
+	pixel_y = 0
 
 /obj/structure/interactive/vending/smart_fridge/chemistry
 	name = "chemistry smart fridge"
-	stored_types = list(
-		/obj/item/container/beaker/bottle/epinephrine,
-		/obj/item/container/beaker/bottle/dylovene,
-		/obj/item/container/beaker/bottle/kelotane,
-		/obj/item/container/beaker/bottle/bicaridine
+	stored_types = list()
+
+	var/list/chemicals_to_make = list(
+		/reagent/carbon,
+		/reagent/iron,
+		/reagent/oxygen,
+		/reagent/nitrogen,
+		/reagent/silicon,
+		/reagent/potassium,
+		/reagent/salt/sodium_chloride,
+		/reagent/nutrition/sugar/glucose,
+		/reagent/fuel/welding,
+		/reagent/fuel/hydrogen,
+		/reagent/ammonia,
+		/reagent/sulfur,
+		/reagent/chlorine,
+		/reagent/nutrition/water,
+		/reagent/aluminium
 	)
+
+/obj/structure/interactive/vending/smart_fridge/chemistry/PostInitialize()
+
+	. = ..()
+
+	var/turf/T = get_turf(src)
+
+	for(var/k in chemicals_to_make)
+		var/reagent/R = REAGENT(k)
+		if(!R) continue
+		var/obj/item/container/beaker/B = new(T)
+		INITIALIZE(B)
+		GENERATE(B)
+		B.reagents.add_reagent(R.type,B.reagents.volume_max - B.reagents.volume_current)
+		B.name = "beaker of [R.name]"
+		FINALIZE(B)
+
+	return .
+
+/obj/structure/interactive/vending/smart_fridge/chemistry/purchase_item(var/mob/living/advanced/player/P,var/obj/item/associated_item,var/item_value=0,var/obj/hud/inventory/I)
+
+	. = ..()
+
+
+	if(. && associated_item.reagents && length(associated_item.reagents.stored_reagents))
+		var/obj/item/I2 = .
+		for(var/r_id in associated_item.reagents.stored_reagents)
+			var/amount = associated_item.reagents.stored_reagents[r_id]
+			I2.reagents.add_reagent(r_id,amount,should_update = FALSE)
+		I2.reagents.update_container()
+
+	return .
+
+/obj/structure/interactive/vending/smart_fridge/chemistry/Finalize()
+	. = ..()
+	sortTim(stored_objects, /proc/cmp_name_dsc)
+	return .
 
 /obj/structure/interactive/vending/smart_fridge/kitchen
 	name = "kitchen smart fridge"
 	stored_types = list(
-		/obj/item/container/beaker/bottle/large/enzymes,
+		/obj/item/container/beaker/vial/enzymes,
 		/obj/item/container/beaker/food/flour,
 		/obj/item/container/beaker/food/sugar,
 		/obj/item/container/beaker/food/milk,
@@ -401,19 +414,71 @@
 		/obj/item/container/beaker/food/corn_flour,
 		/obj/item/storage/egg_carton,
 		/obj/item/container/food/dynamic/meat/raw,
-		/obj/item/container/beaker/bottle/large/water
+		/obj/item/container/beaker/bottle/large/water,
+		/obj/item/container/beaker/large/ice
 	)
 
-/obj/structure/interactive/vending/dinnerware
-	name = "dinnerware vendor"
-	icon_state = "dinnerware"
+
+/obj/structure/interactive/vending/smart_fridge/bar
+	name = "bar smart fridge"
+	icon_state = "boozeomat"
+	stored_types = list(
+		/obj/item/container/beaker/glass,
+		/obj/item/container/beaker/shot,
+		/obj/item/container/beaker/alcohol/absinthe,
+		/obj/item/container/beaker/alcohol/ale,
+		/obj/item/container/beaker/alcohol/beer,
+		/obj/item/container/beaker/alcohol/brandy,
+		/obj/item/container/beaker/alcohol/cider,
+		/obj/item/container/beaker/alcohol/coffee_liqueur,
+		/obj/item/container/beaker/alcohol/fernet,
+		/obj/item/container/beaker/alcohol/gin,
+		/obj/item/container/beaker/alcohol/grappa,
+		/obj/item/container/beaker/alcohol/hearty_punch,
+		/obj/item/container/beaker/alcohol/nothing,
+		/obj/item/container/beaker/alcohol/rum,
+		/obj/item/container/beaker/alcohol/tequila,
+		/obj/item/container/beaker/alcohol/vodka,
+		/obj/item/container/beaker/alcohol/whiskey,
+		/obj/item/container/beaker/alcohol/wine,
+		/obj/item/container/beaker/alcohol/wine/vermouth,
+		/obj/item/container/beaker/can/cola,
+		/obj/item/container/beaker/can/dr_gibb,
+		/obj/item/container/beaker/can/grape_soda,
+		/obj/item/container/beaker/can/grey_bull,
+		/obj/item/container/beaker/can/iced_tea,
+		/obj/item/container/beaker/can/mountain_wind,
+		/obj/item/container/beaker/can/orange_soda,
+		/obj/item/container/beaker/can/space_up,
+		/obj/item/container/beaker/large/ice
+	)
+
+/obj/structure/interactive/vending/experimental
+	name = "experimental vendor"
+	icon_state = "experimental"
+	desc = "For science! (And balance.)"
+	desc_extended = "An experimental vendor that vends even more experimental weapons, armor, and clothing. Use at your own risk!"
 
 	stored_types = list(
-		/obj/item/weapon/melee/sword/sabre,
-		/obj/item/container/cheese_mold/block,
-		/obj/item/container/beaker/glass,
-		/obj/item/container/beaker/bowl,
-		/obj/item/container/beaker/large,
-		/obj/item/clothing/head/hat/paperbag
-
+		/obj/item/clothing/uniform/stealth,
+		/obj/item/clothing/head/helmet/full/nanotrasen/light,
+		/obj/item/clothing/head/helmet/full/nanotrasen/medium,
+		/obj/item/clothing/head/helmet/full/nanotrasen/heavy,
+		/obj/item/clothing/overwear/armor/nanotrasen/light,
+		/obj/item/clothing/overwear/armor/nanotrasen/medium,
+		/obj/item/clothing/overwear/armor/nanotrasen/heavy
 	)
+
+
+/obj/structure/interactive/vending/prize
+	name = "prize vendor"
+	icon_state = "prize"
+	desc = "It's not pointless, I swear."
+	desc_extended = "A special prize vendor that converts arcade prize tickets into items."
+
+	accepts_item = /obj/item/currency/prize_ticket
+
+	stored_types = list(
+		/obj/item/bikehorn
+	)
+

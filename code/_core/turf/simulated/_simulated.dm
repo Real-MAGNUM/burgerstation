@@ -1,6 +1,7 @@
 var/global/list/turf_icon_cache = list()
 var/global/saved_icons = 0
 
+var/global/list/blood_turfs = list()
 
 /turf/simulated/
 
@@ -35,29 +36,47 @@ var/global/saved_icons = 0
 	var/water_reagent
 
 	var/blood_level = 0
+	var/wet_level = 0
 
-/turf/proc/is_occupied()
+	var/drying_add = 0.1
+	var/drying_mul = 0.02
 
-	for(var/atom/movable/A in contents)
-		if(istype(A,/obj/effect/temp/construction/))
-			return A
-		if(is_living(A))
-			return A
-		if(is_structure(A))
-			return A
+	var/slip_factor = 1
 
-	return null
+/turf/simulated/proc/get_slip_strength(var/mob/living/L)
+	return (wet_level ? 1 : 0) + (wet_level/100)*slip_factor
 
+/turf/simulated/proc/add_wet(var/wet_to_add)
+	var/old_wet = wet_level
+	wet_level += wet_to_add
+	SSturfs.wet_turfs |= src
+	if(old_wet <= 0)
+		overlays.Cut()
+		update_overlays()
+	return TRUE
 
-/turf/proc/can_construct_on(var/mob/caller)
-	caller.to_chat(span("warning","You cannot deploy on this turf!"))
-	return FALSE
+/turf/simulated/Entered(var/atom/movable/O,var/atom/new_loc)
+
+	. = ..()
+
+	if(is_living(O))
+		var/mob/living/L = O
+		if(!L.horizontal && L.move_mod > 1)
+			var/slip_strength = get_slip_strength(L)
+			if(slip_strength >= 4 - L.move_mod)
+				var/obj/item/wet_floor_sign/WFS = locate() in range(1,src)
+				if(!WFS || L.move_mod > 2)
+					L.add_status_effect(SLIP,slip_strength*10,slip_strength*10)
+
+	return .
 
 /turf/simulated/get_examine_list(var/mob/caller)
 	. = ..()
 	. += div("notice","The health of the object is: [health ? health.health_current : "none"].")
+	. += div("notice","The slippery percentage is [get_slip_strength()*100]%.")
 	return .
 
+/*
 /turf/simulated/New(var/atom/desired_loc)
 
 	if(real_icon)
@@ -66,21 +85,25 @@ var/global/saved_icons = 0
 		icon_state = real_icon_state
 
 	return ..()
+*/
 
-/turf/simulated/on_destruction(var/atom/caller,var/damage = FALSE)
+/turf/simulated/on_destruction(var/mob/caller,var/damage = FALSE)
 
 	if(!destruction_turf)
 		CRASH_SAFE("[get_debug_name()] called on_destruction without having a destruction turf!")
 		return FALSE
 
+	for(var/obj/effect/temp/impact/I in src.contents)
+		I.alpha = 0
+
+	. = ..()
+
 	pixel_x = 0
 	pixel_y = 0
 
-	change_turf(destruction_turf,)
+	change_turf(destruction_turf)
 
-	queue_update_turf_edges(src)
-
-	return ..()
+	return .
 
 /turf/simulated/Initialize()
 	var/area/A = loc
@@ -158,6 +181,15 @@ var/global/saved_icons = 0
 	return list(ne,nw,se,sw)
 
 
+/turf/simulated/update_sprite()
+
+	if(real_icon)
+		icon = real_icon
+	if(real_icon_state)
+		icon_state = real_icon_state
+
+	return ..()
+
 /turf/simulated/proc/smooth_turfs()
 
 	var/list/smooth_code = get_smooth_code()
@@ -195,9 +227,10 @@ var/global/saved_icons = 0
 		turf_icon_cache[full_icon_string] = I
 
 	icon = I
-	pixel_x = (32 - I.Width())/2
-	pixel_y = (32 - I.Height())/2
-	layer = initial(layer) + 0.1
+	pixel_x = (TILE_SIZE - I.Width())/2
+	pixel_y = (TILE_SIZE - I.Height())/2
+
+	return TRUE
 
 /turf/simulated/update_icon()
 
@@ -206,18 +239,18 @@ var/global/saved_icons = 0
 
 	smooth_turfs()
 
+	return TRUE
+
 /turf/simulated/update_overlays()
 
 	. = ..()
 
 	if(reinforced_material_id)
-		overlays.Cut()
 		var/image/I = new/image(initial(icon),"ref")
-		/*
-		I.appearance_flags = RESET_COLOR
-		I.color = reinforced_color
-		I.alpha = 50
-		*/
+		add_overlay(I)
+
+	if(wet_level)
+		var/image/I = new/image('icons/obj/effects/water.dmi',"wet_floor")
 		add_overlay(I)
 
 	return .
@@ -227,7 +260,7 @@ var/global/saved_icons = 0
 	if(desired_exposed == exposed && !force)
 		return FALSE
 
-	for(var/obj/O in contents)
+	for(var/obj/O in src.contents)
 		if(!O.under_tile)
 			continue
 		if(desired_exposed)

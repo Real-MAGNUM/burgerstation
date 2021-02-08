@@ -47,11 +47,17 @@
 
 /obj/structure/interactive/door/airlock/station/maintenance
 	name = "maintenance airlock"
-	color = "#626262"
+	color = COLOR_METAL_DARK
 	fill_color = "#B69F3C"
 
 /obj/structure/interactive/door/airlock/station/maintenance/no_access
 	no_access = TRUE
+
+/obj/structure/interactive/door/airlock/station/janitor
+	name = "janitorial airlock"
+	color = COLOR_METAL_DARK
+	fill_color = COLOR_JANITOR
+
 
 /obj/structure/interactive/door/airlock/station/dark
 	name = "maintenance airlock"
@@ -77,26 +83,49 @@
 /obj/structure/interactive/door/airlock/station/engineering
 	name = "engineering airlock"
 	color = COLOR_ENGINEERING
+	filler = "fill"
+	fill_color = COLOR_ENGINEERING
+
+/obj/structure/interactive/door/airlock/station/engineering/glass
+	name = "engineering airlock"
+	color = COLOR_ENGINEERING
 	filler = "glass"
 	fill_color = COLOR_WHITE
 
 /obj/structure/interactive/door/airlock/station/medical
 	name = "medical airlock"
 	color = COLOR_MEDICAL
+	filler = "fill"
+	fill_color = COLOR_WHITE
+
+/obj/structure/interactive/door/airlock/station/medical/glass
+	name = "medical airlock"
+	color = COLOR_MEDICAL
 	filler = "glass"
 	fill_color = COLOR_WHITE
 
+/obj/structure/interactive/door/airlock/station/virology
+	name = "virology airlock"
+	color = COLOR_GREEN
+	filler = "fill"
+	fill_color = COLOR_WHITE
+
+
 /obj/structure/interactive/door/airlock/station/general
 	name = "general airlock"
-	color = "#626262"
+	color = COLOR_METAL_DARK
 	fill_color = "#83A35D"
 
 /obj/structure/interactive/door/airlock/station/chemistry
 	name = "medical airlock"
-	color = COLOR_ORANGE
+	color = COLOR_CHEMISTRY
 	filler = "glass"
 	fill_color = COLOR_WHITE
 
+/obj/structure/interactive/door/airlock/station/ntops
+	name = "ntops airlock"
+	color = COLOR_WHITE
+	filler = "glass"
 
 /obj/structure/interactive/door/airlock/station/glass
 	name = "public airlock"

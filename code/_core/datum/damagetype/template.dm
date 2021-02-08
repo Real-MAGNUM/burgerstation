@@ -15,7 +15,9 @@
 		RAD = 0,
 		HOLY = 0,
 		DARK = 0,
-		FATIGUE = 0
+		FATIGUE = 0,
+		ION = 0,
+		PAIN = 0
 	)
 
 	//How much armor to penetrate. It basically removes the percentage of the armor using these values.
@@ -32,7 +34,9 @@
 		RAD = 0,
 		HOLY = 0,
 		DARK = 0,
-		FATIGUE = 0
+		FATIGUE = 0,
+		ION = 0,
+		PAIN = 0
 	)
 
 
@@ -58,10 +62,4 @@
 		SKILL_UNARMED = BLADE,
 		SKILL_MELEE = BLADE,
 		SKILL_RANGED = BLADE
-	)
-
-	skill_xp_per_damage = list(
-		SKILL_UNARMED = 0,
-		SKILL_MELEE = 0,
-		SKILL_RANGED = 0
 	)

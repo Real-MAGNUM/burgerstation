@@ -1,3 +1,6 @@
+/health/obj/item/organ/
+	organic = TRUE
+
 /health/obj/item/organ/update_health_stats()
 
 	if(!is_organ(owner))
@@ -17,7 +20,7 @@
 
 	return .
 
-/health/obj/item/organ/update_health(var/damage_dealt,var/atom/attacker,var/update_hud=TRUE)
+/health/obj/item/organ/update_health(var/atom/attacker,var/damage_dealt=0,var/update_hud=TRUE,var/check_death=TRUE)
 
 	. = ..()
 
@@ -43,62 +46,50 @@
 					O.visual_wounds[damage_type] = current_amount
 					should_update = TRUE
 					if(damage_type == BRUTE && current_amount == 0)
-						O.bleeding = FALSE
+						O.bleeding = 0
 
 			if(should_update)
 				A.update_overlay_tracked("\ref[O]")
 
 	return .
 
-/health/obj/item/organ/adjust_loss_smart(var/brute,var/burn,var/tox,var/oxy,var/update=TRUE)
+/health/obj/item/organ/adjust_loss_smart(var/brute,var/burn,var/tox,var/oxy,var/fatigue,var/pain,var/rad,var/sanity,var/mental,var/update=TRUE,var/organic=TRUE,var/robotic=TRUE)
 
-	if(tox || oxy)
+	if(src.organic && !organic)
+		return 0
+
+	if(!src.organic && !robotic) // I know these are technically called twice but it's to prevent the below snowflake code from running.
+		return 0
+
+	if(tox || oxy || fatigue || sanity || mental) //These types should be dealt to the owner.
 		if(owner.loc && is_advanced(owner.loc))
 			var/mob/living/advanced/A = owner.loc
 			if(A.health)
-				. += A.health.adjust_loss_smart(tox=tox,oxy=oxy)
+				. += A.health.adjust_loss_smart(
+					tox=tox,
+					oxy=oxy,
+					fatigue=fatigue,
+					sanity=sanity,
+					mental=mental,
+					update=update,
+					organic=organic,
+					robotic=robotic
+				)
 
 		tox = 0
 		oxy = 0
+		fatigue = 0
+		sanity = 0
+		mental = 0
 
-
-	. += ..(brute,burn,tox,oxy)
+	. += ..()
 
 	if(. && update && is_advanced(owner.loc))
 		var/mob/living/advanced/A = owner.loc
-		A.health.update_health()
+		A.queue_health_update = TRUE
 
 	return .
 
-/health/obj/item/organ/adjust_tox_loss(var/value)
-	if(!owner.loc || !is_advanced(owner.loc))
-		return 0
-
-	var/mob/living/advanced/A = owner.loc
-
-	if(!A.health)
-		return FALSE
-
-	return A.health.adjust_tox_loss(value)
-
-/health/obj/item/organ/adjust_oxy_loss(var/value)
-	if(!owner.loc || !is_advanced(owner.loc))
-		return 0
-
-	var/mob/living/advanced/A = owner.loc
-
-	if(!A.health)
-		return FALSE
-
-	return A.health.adjust_oxy_loss(value)
-
-/health/obj/item/organ/adjust_fatigue_loss(var/value)
-	if(!owner.loc || !is_advanced(owner.loc))
-		return 0
-
-	var/mob/living/advanced/A = owner.loc
-
-	if(!A.health)
-		return FALSE
-
-	return A.health.adjust_fatigue_loss(value)
+/health/obj/item/organ/synthetic
+	resistance = list(PAIN=0,TOX=0)
+	organic = FALSE

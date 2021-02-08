@@ -12,6 +12,8 @@
 
 	var/force_corner = FALSE
 
+	density = TRUE
+
 /obj/structure/smooth/window/directional/anchored
 	anchored = TRUE
 
@@ -46,7 +48,7 @@
 			if(NORTHWEST)
 				desired_dir = WEST
 
-	. = ..(desired_dir,force)
+	. = ..()
 
 	update_collisions(c_dir = dir, a_dir = dir)
 

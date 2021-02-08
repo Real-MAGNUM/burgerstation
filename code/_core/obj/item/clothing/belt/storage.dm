@@ -12,22 +12,14 @@
 
 	container_max_size = SIZE_2
 
-	weight = WEIGHT_3
-
 	defense_rating = list(
-		BLADE = 15,
-		BLUNT = 5,
-		PIERCE = 10
+		BLADE = AP_SWORD,
+		PIERCE = AP_SWORD
 	)
 
 	rarity = RARITY_UNCOMMON
 
-	value = 10
-
-
-
-/obj/item/clothing/belt/storage/tool/full
-	name = "toolbelt"
+	value = 40
 
 /obj/item/clothing/belt/storage/tool/filled/fill_inventory()
 	new /obj/item/weapon/melee/tool/crowbar(src)

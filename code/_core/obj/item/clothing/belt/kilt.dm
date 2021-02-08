@@ -10,16 +10,15 @@
 
 	size = 8
 
-	container_max_size = 2
-
-	weight = WEIGHT_2
+	container_max_size = SIZE_2
 
 	defense_rating = list(
-		BLADE = 15,
-		BLUNT = 5,
-		PIERCE = 10,
-		MAGIC = 10
+		BLADE = AP_SWORD,
+		BLUNT = AP_DAGGER,
+		PIERCE = AP_SWORD,
+		ARCANE = AP_SWORD,
+		PAIN = AP_SWORD
 	)
 
 	rarity = RARITY_UNCOMMON
-	value = 20
+	value = 30

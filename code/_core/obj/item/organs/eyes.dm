@@ -17,6 +17,7 @@
 	var/vision_mod = FLAG_VISION_NONE
 	var/sight_mod = SEE_BLACKNESS
 	var/see_invisible = 0
+	var/see_in_dark = 1
 
 
 /obj/item/organ/eye/initialize_blends()
@@ -56,6 +57,8 @@
 	name = "right cyborg optical sensor"
 	icon = 'icons/mob/living/advanced/species/reptile_advanced.dmi'
 
+	defense_rating = CYBORG_ARMOR
+	health = /health/obj/item/organ/synthetic
 
 /obj/item/organ/eye/cyborg/left
 	name = "left cyborg optical sensor"
@@ -63,14 +66,10 @@
 	icon_state = BODY_EYE_LEFT
 
 
-
-
-
-//Cyborg
+//Beefman
 /obj/item/organ/eye/beefman
 	name = "right beefman eye"
 	icon = 'icons/mob/living/advanced/species/beefman.dmi'
-
 
 /obj/item/organ/eye/beefman/left
 	name = "left beefman eye"
@@ -78,3 +77,12 @@
 	icon_state = BODY_EYE_LEFT
 
 
+//Monkey
+/obj/item/organ/eye/monkey
+	name = "right monkey eye"
+	icon = 'icons/mob/living/advanced/species/monkey.dmi'
+
+/obj/item/organ/eye/monkey/left
+	name = "left monkey eye"
+	id = BODY_EYE_LEFT
+	icon_state = BODY_EYE_LEFT

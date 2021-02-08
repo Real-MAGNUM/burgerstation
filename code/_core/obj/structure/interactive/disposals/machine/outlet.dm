@@ -11,12 +11,14 @@
 
 	var/throw_accuracy = 0
 	var/throw_velocity = 10
-	var/throw_range_min = 1
+	var/throw_range_min = 2
 	var/throw_range_max = 3
 
 	plane = PLANE_OBJ
 
 	bullet_block_chance = 50
+
+	density = TRUE
 
 /obj/structure/interactive/disposals/machine/outlet/Entered(var/atom/A,var/oldloc)
 
@@ -43,7 +45,7 @@
 			else
 				diff_x = throw_offset[1]
 				diff_y = throw_offset[2]
-
+			M.force_move(get_step(src,dir))
 			var/obj/projectile/bullet/thrown/P = M.throw_self(src,null,null,null,diff_x*throw_velocity,diff_y*throw_velocity)
 			P.steps_allowed = rand(throw_range_min,throw_range_max)
 

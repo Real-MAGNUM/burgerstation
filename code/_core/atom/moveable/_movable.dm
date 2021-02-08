@@ -1,7 +1,6 @@
 /atom/movable/
 
 	step_size = TILE_SIZE
-	appearance_flags = LONG_GLIDE | PIXEL_SCALE | TILE_BOUND
 
 	collision_flags = FLAG_COLLISION_NONE
 	collision_bullet_flags = FLAG_COLLISION_BULLET_NONE
@@ -10,15 +9,16 @@
 
 	var/area/area //The object's area.
 
-	var/tmp/move_dir = 0
-	var/tmp/move_dir_last = 0 //Used for momentum.
+	var/tmp/move_dir = 0x0
+	var/tmp/move_dir_last = 0x0 //Used for momentum and speed.
+	var/tmp/first_move_dir = 0x0 //The first movement key pressed. Only used for mobs.
 	var/tmp/move_delay = 0
 
 	var/movement_delay = 4 //Measured in ticks.
 	var/anchored = TRUE
 	var/ghost = FALSE
 
-	var/damage_type_thrown = /damagetype/thrown //Damage type if the object is thrown. If none is provided, it will just use damage_type and double the damage.
+	var/damage_type_thrown //Damage type if the object is thrown. If none is provided, it will just use damage_type and double the damage.
 
 	var/change_dir_on_move = FALSE
 
@@ -48,28 +48,58 @@
 	var/acceleration_mod = 0
 	var/use_momentum = FALSE //Acceleration uses momentum.
 
-	var/has_footsteps = FALSE
+	var/value_last = 0//Last value calculated via calculation
 
-/atom/movable/proc/handle_footsteps(var/turf/T,var/list/footsteps_to_use,var/enter=TRUE)
+	var/is_moving = TRUE
 
-	if(!enter)
-		return FALSE //Only for advanced types
+	var/obj/light_sprite/light_sprite
+	var/list/obj/light_sprite/light_sprite_sources //Doesn't need to be qdeled
 
-	for(var/k in footsteps_to_use)
-		if(!k)
-			continue
-		var/footstep/F = SSfootstep.all_footsteps[k]
-		if(F.has_footprints)
-			var/type_to_use = enter ? /obj/effect/footprint/emboss/ : /obj/effect/footprint/emboss/exit
-			var/obj/effect/footprint/emboss/P = new type_to_use(T,src.dir,TRUE,TRUE)
-			P.color = F.footprint_color
-			P.alpha = F.footprint_alpha
-			INITIALIZE(P)
-		if(length(F.footstep_sounds))
-			play(pick(F.footstep_sounds), T, volume = 50, sound_setting = SOUND_SETTING_FOOTSTEPS, pitch = 1 + RAND_PRECISE(-F.variation_pitch,F.variation_pitch))
+/atom/movable/proc/set_light_sprite(l_range, l_power, l_color = NONSENSICAL_VALUE, angle = NONSENSICAL_VALUE, no_update = FALSE,debug = FALSE)
 
-/atom/movable/proc/get_footsteps(var/list/original_footsteps,var/enter=TRUE)
-	return original_footsteps
+	if(l_range)
+		if(!light_sprite)
+			light_sprite = new (get_turf(src))
+		light_sprite.icon_state = angle == LIGHT_OMNI || angle == NONSENSICAL_VALUE ? "radial" : "cone"
+		light_sprite.size = max(1,l_range*(TILE_SIZE/96))
+		light_sprite.owner = src
+		light_sprite.alpha = l_power*255
+		if(l_color != NONSENSICAL_VALUE)
+			light_sprite.color = l_color
+		light_sprite.update_sprite()
+
+	if(!l_range && light_sprite)
+		qdel(light_sprite)
+		light_sprite = null
+
+	return TRUE
+
+/atom/movable/set_dir(var/desired_dir,var/force = FALSE)
+
+	. = ..()
+
+	if(isturf(src.loc))
+		for(var/k in light_sprite_sources)
+			var/obj/light_sprite/LS = k
+			LS.set_dir(desired_dir,force)
+
+	return .
+
+/atom/movable/post_move(var/atom/old_loc)
+
+	. = ..()
+
+	if(isturf(src.loc))
+		for(var/k in light_sprite_sources)
+			var/obj/light_sprite/LS = k
+			LS.force_move(src.loc)
+
+	return .
+
+
+/atom/movable/New(var/desired_loc)
+	light_sprite_sources = list()
+	return ..()
 
 /atom/movable/proc/update_collisions(var/normal,var/bullet,var/c_dir,var/a_dir,var/force = FALSE)
 
@@ -127,7 +157,6 @@
 			area.Entered(src,null)
 		else
 			CRASH_SAFE("ERROR: [get_debug_name()] didn't have an area to initialize in! (Loc: [loc.get_debug_name()].)")
-
 		if(blocks_air && is_simulated(loc))
 			var/turf/simulated/T = loc
 			T.blocks_air |= blocks_air
@@ -136,7 +165,14 @@
 
 	return ..()
 
+/atom/movable/Finalize()
+	value = get_base_value()
+	return ..()
+
+
 /atom/movable/Destroy()
+	QDEL_NULL(light_sprite)
+
 	area = null
 	grabbing_hand = null
 	force_move(null)
@@ -144,9 +180,25 @@
 
 /proc/is_valid_dir(var/direction)
 
+	/*
 	if(!direction || (direction & EAST && direction & WEST) || (direction & NORTH && direction & SOUTH))
+		return FALSE
+	*/
+
+	if(direction - (NORTH + EAST + SOUTH + WEST) > 0)
 		return FALSE
 
 	return TRUE
 
 
+/atom/movable/proc/set_anchored(var/desired_anchored=TRUE)
+
+	if(anchored == desired_anchored)
+		return FALSE
+
+	anchored = desired_anchored
+
+	if(!anchored)
+		force_move(loc)
+
+	return TRUE

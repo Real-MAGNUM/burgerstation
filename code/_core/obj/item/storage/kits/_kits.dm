@@ -11,11 +11,14 @@
 	container_max_size = SIZE_2
 	dynamic_inventory_count = 8
 
+	value = 10
+
 /obj/item/storage/kit/New(var/desired_loc)
 	. = ..()
-	icon_state = "[initial(icon_state)]_[rand(1,4)]"
+	icon_state = "[initial(icon_state)][rand(1,4)]"
 	return .
 
+/*
 /obj/item/storage/kit/save_item_data(var/save_inventory = TRUE)
 	. = ..()
 	SAVEVAR("icon_state")
@@ -25,6 +28,7 @@
 	. = ..()
 	LOADVAR("icon_state")
 	return .
+*/
 
 /obj/item/storage/kit/filled/fill_inventory()
 	new /obj/item/container/medicine/bandage(src)
@@ -70,6 +74,24 @@
 	new /obj/item/container/medicine/patch/burn(src)
 	return ..()
 
+/obj/item/storage/kit/toxin
+	name = "toxin first aid kit"
+	desc_extended = "A first aid kit that focuses on healing toxin based injuries. Usually contains a pill bottle filled with kelotane, two tubes of ointment, one set of burn kits and four sets of silver sulfadiazine."
+	icon_state = "toxin"
+
+/obj/item/storage/kit/toxin/filled/fill_inventory()
+	new /obj/item/container/syringe(src)
+	new /obj/item/container/beaker/bottle/dylovene(src)
+	new /obj/item/container/beaker/bottle/dylovene(src)
+	new /obj/item/container/beaker/bottle/dylovene(src)
+	new /obj/item/container/beaker/bottle/calomel(src)
+	new /obj/item/container/beaker/bottle/antihol(src)
+	new /obj/item/container/beaker/bottle/charcoal(src)
+	new /obj/item/container/beaker/bottle/epinephrine(src)
+	return ..()
+
+
+
 
 /obj/item/storage/kit/syndicate
 	name = "combat medikit"
@@ -85,5 +107,48 @@
 	new /obj/item/storage/pillbottle/omnizine(src)
 	new /obj/item/container/syringe/epinephrine(src)
 	new /obj/item/container/syringe/epinephrine(src)
+	new /obj/item/analyzer/health(src)
+	return ..()
+
+/obj/item/storage/kit/ai3
+	name = "AI-3"
+	desc = "Ya like cheese?"
+	desc_extended = "A basic Russian-made AI-3 infantry first aid kit. Usually contains four pairs of high-volume injectors to treat every basic type of damage, as well as epinephrine and iron medipens."
+	icon_state = "ai3"
+
+	is_container = TRUE
+
+	size = SIZE_2
+	container_max_size = SIZE_1
+	dynamic_inventory_count = 10
+
+/obj/item/storage/kit/ai3/filled/fill_inventory()
+	new /obj/item/container/syringe/medipen/bicaridine(src)
+	new /obj/item/container/syringe/medipen/bicaridine(src)
+	new /obj/item/container/syringe/medipen/kelotane(src)
+	new /obj/item/container/syringe/medipen/kelotane(src)
+	new /obj/item/container/syringe/medipen/dylovene(src)
+	new /obj/item/container/syringe/medipen/dylovene(src)
+	new /obj/item/container/syringe/medipen/dexaline(src)
+	new /obj/item/container/syringe/medipen/dexaline(src)
+	new /obj/item/container/syringe/medipen/iron(src)
+	new /obj/item/container/syringe/medipen/epinephrine(src)
+	return ..()
+
+
+/obj/item/storage/kit/advanced
+	name = "advanced first aid kit"
+	desc = "I hope you've got insurance."
+	desc_extended = "A first aid kit for healing when under pressure. Usually contains five pill bottles, each filled with bicaridine, dylovene, kelotane, iron and epinephrine pills. Also contains two epinephrine syringes and a health analyzer."
+	icon_state = "purple"
+
+/obj/item/storage/kit/advanced/filled/fill_inventory()
+	new /obj/item/container/medicine/trauma_kit/advanced(src)
+	new /obj/item/container/medicine/burn_kit/advanced(src)
+	new /obj/item/container/spray/synthflesh(src)
+	new /obj/item/container/spray/synthflesh(src)
+	new /obj/item/storage/pillbottle/charcoal(src)
+	new /obj/item/storage/pillbottle/omnizine(src)
+	new /obj/item/storage/pillbottle/iron(src)
 	new /obj/item/analyzer/health(src)
 	return ..()

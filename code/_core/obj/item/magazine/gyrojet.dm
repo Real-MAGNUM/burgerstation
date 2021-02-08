@@ -21,10 +21,7 @@
 	bullet_diameter_max = 21
 
 	size = SIZE_2
-	weight = WEIGHT_2
 
-/obj/item/magazine/gyrojet/update_icon()
-	if(length(stored_bullets))
-		icon_state = "[initial(icon_state)]_1"
-	else
-		icon_state = "[initial(icon_state)]_0"
+	icon_states = 1
+
+	value = 10

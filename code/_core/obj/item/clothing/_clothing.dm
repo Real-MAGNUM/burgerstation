@@ -3,19 +3,23 @@
 	desc = "THIS IS CLOTHING."
 	worn_layer = LAYER_MOB
 	var/flags_clothing = FLAG_CLOTHING_NONE
-	value = 1
+
+	weight = 0
 
 	color = "#FFFFFF"
 
 	icon_state = "inventory"
 	icon_state_worn = "worn"
 
-	var/list/defense_rating = list(
+	var/list/defense_rating = list()
+
+	/*
+	defense_rating = list(
 		BLADE = 0,
 		BLUNT = 0,
 		PIERCE = 0,
 		LASER = 0,
-		MAGIC = 0,
+		ARCANE = 0,
 		HEAT = 0,
 		COLD = 0,
 		BOMB = 0,
@@ -23,8 +27,12 @@
 		RAD = 0,
 		HOLY = 0,
 		DARK = 0,
-		FATIGUE = 0
+		FATIGUE = 0,
+		ION = 0,
+		PAIN = 0
 	)
+	*/
+
 
 	//Armor guide. Uses bullets as an example.
 	//10 is very minor protection, like reinforced clothing.
@@ -45,7 +53,26 @@
 	var/hidden_clothing = 0x0 //Flags of Clothing slots that it should hide when this object is equipped.
 	var/list/hidden_organs = list() //List of organ IDs that are hidden when this object is equipped.
 
+	drop_sound = 'sound/items/drop/clothing.ogg'
 
+	can_wear = TRUE
+
+	value = -1
+
+	var/speed_bonus = 0
+
+	var/loyalty_tag //Set to a loyalty tag here to restrict this to those who have this tag.
+
+/obj/item/clothing/can_be_worn(var/mob/living/advanced/owner,var/obj/hud/inventory/I,var/messages=FALSE)
+
+	if(loyalty_tag && owner.loyalty_tag != loyalty_tag)
+		if(messages) owner.to_chat(span("warning","<b>\The [src.name]</b> dings, \"Invalid Loyalty Tag detected!\""))
+		return FALSE
+
+	return ..()
+
+/obj/item/clothing/proc/get_defense_rating()
+	return defense_rating.Copy()
 
 /obj/item/clothing/save_item_data(var/save_inventory = TRUE)
 	. = ..()
@@ -59,8 +86,10 @@
 
 /obj/item/clothing/New(var/desired_loc)
 	additional_clothing_stored = list()
-	..()
+	weight = calculate_weight()
+	. = ..()
 	initialize_blends()
+	return .
 
 /obj/item/clothing/Destroy()
 	additional_clothing_stored.Cut()
@@ -72,11 +101,9 @@
 		var/obj/item/C = new k(src)
 		C.should_save = FALSE
 		C.color = color
-		C.weight = 0
 		C.size = 0
 		C.additional_blends = additional_blends
 		C.additional_clothing_parent = src
-		C.delete_on_drop = FALSE
 		additional_clothing_stored += C
 
 	return ..()
@@ -93,15 +120,16 @@
 			add_blend("polymorph_[polymorph_name]", desired_icon = initial_icon, desired_icon_state = "[desired_icon_state]_[polymorph_name]", desired_color = polymorph_color, desired_blend = ICON_OVERLAY, desired_type = ICON_BLEND_OVERLAY, desired_should_save = TRUE, desired_layer = worn_layer)
 		update_sprite()
 
-	for(var/obj/item/C in additional_clothing_stored)
+	for(var/k in additional_clothing_stored)
+		var/obj/item/C = k
 		C.initialize_blends()
 
 	..()
 
-/obj/item/clothing/can_be_worn(var/mob/living/advanced/owner,var/obj/hud/inventory/I)
-	return TRUE
-
-/obj/item/clothing/on_drop(var/obj/hud/inventory/old_inventory,var/atom/new_loc)
+/obj/item/clothing/on_drop(var/obj/hud/inventory/old_inventory,var/atom/new_loc,var/silent=FALSE)
 	. = ..()
 	remove_additonal_clothing()
 	return .
+
+/obj/item/clothing/proc/get_footsteps(var/list/original_footsteps,var/enter=TRUE)
+	return original_footsteps

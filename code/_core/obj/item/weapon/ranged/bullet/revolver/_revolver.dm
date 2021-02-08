@@ -4,6 +4,11 @@
 
 	var/can_shoot_while_open = FALSE
 
+	inaccuracy_modifer = 0.5
+
+	movement_spread_base = 0.02
+	movement_spread_mul = 0.05
+
 /obj/item/weapon/ranged/bullet/revolver/New(var/desired_loc)
 	. = ..()
 	stored_bullets = new/list(bullet_count_max)
@@ -26,15 +31,21 @@
 	return current_chamber
 
 /obj/item/weapon/ranged/bullet/revolver/click_self(var/mob/caller)
+
+	INTERACT_CHECK
+	INTERACT_DELAY(1)
+
 	open = !open
 
+	var/turf/T = get_turf(src)
+
 	if(open)
-		eject_stored_bullets_spent(caller,get_turf(src),TRUE)
+		eject_stored_bullets_spent(caller,T,TRUE)
 		caller.to_chat(span("notice","You open \the [src]. It contains [get_ammo_count()] bullet\s."))
 	else
 		caller.to_chat(span("notice","You close \the [src]."))
 
-	play('sound/weapons/revolver_click2.ogg',src)
+	play_sound('sound/weapons/revolver_click2.ogg',T,range_max=VIEW_RANGE*0.25)
 
 	update_sprite()
 
@@ -57,12 +68,13 @@
 
 /obj/item/weapon/ranged/bullet/revolver/clicked_on_by_object(var/mob/caller as mob,var/atom/object,location,control,params)
 
-	if(!object)
-		return TRUE
 
-	var/atom/defer_object = object.defer_click_on_object(location,control,params)
 
-	if(open && defer_object && is_inventory(defer_object) && src && src.loc && is_inventory(src.loc)) //The revolver is in an inventory, and you're click on it with your hands.
+	if(open && is_inventory(object) && src && is_inventory(src.loc)) //The revolver is in an inventory, and you clicked on it with your empty hands.
+
+		INTERACT_CHECK
+		INTERACT_CHECK_OBJECT
+		INTERACT_DELAY(1)
 
 		var/obj/hud/inventory/I = object
 
@@ -71,7 +83,9 @@
 		if(last_value)
 			var/obj/item/bullet_cartridge/B = eject_stored_bullet(caller,last_value,get_turf(src))
 			if(B)
+				caller?.to_chat(span("notice","You remove \the [B.name] from \the [src.name]."))
 				I.add_object(B)
+				//TODO: Bullet removal sounds?
 
 		return TRUE
 

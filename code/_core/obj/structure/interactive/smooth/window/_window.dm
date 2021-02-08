@@ -24,6 +24,8 @@
 
 	plane = PLANE_WALL
 
+	density = TRUE
+
 /obj/structure/smooth/window/update_overlays()
 	. = ..()
 	if(health)
@@ -33,11 +35,15 @@
 			add_overlay(I)
 	return .
 
-/obj/structure/smooth/window/on_destruction(var/atom/caller,var/damage = FALSE)
+/obj/structure/smooth/window/on_destruction(var/mob/caller,var/damage = FALSE)
 	create_destruction(get_turf(src),list(/obj/item/material/shard/ = 2),material_id)
-	queue_update_smooth_edges(src)
+	. = ..()
 	qdel(src)
-	return TRUE
+	return .
+
+/obj/structure/smooth/window/Destroy()
+	queue_update_smooth_edges(src,include_self = FALSE)
+	return ..()
 
 /obj/structure/smooth/window/reinforced
 	name = "aluminum reinforced glass window"
@@ -45,9 +51,10 @@
 	icon = 'icons/obj/structure/smooth/window/reinforced.dmi'
 	icon_state = "window"
 
-
 	reinforced_material_id = /material/aluminum
 	reinforced_color = COLOR_ALUMINUM
+
+	health_base = 300
 
 /obj/structure/smooth/window/reinforced/plasma
 	name = "plasteel reinforced phoron-silicate window"
@@ -56,7 +63,7 @@
 	reinforced_material_id = /material/plasteel
 	reinforced_color = COLOR_PLASTEEL
 
-	health = null
+	health_base = 600
 
 /obj/structure/smooth/window/tinted
 	name = "tinted window"

@@ -1,12 +1,13 @@
 /atom/movable/proc/get_base_value()
-	return initial(value)
+	return value
 
-/atom/movable/proc/calculate_value()
+/atom/movable/proc/get_value()
 
-	. = get_base_value()
+	. = value
 
-	for(var/atom/movable/M in contents)
-		. += M.calculate_value()
+	for(var/k in contents)
+		var/atom/movable/M = k
+		. += M.get_value()
 
 	if(reagents && length(reagents.stored_reagents))
 		for(var/reagent_type in reagents.stored_reagents)

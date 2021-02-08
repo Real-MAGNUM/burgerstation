@@ -17,10 +17,11 @@
 
 	view_punch = 64
 
-	slowdown_mul_held = HELD_SLOWDOWN_SNIPER_LARGE
+
 
 	size = SIZE_4
-	weight = WEIGHT_4
+	weight = 30
+
 
 	heat_per_shot = 0.06
 	heat_max = 0.06
@@ -39,11 +40,26 @@
 
 	zoom_mul = 2
 
-/obj/item/weapon/ranged/bullet/magazine/rifle/gauss_gun/get_static_spread() //Base spread
+	attachment_whitelist = list()
+
+	attachment_barrel_offset_x = 32 - 16
+	attachment_barrel_offset_y = 19 - 16
+
+	attachment_sight_offset_x = 14 - 16
+	attachment_sight_offset_y = 25 - 16
+
+	attachment_undermount_offset_x = 27 - 16
+	attachment_undermount_offset_y = 15 - 16
+
+	firing_pin = /obj/item/firing_pin/electronic/iff/revolutionary
+
+
+/obj/item/weapon/ranged/bullet/magazine/rifle/gauss_gun/get_static_spread()
 	return 0
 
-/obj/item/weapon/ranged/bullet/magazine/rifle/gauss_gun/get_skill_spread(var/mob/living/L) //Base spread
-	return max(0.01 - (0.01 * L.get_skill_power(SKILL_RANGED)))
+/obj/item/weapon/ranged/bullet/magazine/rifle/gauss_gun/get_skill_spread(var/mob/living/L)
+	if(!heat_current) return 0
+	return max(0.001 - (0.002 * L.get_skill_power(SKILL_RANGED)))
 
 /obj/item/weapon/ranged/bullet/magazine/rifle/gauss_gun/get_bullet_inaccuracy(var/mob/living/L,var/atom/target,var/obj/projectile/P,var/inaccuracy_modifier)
 

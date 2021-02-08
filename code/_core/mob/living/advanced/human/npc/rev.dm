@@ -1,45 +1,30 @@
 /mob/living/advanced/npc/rev
-	name = "revolutionary"
+	name = "revolutionary soldier"
 	desc = "FOR THE REVOLUTION!"
 	desc_extended = "An ex-nanotrasen revolutionary soldier fighting for their right to \[EXPUNGED\]. Suprisingly, they're not syndicate backed."
 	enable_AI = TRUE
-	ai = /ai/advanced/syndicate
+	ai = /ai/advanced/syndicate/russian
 	class = /class/syndicate_soldier
 
 	var/list/possible_outfits = list(
-		//"syndicate" = 100,
-		/loadout/rev/olution = 75,
-		/loadout/rev/medium_heavy = 50,
-		/loadout/rev/heavy = 25,
-		/loadout/rev/special_forces = 5
+		/loadout/rev/basic = 50,
+		/loadout/rev/solider = 10,
+		/loadout/rev/solider/alt = 10,
+		/loadout/rev/skat = 10,
+		/loadout/rev/exo = 5,
+		/loadout/rev/sniper = 5
 	)
 
 	var/loadout_to_level = list(
-		//"syndicate" = 1,
-		/loadout/rev/olution = 2,
-		/loadout/rev/medium_heavy = 4,
-		/loadout/rev/heavy = 8,
-		/loadout/rev/special_forces = 16
+		/loadout/rev/basic = 1,
+		/loadout/rev/solider = 2,
+		/loadout/rev/solider/alt = 2,
+		/loadout/rev/skat = 4,
+		/loadout/rev/exo = 8,
+		/loadout/rev/sniper = 8
 	)
 
 	var/map_spawn = FALSE
-
-/mob/living/advanced/npc/rev/Destroy()
-	if(SShorde && src in SShorde.tracked_enemies)
-		SShorde.on_killed_syndicate(src)
-	return ..()
-
-/mob/living/advanced/npc/rev/Bump(var/atom/Obstacle)
-
-	if(istype(src,Obstacle) || istype(Obstacle,src))
-		return TRUE
-
-	return ..()
-
-/mob/living/advanced/npc/rev/post_death()
-	SShorde.on_killed_syndicate(src)
-	return ..()
-
 
 /mob/living/advanced/npc/rev/Initialize()
 
@@ -48,7 +33,7 @@
 
 	. = ..()
 
-	var/species/S = all_species[species]
+	var/species/S = SPECIES(species)
 
 	sex = pick(MALE,FEMALE)
 	gender = sex

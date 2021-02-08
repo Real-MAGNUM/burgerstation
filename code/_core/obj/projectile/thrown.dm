@@ -1,9 +1,8 @@
 /obj/projectile/bullet/thrown/
 	name = "thrown object"
-	id = "thrown"
 
 	collision_bullet_flags = FLAG_COLLISION_BULLET_SOLID
-	collision_flags_special = FLAG_COLLISION_FLYING
+	collision_flags_special = FLAG_COLLISION_WALKING | FLAG_COLLISION_CRAWLING
 
 	hit_target_turf = TRUE
 
@@ -16,9 +15,18 @@
 
 	. = ..()
 
-	for(var/atom/movable/A in src.contents)
+	for(var/k in src.contents)
+		CHECK_TICK(75,FPS_SERVER)
+		var/atom/movable/A = k
+		if(A.qdeleting)
+			A.force_move(null)
+			continue
 		A.set_dir(dir)
-		A.force_move(previous_loc)
+		if(is_item(A))
+			var/obj/item/I = A
+			I.drop_item(previous_loc)
+		else
+			A.force_move(previous_loc)
 		var/atom/hit_wall
 		if(current_loc)
 			if(!A.Move(current_loc))
@@ -32,7 +40,8 @@
 
 	. =..()
 
-	for(var/atom/movable/A in src.contents)
+	for(var/k in src.contents)
+		var/atom/movable/A = k
 		A.set_dir(dir)
 		if(!is_floor(hit_atom))
 			A.force_move(previous_loc)

@@ -6,11 +6,9 @@
 	icon = 'icons/obj/item/clothing/glasses/prescription.dmi'
 
 	defense_rating = list(
-		BLADE = 0,
-		BLUNT = -10,
-		PIERCE = 0,
-		LASER = -25,
-		MAGIC = 50
+		BLUNT = -AP_SWORD,
+		LASER = -AP_SWORD,
+		ARCANE = AP_SWORD
 	)
 
 	value = 40
@@ -20,3 +18,9 @@
 	desc = "For nerds."
 	desc_extended = "Some less-than-sturdy prescription glasses. These ones are blue"
 	icon = 'icons/obj/item/clothing/glasses/prescription2.dmi'
+
+/obj/item/clothing/glasses/prescription/circle
+	name = "large prescription glasses"
+	desc = "For meganerds."
+	desc_extended = "Some less-than-sturdy prescription glasses. These ones are big and blue"
+	icon = 'icons/obj/item/clothing/glasses/circle.dmi'

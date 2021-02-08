@@ -4,16 +4,19 @@
 	desc_extended = "Contains ammunition for a ranged weapon. Make sure you're trying to use the right caliber."
 	icon = 'icons/obj/item/magazine/556_rifle.dmi'
 	icon_state = "556"
-	bullet_count_max = 20
+	bullet_count_max = 30
 
 	weapon_whitelist = list(
 		/obj/item/weapon/ranged/bullet/magazine/rifle/nt_carbine = TRUE,
 		/obj/item/weapon/ranged/bullet/magazine/rifle/standard = TRUE,
-		/obj/item/weapon/ranged/bullet/magazine/rifle/civ_carbine = TRUE
+		/obj/item/weapon/ranged/bullet/magazine/rifle/civ_carbine = TRUE,
+		/obj/item/weapon/ranged/bullet/magazine/rifle/burst = TRUE,
+		/obj/item/weapon/ranged/bullet/magazine/rifle/semi = TRUE,
+		/obj/item/weapon/ranged/bullet/magazine/rifle/pdw = TRUE
 
 	)
 
-	ammo = /obj/item/bullet_cartridge/rifle_223
+	ammo = /obj/item/bullet_cartridge/rifle_223/nato
 
 	bullet_length_min = 40
 	bullet_length_best = 45
@@ -24,8 +27,15 @@
 	bullet_diameter_max = 5.6
 
 	size = SIZE_2
-	weight = WEIGHT_2
 
-/obj/item/magazine/rifle_556/update_icon()
-	icon_state = "[initial(icon_state)]_[length(stored_bullets) ? 1 : 0]"
-	return ..()
+	icon_states = 1
+
+	value = 10
+
+
+
+/obj/item/magazine/rifle_556/ap
+	name = "\improper 5.56mm AP rifle magazine"
+	icon = 'icons/obj/item/magazine/556_rifle_ap.dmi'
+	icon_state = "556"
+	ammo = /obj/item/bullet_cartridge/rifle_223/nato/ap

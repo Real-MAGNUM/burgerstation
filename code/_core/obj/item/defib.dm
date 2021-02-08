@@ -11,12 +11,14 @@
 	item_slot = SLOT_TORSO_B
 	slot_icons = TRUE
 
-	weight = WEIGHT_3
+
 	size = SIZE_3
 
 	value = 110
 
-/obj/item/defib/can_be_worn(var/mob/living/advanced/owner,var/obj/hud/inventory/I)
+	weight = 8
+
+/obj/item/defib/can_be_worn(var/mob/living/advanced/owner,var/obj/hud/inventory/I,var/messages=FALSE)
 	return TRUE
 
 /obj/item/defib/Initialize(var/desired_loc) //Fill inventory handles the initializations here.
@@ -35,11 +37,15 @@
 	if(!target)
 		return FALSE
 
-	caller.visible_message("\The [caller.name] charges up \the [src.name]...","You charge up \the [src.name]...")
+	var/turf/T = get_turf(target)
 
-	play('sound/items/defib/defib_charge.ogg',src)
+	caller.visible_message(span("danger","\The [caller.name] charges up \the [src.name]..."),span("warning","You charge up \the [src.name]..."))
 
-	create_alert(VIEW_RANGE,src,caller,ALERT_LEVEL_NOISE)
+	play_sound('sound/items/defib/defib_charge.ogg',T,range_max=VIEW_RANGE)
+	create_alert(VIEW_RANGE,T,caller,ALERT_LEVEL_NOISE)
+
+	paddle_left.placed_target_ref = null
+	paddle_right.placed_target_ref = null
 
 	PROGRESS_BAR(caller,src,30,.proc/defib_target,caller,target)
 	PROGRESS_BAR_CONDITIONS(caller,src,.proc/can_defib_target,caller,target)
@@ -48,29 +54,30 @@
 
 /obj/item/defib/proc/can_defib_target(var/mob/caller,var/mob/living/target)
 
-	if(get_dist(caller,target) > 1)
-		caller.to_chat("You're too far away!")
-		return FALSE
+	INTERACT_CHECK_NO_DELAY(src)
+	INTERACT_CHECK_NO_DELAY(target)
 
 	return TRUE
 
 /obj/item/defib/proc/defib_target(var/mob/caller,var/mob/living/target)
 
+	var/turf/T = get_turf(target)
+
 	target.add_status_effect(ADRENALINE,30,30)
 
 	caller.visible_message(span("notice","\The [caller.name] shocks \the [target.name] with \the [src.name]!"),span("notice","You shock \the [target.name] with \the [src.name]!"))
 
-	play('sound/items/defib/defib_zap.ogg',src)
-	create_alert(VIEW_RANGE,src,caller,ALERT_LEVEL_NOISE)
+	play_sound('sound/items/defib/defib_zap.ogg',T,range_max=VIEW_RANGE)
+	create_alert(VIEW_RANGE,T,caller,ALERT_LEVEL_NOISE)
 
-	if(target.check_death() || !target.client || target.suicide)
+	if(target.check_death() || !target.is_player_controlled() || target.suicide)
 		target.visible_message(span("warning","Nothing happens..."))
-		play('sound/items/defib/defib_failed.ogg',src)
-		create_alert(VIEW_RANGE,src,caller,ALERT_LEVEL_NOISE)
+		play_sound('sound/items/defib/defib_failed.ogg',T,range_max=VIEW_RANGE)
+		create_alert(VIEW_RANGE,T,caller,ALERT_LEVEL_NOISE)
 		return FALSE
 
-	play('sound/items/defib/defib_ready.ogg',src)
-	create_alert(VIEW_RANGE,src,caller,ALERT_LEVEL_NOISE)
+	play_sound('sound/items/defib/defib_ready.ogg',T,range_max=VIEW_RANGE*0.5)
+	create_alert(VIEW_RANGE*0.5,T,caller,ALERT_LEVEL_NOISE)
 
 	target.revive()
 	caller.visible_message(span("danger","\The [target.name] jolts to life!"))
@@ -83,13 +90,19 @@
 
 	if(is_inventory(object) && is_inventory(src.loc) && is_advanced(caller))
 		var/obj/hud/inventory/I = src.loc
-		var/obj/hud/inventory/I2 = object
-		if(src in I.worn_objects)
+		if(src in I.contents)
+			var/obj/hud/inventory/I2 = object
 			if(paddle_left in src.contents)
-				I2.add_held_object(paddle_left)
+				INTERACT_CHECK
+				INTERACT_CHECK_OBJECT
+				INTERACT_DELAY(1)
+				I2.add_object(paddle_left)
 				return TRUE
 			else if(paddle_right in src.contents)
-				I2.add_held_object(paddle_right)
+				INTERACT_CHECK
+				INTERACT_CHECK_OBJECT
+				INTERACT_DELAY(1)
+				I2.add_object(paddle_right)
 				return TRUE
 
 	return ..()
@@ -102,28 +115,56 @@
 
 	throwable = FALSE
 
-	value = 10
+	size = 99
+
+	size = SIZE_6
+
+	weight = 2
+
+	should_save = FALSE
 
 /obj/item/defib_paddle/click_on_object(var/mob/caller as mob,var/atom/object,location,control,params)
 
+	if(is_inventory(object))
+		return ..()
+
+	if(is_busy())
+		return TRUE
+
+	if(!linked_defib)
+		INTERACT_CHECK
+		INTERACT_CHECK_OBJECT
+		INTERACT_DELAY(10)
+		caller.to_chat(span("danger","Paddle error detected. Tell burger how you encountered this bug."))
+		return TRUE
+
 	if(object == linked_defib)
+		INTERACT_CHECK
+		INTERACT_CHECK_OBJECT
 		drop_item(get_turf(src))
 		return TRUE
 
 	if(is_living(object))
-		caller.visible_message("\The [caller.name] places \a [src.name] on [object.name]'s chest...","You place \the [src.name] on \the [object.name]'s chest...")
-		placed_target_ref = "\ref[object]"
-		linked_defib.on_paddle(caller)
+		INTERACT_CHECK
+		INTERACT_CHECK_OBJECT
+		INTERACT_DELAY(1)
+		if(placed_target_ref == "\ref[object]")
+			caller.visible_message(span("notice","\The [caller.name] removes \a [src.name] from [object.name]'s chest..."),span("warning","You remove \the [src.name] from \the [object.name]'s chest..."))
+			placed_target_ref = null
+		else
+			caller.visible_message(span("danger","\The [caller.name] places \a [src.name] on [object.name]'s chest..."),span("warning","You place \the [src.name] on \the [object.name]'s chest..."))
+			placed_target_ref = "\ref[object]"
+			linked_defib.on_paddle(caller)
 		return TRUE
 
 	return ..()
 
-/obj/item/defib_paddle/drop_item(var/turf/new_location,var/pixel_x_offset = 0,var/pixel_y_offset = 0)
+/obj/item/defib_paddle/post_move()
 
 	. = ..()
 
-	if(. && linked_defib)
+	if(. && linked_defib && isturf(loc))
 		placed_target_ref = null
-		src.force_move(linked_defib)
+		src.drop_item(linked_defib)
 
 	return .

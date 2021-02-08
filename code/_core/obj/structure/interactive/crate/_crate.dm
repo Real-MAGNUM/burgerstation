@@ -8,6 +8,7 @@
 	anchored = FALSE
 	collision_flags = FLAG_COLLISION_WALKING //Not wall because crawling.
 	collision_bullet_flags = FLAG_COLLISION_SPECIFIC
+	density = TRUE
 	layer = LAYER_OBJ_CRATE
 
 	var/list/crate_contents = list()
@@ -23,6 +24,18 @@
 	var/collect_contents_on_initialize = TRUE
 
 	var/loot/loot
+
+	value = 300
+
+	can_rotate = FALSE
+
+/obj/structure/interactive/crate/on_crush()
+
+	for(var/k in contents)
+		var/atom/movable/M = k
+		M.on_crush()
+
+	return ..()
 
 /obj/structure/interactive/crate/Exit(atom/movable/O, atom/newloc)
 
@@ -69,20 +82,26 @@
 
 	return ..()
 
-/obj/structure/interactive/crate/clicked_on_by_object(var/mob/caller,object,location,control,params)
+/obj/structure/interactive/crate/clicked_on_by_object(var/mob/caller,var/atom/object,location,control,params)
 
-	INTERACT_CHECK
-
-	if(!(caller.attack_flags & ATTACK_GRAB))
+	if(!(caller.attack_flags & CONTROL_MOD_GRAB))
+		INTERACT_CHECK
+		INTERACT_CHECK_OBJECT
+		INTERACT_DELAY(10)
 		toggle(caller)
+		return TRUE
 
 	return ..()
 
 /obj/structure/interactive/crate/Generate()
 
 	if(collect_contents_on_initialize && !open)
-		for(var/atom/movable/M in loc.contents)
+		for(var/k in loc.contents)
+			CHECK_TICK(50,FPS_SERVER)
+			var/atom/movable/M = k
 			if(M == src || M.anchored)
+				continue
+			if(M.loc != src.loc)
 				continue
 			M.force_move(src)
 			M.pixel_x = initial(M.pixel_x)
@@ -99,6 +118,11 @@
 /obj/structure/interactive/crate/proc/can_store(var/atom/movable/M)
 	if(M.anchored)
 		return FALSE
+	if(istype(M, /mob/living/advanced/player/))
+		var/mob/living/advanced/player/playerCorpse = M
+		if(playerCorpse.dead)
+			visible_message(span("warning", "\The [playerCorpse.name] hilariously looses balance and falls out of the crate!"))
+			return FALSE
 	return TRUE
 
 /obj/structure/interactive/crate/proc/can_prevent_close(var/atom/movable/M)
@@ -118,17 +142,22 @@
 /obj/structure/interactive/crate/proc/close(var/mob/caller)
 
 	var/atom/blocking
-	for(var/atom/movable/M in loc.contents)
+	for(var/k in loc.contents)
+		var/atom/movable/M = k
 		if(can_prevent_close(M))
 			blocking = M
 		break
 
 	if(blocking)
-		caller.to_chat("\The [blocking.name] is preventing \the [src.name] from being closed!")
+		caller.to_chat(span("warning","\The [blocking.name] is preventing \the [src.name] from being closed!"))
 		return FALSE
 
-	for(var/atom/movable/M in loc.contents)
+	for(var/k in loc.contents)
+		var/atom/movable/M = k
+		CHECK_TICK(50,FPS_SERVER)
 		if(M == src)
+			continue
+		if(M.loc != src.loc)
 			continue
 		if(!can_store(M))
 			continue
@@ -136,7 +165,7 @@
 
 	open = FALSE
 
-	play('sound/effects/click.ogg',get_turf(src))
+	play_sound('sound/effects/click.ogg',get_turf(src),range_max=VIEW_RANGE)
 
 	update_sprite()
 
@@ -149,14 +178,16 @@
 		L.do_spawn(src.loc)
 		loot = null
 
-	for(var/atom/movable/M in crate_contents)
+	for(var/k in crate_contents)
+		CHECK_TICK(50,FPS_SERVER)
+		var/atom/movable/M = k
 		crate_contents -= M
 		M.force_move(src.loc)
 		//animate(M,pixel_x = initial(M.pixel_x) + rand(-16,16),pixel_y = initial(M.pixel_y) + rand(-16,16),time = 4)
 
 	open = TRUE
 
-	play('sound/effects/click.ogg',get_turf(src))
+	play_sound('sound/effects/click.ogg',get_turf(src),range_max=VIEW_RANGE)
 
 	update_sprite()
 
@@ -182,7 +213,7 @@
 				CREATE(/obj/item/magazine/rifle_308,src.loc)
 		if(4 to 6)
 			for(var/i=1,i<=rand(2,4),i++)
-				CREATE(/obj/item/weapon/ranged/bullet/magazine/shotgun/bull,src.loc)
+				CREATE(/obj/item/weapon/ranged/bullet/magazine/shotgun/bulldog,src.loc)
 			for(var/i=1,i<=rand(6,12),i++)
 				CREATE(/obj/item/magazine/shotgun_auto,src.loc)
 		if(7)

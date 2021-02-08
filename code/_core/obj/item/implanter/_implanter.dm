@@ -11,6 +11,8 @@
 
 	value = 50
 
+	weight = 3
+
 
 /obj/item/implanter/update_icon()
 
@@ -33,8 +35,12 @@
 	if(caller != object || !is_advanced(caller))
 		return ..()
 
+	INTERACT_CHECK
+	INTERACT_CHECK_OBJECT
+	INTERACT_DELAY(5)
+
 	if(!stored_implant)
-		caller.to_chat("There is no implanter loaded!")
+		caller.to_chat(span("warning","There is no implanter loaded in \the [src.name]!"))
 		return TRUE
 
 	var/mob/living/advanced/A = caller
@@ -46,12 +52,12 @@
 			var/obj/item/organ/O = A.labeled_organs[initial_id]
 			O.unattach_from_parent(A.loc)
 		else
-			caller.to_chat("You already have an implant of that type!")
+			caller.to_chat(span("warning","You already have an implant of that type!"))
 			return TRUE
 
 	var/obj/item/organ/internal/implant/added_implant = A.add_organ(stored_implant)
 	if(added_implant)
-		caller.to_chat("You implant \the [added_implant.name] into your [added_implant.attached_organ.name].")
+		caller.visible_message(span("notice","\The [caller.name] implants something into their [added_implant.attached_organ.name]."),span("notice","You implant \the [added_implant.name] into your [added_implant.attached_organ.name]."))
 		name = initial(name)
 		stored_implant = null
 
@@ -61,6 +67,12 @@
 
 /obj/item/implanter/IFF
 		stored_implant = /obj/item/organ/internal/implant/hand/left/iff/nanotrasen
+		removes_existing = FALSE
 
 /obj/item/implanter/od_purge
 		stored_implant = /obj/item/organ/internal/implant/torso/od_purge
+		removes_existing = TRUE
+
+/obj/item/implanter/death_alarm
+		stored_implant = /obj/item/organ/internal/implant/torso/death_alarm
+		removes_existing = TRUE

@@ -9,7 +9,13 @@
 
 	bullet_block_chance = 50
 
-/obj/structure/interactive/stacker/Crossed(var/atom/movable/O,var/atom/new_loc,var/atom/old_loc)
+	density = TRUE
+
+	desired_light_power = 0.25
+	desired_light_range = 2
+	desired_light_color = "#0000FF"
+
+/obj/structure/interactive/stacker/Crossed(atom/movable/O)
 	stack(O)
 	return ..()
 
@@ -24,13 +30,13 @@
 	if(I.item_count_current >= I.item_count_max)
 		return FALSE
 
-	O.force_move(src)
+	I.drop_item(src)
 
 	for(var/obj/item/E in contents) //E for existing
 		if(I.can_transfer_stacks_to(E))
 			I.transfer_item_count_to(E)
 			if(E.item_count_current == E.item_count_max)
-				E.force_move(src.loc)
+				E.drop_item(src.loc)
 			break
 
 	return TRUE

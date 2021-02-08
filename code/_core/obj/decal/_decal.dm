@@ -1,16 +1,16 @@
 /obj/decal/
 	name = "decal"
-	plane = PLANE_TILE
+	plane = PLANE_FLOOR
 	mouse_opacity = 0
 	anchored = TRUE
-	plane = PLANE_TILE
+	plane = PLANE_FLOOR
 	layer = LAYER_FLOOR_DECAL
 
 /obj/decal/directions
 	icon = 'icons/obj/decal/station_markers.dmi'
 	icon_state = "right"
 	alpha = 200
-	id = "null"
+	var/id = "null"
 	var/offset = 0
 
 /obj/decal/directions/PostInitialize()

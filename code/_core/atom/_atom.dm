@@ -1,13 +1,15 @@
 /atom/
 	name = "atom"
 	desc = "What the fuck is this?"
+	var/label
+
+	appearance_flags = LONG_GLIDE | PIXEL_SCALE | TILE_BOUND
 
 	var/desc_extended = "Such a strange object. I bet not even the gods themselves know what this thing is. Who knows what mysteries it can hold?"
-	var/id = null
 
 	plane = PLANE_OBJ
 
-	density = FALSE //DEPCRECATED. Should always be set to FALSE!
+	density = FALSE //Should always be set to FALSE! Controls if an object should receive a Cross/Uncross/Crossed/Uncrossed proc calls.
 
 	var/health_base = 1
 	var/mana_base = 1
@@ -24,10 +26,6 @@
 	var/interact_distance = 1 //You must be at least this close to interact with this object, and for the object to interact with others.
 	var/object_size = 1 //This-1 is added to attack range.
 	var/attack_range = 1 //If it's a melee weapon, it needs a range.
-
-	var/attack_delay = 5 //The attack delay for an object.
-	var/attack_delay_max = 10 //For living mobs using this object, the maximum attack delay.
-	var/attack_next = -1
 
 	var/reagent_container/reagents //The reagents object. If an object is supposed to hold liquid, give it a reagent_container datum.
 	var/health/health //The health object. If an object is supposed to take damage, give it a health datum.
@@ -49,6 +47,24 @@
 	var/desired_light_color = "#FFFFFF" //Color of the light.
 	var/desired_light_angle = LIGHT_OMNI //Angle of the light.
 
+	var/attack_next = -1
+
+	var/listener = FALSE //Setting this to true doesn't make it listen after it's been initialized.
+
+	var/dir_offset = TILE_SIZE
+
+/atom/proc/update_name(var/desired_name)
+	name = desired_name
+	if(label)
+		name = "[name] ([label])"
+	return TRUE
+
+/atom/proc/get_consume_verb()
+	return "eat"
+
+/atom/proc/get_consume_sound()
+	return 'sound/items/consumables/eatfood.ogg'
+
 /atom/proc/update_atom_light()
 	if(desired_light_range > 0 && desired_light_power > 0)
 		if(src.x % desired_light_frequency || src.y % desired_light_frequency)
@@ -57,59 +73,42 @@
 		return TRUE
 	return FALSE
 
-/atom/proc/add_overlay(var/datum/desired_overlay)
-
-	if(length(overlays) >= 100)
-		CRASH_SAFE("Warning: [get_debug_name()] exceeds 100 overlays![is_datum(desired_overlay) ? " Overlay name: [desired_overlay.get_debug_name()]." : ""]")
-		return FALSE
-
-	overlays += desired_overlay
-
-	return TRUE
-
-/obj/structure/should_smooth_with(var/turf/T)
-
-	for(var/obj/structure/O in T.contents)
-		if(O.corner_category != corner_category)
-			continue
-		return TRUE
-
-	return FALSE
-
 /atom/proc/should_smooth_with(var/turf/T)
 	return FALSE
 
-/atom/proc/on_destruction(var/atom/caller,var/damage = FALSE) //Called when destructed by tools or damage.
+/atom/proc/on_destruction(var/mob/caller,var/damage = FALSE) //Called when destructed by tools or damage.
+	HOOK_CALL("on_destruction")
 	return TRUE
 
 /atom/Destroy()
 
+	stop_thinking(src)
+
 	set_light(FALSE)
 
-	for(var/datum/O in underlays)
-		qdel(O)
-	underlays.Cut()
-
-	for(var/datum/O in overlays)
-		qdel(O)
-	overlays.Cut()
+	QDEL_CUT(underlays)
+	QDEL_CUT(overlays)
 
 	QDEL_NULL(reagents)
 	QDEL_NULL(health)
 
-	stop_thinking(src)
-
-	for(var/atom/A in contents)
+	for(var/k in contents)
+		var/atom/movable/A = k
 		qdel(A)
 
 	appearance = null
 	invisibility = 101
+	mouse_opacity = 0
+	icon = null
+	icon_state = null
+
+	all_listeners -= src
 
 	return ..()
 
-/atom/Cross(var/atom/A)
+/atom/Cross(atom/movable/O)
 
-	if(!ignore_incoming_collisons && src.collision_flags & A.collision_flags)
+	if(!ignore_incoming_collisons && src.collision_flags & O.collision_flags)
 		return FALSE
 
 	return ..()
@@ -119,6 +118,7 @@
 	if(health)
 		health = new health(src)
 		INITIALIZE(health)
+		FINALIZE(health)
 
 	update_atom_light()
 
@@ -129,7 +129,15 @@
 	if(reagents)
 		reagents = new reagents(src)
 
+	if(listener)
+		all_listeners |= src
+
 	return ..()
+
+/atom/Finalize()
+	. = ..()
+	update_name(name) //Setup labels
+	return .
 
 /atom/New()
 
@@ -143,7 +151,7 @@
 
 	return .
 
-/atom/proc/defer_click_on_object(location,control,params)
+/atom/proc/defer_click_on_object(var/mob/caller,location,control,params)
 	return src
 
 /atom/proc/get_xp_multiplier() //How much XP should this object give for interacting with it.
@@ -152,32 +160,16 @@
 
 /atom/proc/can_be_attacked(var/atom/attacker,var/atom/weapon,var/params,var/damagetype/damage_type)
 
+	if(!src.initialized)
+		return FALSE
+
 	if(!src.health)
 		return FALSE
 
-	if(!BYPASS_AREA_NO_DAMAGE && attacker && is_valid(attacker))
-
-		var/area/A1 = get_area(attacker)
-		var/area/A2 = get_area(src)
-
-		if(!(A1 && A2))
-			return FALSE
-
-		if(A1.flags_area & FLAGS_AREA_NO_DAMAGE != A2.flags_area & FLAGS_AREA_NO_DAMAGE)
-			return FALSE
-
 	return TRUE
-
 
 /atom/proc/think()
 	return TRUE
-
-/atom/Enter(var/atom/movable/enterer,var/atom/oldloc)
-	return TRUE
-
-/atom/Exit(var/atom/movable/exiter,var/atom/newloc)
-	return TRUE
-
 
 /atom/proc/get_touching_space(var/intercardinal = FALSE)
 
@@ -211,25 +203,59 @@
 /atom/proc/is_player_controlled()
 	return FALSE
 
-/atom/is_safe_to_delete()
+/atom/is_safe_to_delete(var/check_loc = TRUE)
 
 	if(is_player_controlled())
 		return FALSE
 
-	for(var/atom/A in contents)
-		if(!A.is_safe_to_delete())
+	if(check_loc && loc && !isturf(loc))
+		return FALSE
+
+	for(var/k in contents)
+		var/atom/movable/A = k
+		if(!A.is_safe_to_delete(FALSE))
 			return FALSE
 
 	return ..()
 
 /atom/get_debug_name()
-	return "[src.name]([src.type])([x],[y],[z])"
+	return "[src.name]([src.type])<a href='?spectate=1;x=[x];y=[y];z=[z]'>([x],[y],[z])</a>"
 
-
+/atom/get_log_name()
+	return "[src.name]([src.type])([x],[y],[z])</a>"
 
 /atom/proc/get_inaccuracy(var/atom/source,var/atom/target,var/inaccuracy_mod = 1)
 	return 0
 
 
 /atom/proc/on_projectile_hit(var/obj/projectile/P,var/atom/hit_atom)
+	return TRUE
+
+/atom/proc/is_busy()
+	return SSprogressbars.all_progress_bars[src] ? TRUE : FALSE
+
+
+/atom/Enter(atom/movable/O,atom/oldloc) //Override default
+	return TRUE
+
+/atom/Exit(atom/movable/O,atom/oldloc) //Override default
+	return TRUE
+
+/atom/Cross(atom/movable/O) //Override default
+	return TRUE
+
+/atom/Crossed(atom/movable/O) //Override default
+	return TRUE
+
+/atom/proc/on_listen(var/atom/speaker,var/datum/source,var/text,var/language_text,var/talk_type,var/frequency,var/language=LANGUAGE_BASIC,var/talk_range=TALK_RANGE)
+	return TRUE
+
+
+/atom/proc/do_say(var/text_to_say, var/should_sanitize = TRUE, var/talk_type_to_use = TEXT_TALK,var/talk_range=TALK_RANGE,var/language_to_use=null)
+
+	if(should_sanitize)
+		text_to_say = sanitize(text_to_say)
+
+	talk(src,src,text_to_say,talk_type_to_use,null,language_to_use,talk_range)
+
 	return TRUE

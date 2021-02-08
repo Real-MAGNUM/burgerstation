@@ -21,12 +21,27 @@
 	ammo = /obj/item/bullet_cartridge/sniper_50
 
 	size = SIZE_2
-	weight = WEIGHT_2
 
-/obj/item/magazine/sniper_50/update_icon()
-	if(length(stored_bullets))
-		icon_state = "[initial(icon_state)]_1"
-	else
-		icon_state = "[initial(icon_state)]_0"
+	icon_states = 1
 
-	..()
+	value = 20
+
+/obj/item/magazine/sniper_50/explosive
+	name = "\improper .50 sniper magazine - explosive"
+	icon_state = "50EXP"
+	ammo = /obj/item/bullet_cartridge/sniper_50/explosive
+
+/obj/item/magazine/sniper_50/ion
+	name = "\improper .50 sniper magazine - ion"
+	icon_state = "50ION"
+	ammo = /obj/item/bullet_cartridge/sniper_50/ion
+
+/obj/item/magazine/sniper_50/incendiary
+	name = "\improper .50 sniper magazine - incendiary"
+	icon_state = "50INC"
+	ammo = /obj/item/bullet_cartridge/sniper_50/incendiary
+
+/obj/item/magazine/sniper_50/ap
+	name = "\improper .50 sniper magazine - armor piercing"
+	icon_state = "50AP"
+	ammo = /obj/item/bullet_cartridge/sniper_50/ap

@@ -2,11 +2,11 @@
 	name = "blob node"
 	icon_state = "node"
 	has_damaged_state = TRUE
-	health_base = 500
+	health_base = 250
 
 	health_states = 1
 
-	var/mob/living/simple/npc/blobbernaught/linked_blobbernaught
+	var/mob/living/simple/blobbernaught/linked_blobbernaught
 
 	var/next_jug = 0
 
@@ -19,6 +19,7 @@
 		if(next_jug <= world.time)
 			linked_blobbernaught = new(get_turf(src),null,1,src)
 			INITIALIZE(linked_blobbernaught)
+			FINALIZE(linked_blobbernaught)
 			return TRUE
 	else if(linked_blobbernaught.dead)
 		linked_blobbernaught = null

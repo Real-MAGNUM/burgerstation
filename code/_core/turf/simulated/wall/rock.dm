@@ -11,6 +11,17 @@
 	corner_icons = TRUE
 	corner_category = "rock"
 
+	material_id = /material/rock
+
+	health = /health/turf/
+	health_base = 500
+
+	destruction_turf = /turf/simulated/floor/cave_dirt
+
+/turf/simulated/wall/rock/on_destruction(var/mob/caller,var/damage = FALSE)
+	CREATE(/obj/structure/scenery/rocks,src)
+	return ..()
+
 /turf/simulated/wall/rock/snow
 	real_icon = 'icons/turf/wall/rock_snow.dmi'
 	real_icon_state = "wall"
@@ -28,6 +39,8 @@
 
 	corner_icons = TRUE
 	corner_category = "rock_basalt"
+
+	destruction_turf = /turf/simulated/floor/basalt
 
 
 /turf/simulated/wall/rock/brown
@@ -56,3 +69,22 @@
 
 	corner_icons = TRUE
 	corner_category = "rock_desert"
+
+/turf/simulated/wall/rock/indestructable
+	name = "bedrock wall"
+
+	real_icon = 'icons/turf/wall/rock_bedrock.dmi'
+	real_icon_state = "wall"
+
+	icon_state = "bedrock"
+
+	corner_icons = TRUE
+	corner_category = "rock_bedrock"
+
+	material_id = null
+	health = null
+	health_base = null
+	destruction_turf = null
+
+/turf/simulated/wall/rock/indestructable/can_be_attacked(var/atom/attacker,var/atom/weapon,var/params,var/damagetype/damage_type)
+	return FALSE

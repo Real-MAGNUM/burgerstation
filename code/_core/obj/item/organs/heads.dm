@@ -27,15 +27,13 @@
 	target_bounds_y_min = 23
 	target_bounds_y_max = 29
 
-	//damage_multiplier = 2
-
 	base_miss_chance = 20
 
 	health_base = 50
 
 	reagents = /reagent_container/limb
 
-	health_coefficient = 2
+	damage_coefficient = 2
 
 /obj/item/organ/head/initialize_blends()
 	add_blend("blush", desired_color = "#00FF00", desired_blend = ICON_MULTIPLY, desired_icon = 'icons/mob/living/advanced/species/human.dmi', desired_icon_state = "none", desired_type = ICON_BLEND_OVERLAY, desired_should_save = TRUE, desired_layer = worn_layer)
@@ -91,6 +89,7 @@
 	desc = "An organ."
 
 	defense_rating = CYBORG_ARMOR
+	health = /health/obj/item/organ/synthetic
 
 
 //beef
@@ -109,3 +108,13 @@
 	desc = "An organ."
 
 	defense_rating = SKELETON_ARMOR
+
+
+//skeleton
+/obj/item/organ/head/monkey
+	name = "monkey head"
+	icon = 'icons/mob/living/advanced/species/monkey.dmi'
+	desc = "An organ."
+
+/obj/item/organ/head/monkey/female
+	icon_state = BODY_HEAD_FEMALE

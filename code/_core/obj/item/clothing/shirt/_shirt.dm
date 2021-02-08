@@ -6,8 +6,5 @@
 	protected_limbs = list(BODY_TORSO,BODY_ARM_LEFT,BODY_ARM_RIGHT)
 
 	size = SIZE_3
-	weight = WEIGHT_2
-
-	value = 5
 
 	blocks_clothing = SLOT_TORSO_U

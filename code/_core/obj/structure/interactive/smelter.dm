@@ -5,11 +5,17 @@
 	icon = 'icons/obj/structure/smelter.dmi'
 	icon_state = "furnace"
 
-	plane = PLANE_WALL_ATTACHMENTS
+	plane = PLANE_OBJ
 
 	pixel_y = 2
 
 	bullet_block_chance = 50
+
+	density = TRUE
+
+	desired_light_power = 0.25
+	desired_light_range = 2
+	desired_light_color = "#FFFF00"
 
 /obj/structure/interactive/smelter/PostInitialize()
 	. = ..()
@@ -44,10 +50,11 @@
 	S.material_id = I.material_id
 	INITIALIZE(S)
 	GENERATE(S)
+	FINALIZE(S)
 	qdel(I)
 
 	return
 
-/obj/structure/interactive/smelter/Crossed(var/atom/movable/O,var/atom/new_loc,var/atom/old_loc)
+/obj/structure/interactive/smelter/Crossed(atom/movable/O)
 	smelt(O)
 	return ..()

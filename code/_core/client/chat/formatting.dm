@@ -4,28 +4,39 @@ var/global/icon/chat_language = new('icons/hud/language.dmi')
 var/global/icon/chat_toolbox = new('icons/hud/chat_toolbox_old.dmi')
 
 
-proc/format_speech(var/speaker,var/datum/source,var/text,var/talk_type,var/frequency, var/language = LANGUAGE_BASIC)
+/proc/format_language(var/speaker,var/text,var/language = LANGUAGE_BASIC) //Here lies a failed experiment
+	var/language/LA = SSlanguage.all_languages[language]
+	var/language_text = LA.process_text(speaker,text)
+	return tooltip(text,language_text)
+
+proc/format_speech(var/speaker,var/datum/source,var/text,var/talk_type,var/frequency,var/language = LANGUAGE_BASIC,var/talk_range=TALK_RANGE,var/knows_language=TRUE)
 
 	var/html = "ERROR"
 	switch(talk_type)
-		if(TEXT_WHISPER)
-			html = "<i>[format_speaker(speaker,source, language = language)] whispers, &#34;[span("whisper",text)]&#34;</i>"
 		if(TEXT_TALK)
-			html = "[format_speaker(speaker,source, language = language)] says, &#34;[span("say",text)]&#34;"
-		if(TEXT_YELL)
-			html = "[format_speaker(speaker,source, language = language)] yells, <b>&#34;[span("yell",text)]&#34;</b>"
+			if(talk_range >= YELL_RANGE)
+				html = "[format_speaker(speaker,source, language = language)] yells, &#34;[span("yell",text)]&#34;"
+			else if(talk_range <= WHISPER_RANGE)
+				html = "<i>[format_speaker(speaker,source, language = language)] whispers, &#34;[span("whisper",text)]&#34;</i>"
+			else
+				html = "[format_speaker(speaker,source, language = language)] says, &#34;[span("say",text)]&#34;"
 		if(TEXT_LOOC)
 			html = "[format_speaker(speaker,source,"LOOC", language = language)]: [span("looc",text)]"
 		if(TEXT_OOC)
 			html = "[format_speaker(speaker,source,"OOC", language = language)]: [span("ooc",text)]"
 		if(TEXT_GHOST)
-			html = "[format_speaker(speaker,source,"DEAD", language = language)] moans &#34;[span("dead",text)]&#34;"
+			html = "[format_speaker(speaker,source,"DEAD", language = language)] moans, &#34;[span("dead",text)]&#34;"
 		if(TEXT_BOT)
 			html = "[format_speaker(speaker,source,"BOT", language = language)]: [span("bot",text)]"
 		if(TEXT_RADIO)
 			ASSERT(frequency)
 			var/radio_class = "radio_[lowertext(frequency_to_name(frequency))]"
-			html = span(radio_class,"[format_speaker(speaker,source,null,frequency,language)] says, &#34;[span("say",text)]&#34;")
+			if(talk_range >= YELL_RANGE)
+				html = span(radio_class,"[format_speaker(speaker,source,null,frequency,language)] yells, &#34;[span("yell",text)]&#34;")
+			else if(talk_range <= WHISPER_RANGE)
+				html = span(radio_class,"[format_speaker(speaker,source,null,frequency,language)] whispers, &#34;[span("whisper",text)]&#34;")
+			else
+				html = span(radio_class,"[format_speaker(speaker,source,null,frequency,language)] says, &#34;[span("say",text)]&#34;")
 		if(TEXT_PM)
 			html = "[format_speaker(speaker,source,"PM_OTHER", language = language)]: [span("pm_other",text)]"
 		if(TEXT_PM_ADMIN_IN)

@@ -15,15 +15,15 @@
 
 	return ..()
 
-/obj/hud/attack(var/atom/attacker,var/atom/victim,var/list/params=list(),var/atom/blamed,var/ignore_distance = FALSE)
-	CRASH_SAFE("WARNING: [attacker] TRIES TO ATTACK [victim] WITH A HUD OBJECT!")
+/obj/hud/attack(var/atom/attacker,var/atom/victim,var/list/params=list(),var/atom/blamed,var/ignore_distance = FALSE, var/precise = FALSE,var/damage_multiplier=1)
+	CRASH_SAFE("WARNING: [attacker] TRIED TO ATTACK [victim] WITH A HUD OBJECT!")
 	return FALSE
 
 /obj/hud/proc/swap_colors(var/icon/I)
 
 	var/list/color_scheme = DEFAULT_COLORS
 
-	if(owner && owner.client)
+	if(owner && owner.client && owner.client.settings)
 		color_scheme = owner.client.settings.loaded_data["hud_colors"]
 
 	I.SwapColor(rgb(255,0,0),color_scheme[1])

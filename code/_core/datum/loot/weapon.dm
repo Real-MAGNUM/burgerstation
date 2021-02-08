@@ -10,21 +10,21 @@
 	loot_count = 2
 	chance_none = 25
 
-
-/loot/weapon/deagle
+/loot/weapon/dynamic
 	loot_table_guaranteed = list(
-		/obj/item/weapon/ranged/bullet/magazine/pistol/deagle,
-		/obj/item/weapon/ranged/bullet/magazine/pistol/deagle,
-		/obj/item/magazine/pistol_50,
-		/obj/item/magazine/pistol_50,
+		/obj/item/weapon/ranged/bullet/magazine/pistol/dynamic,
+		/obj/item/weapon/ranged/bullet/magazine/pistol/dynamic,
+		/obj/item/magazine/dynamic_50,
+		/obj/item/magazine/dynamic_50,
 	)
 
 	loot_table = list(
-		/obj/item/weapon/ranged/bullet/magazine/pistol/deagle = 1,
-		/obj/item/magazine/pistol_50 = 4
+		/obj/item/weapon/ranged/bullet/magazine/pistol/dynamic = 1,
+		/obj/item/magazine/dynamic_50 = 4
 	)
 	loot_count = 4
 	chance_none = 25
+
 
 /loot/weapon/assault_rifle
 	loot_table_guaranteed = list(
@@ -437,3 +437,45 @@
 	)
 	loot_count = 6
 	chance_none = 50
+
+
+/loot/weapon/minigun
+	loot_table_guaranteed = list(
+		/obj/item/weapon/ranged/bullet/magazine/rifle/minigun,
+		/obj/item/magazine/minigun_46
+	)
+
+	loot_table = list(
+		/obj/item/magazine/minigun_46 = 1
+	)
+	loot_count = 6
+	chance_none = 25
+
+/loot/weapon/grenade_launcher
+	loot_table_guaranteed = list(
+		/obj/item/weapon/ranged/bullet/revolver/grenade_launcher,
+		/obj/item/bullet_cartridge/grenade_40mm/,
+		/obj/item/bullet_cartridge/grenade_40mm/,
+		/obj/item/bullet_cartridge/grenade_40mm/
+	)
+
+	loot_table = list(
+		/obj/item/bullet_cartridge/grenade_40mm/ = 1
+	)
+	loot_count = 4
+	chance_none = 25
+
+/loot/weapon/gyrojet
+	loot_table_guaranteed = list(
+		/obj/item/weapon/ranged/bullet/magazine/pistol/gyrojet,
+		/obj/item/magazine/gyrojet,
+		/obj/item/magazine/gyrojet,
+		/obj/item/magazine/gyrojet
+	)
+
+	loot_table = list(
+		/obj/item/magazine/gyrojet = 1
+	)
+	loot_count = 4
+	chance_none = 25
+

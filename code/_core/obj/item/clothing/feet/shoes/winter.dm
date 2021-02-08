@@ -10,13 +10,13 @@
 	protected_limbs = list(BODY_FOOT_RIGHT)
 
 	defense_rating = list(
-		BLADE = 10,
-		BLUNT = 15,
-		PIERCE = 10,
-		LASER = -25,
-		MAGIC = -25,
-		HEAT = -50,
-		COLD = 75
+		BLADE = AP_SWORD,
+		BLUNT = AP_SWORD,
+		PIERCE = AP_SWORD,
+		LASER = -AP_SWORD,
+		ARCANE = -AP_SWORD,
+		HEAT = -AP_SWORD,
+		COLD = AP_CLUB
 	)
 
 	protection_cold = list(
@@ -25,11 +25,11 @@
 	)
 
 	size = SIZE_2
-	weight = WEIGHT_3
 
-	value = 30
 
-	slowdown_mul_worn = 1.05
+	value = 70
+
+
 
 /obj/item/clothing/feet/shoes/winter/left
 	name = "left winter boot"
@@ -38,7 +38,7 @@
 
 	item_slot = SLOT_FOOT_LEFT
 	protected_limbs = list(BODY_FOOT_LEFT)
-	blocks_clothing = SLOT_FOOT_LEFT_U
+	blocks_clothing = SLOT_FOOT_LEFT | SLOT_FOOT_LEFT_U
 
 	protection_cold = list(
 		BODY_FOOT_LEFT = 3,

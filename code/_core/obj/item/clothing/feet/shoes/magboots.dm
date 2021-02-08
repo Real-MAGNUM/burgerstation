@@ -13,21 +13,21 @@
 	protected_limbs = list(BODY_FOOT_RIGHT)
 
 	defense_rating = list(
-		BLADE = 20,
-		BLUNT = 30,
-		PIERCE = 10,
-		MAGIC = -25,
-		HEAT = -20,
-		COLD = 25,
-		FATIGUE = 100
+		BLADE = AP_SWORD,
+		BLUNT = AP_CLUB,
+		PIERCE = AP_AXE,
+		ARCANE = -AP_CLUB,
+		HEAT = AP_CLUB,
+		COLD = AP_CLUB,
+		FATIGUE = AP_CLUB,
+		PAIN = AP_GREATCLUB
 	)
 
 	size = SIZE_2
-	weight = WEIGHT_2
 
-	slowdown_mul_worn = 1.1
+	value = 200
 
-	value = 80
+	speed_bonus = -0.2
 
 /obj/item/clothing/feet/shoes/magboot/left
 	name = "left magboot"
@@ -36,7 +36,7 @@
 
 	item_slot = SLOT_FOOT_LEFT_O
 	protected_limbs = list(BODY_FOOT_LEFT)
-	blocks_clothing = SLOT_FOOT_LEFT_U
+	blocks_clothing = SLOT_FOOT_LEFT | SLOT_FOOT_LEFT_U
 
-	slowdown_mul_worn = 1.1
+
 

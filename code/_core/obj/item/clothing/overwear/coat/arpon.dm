@@ -7,14 +7,18 @@
 	protected_limbs = list(BODY_TORSO, BODY_GROIN)
 
 	defense_rating = list(
-		MAGIC = 25,
-		HEAT = 50
+		ARCANE = AP_SWORD,
+		HEAT = AP_SWORD
 	)
 
 	size = SIZE_2
-	weight = WEIGHT_1
 
-	value = 15
+	value = 20
+
+	dyeable = TRUE
+
+/obj/item/clothing/overwear/coat/apron/blue
+	color = COLOR_BLUE
 
 /obj/item/clothing/overwear/coat/apron/chef
 	name = "chef's apron"
@@ -25,19 +29,20 @@
 	protected_limbs = list(BODY_TORSO, BODY_GROIN)
 
 	defense_rating = list(
-		BLADE = 50,
-		MAGIC = 75,
-		HEAT = 50
+		ARCANE = AP_AXE,
+		HEAT = AP_AXE
 	)
 
 	size = SIZE_2
-	weight = WEIGHT_1
+
 
 	value = 400
 
+	dyeable = FALSE
+
 
 /obj/item/clothing/overwear/coat/apron/blacksmith
-	name = "blacksmith's apron"
+	name = "leather apron"
 	icon = 'icons/obj/item/clothing/suit/apron_leather.dmi'
 	desc = "An apron used to protect yourself from fire and steel shrapnel when blacksmithing.  Blacksmithing with no clothes on besides the apron is very sexy, but it's also very dangerous."
 	desc_extended = "Contains large pockets, capable of holding two Size 3 items."
@@ -50,15 +55,16 @@
 	container_max_size = SIZE_3
 
 	defense_rating = list(
-		BLADE = 25,
-		BLUNT = 25,
-		PIERCE = 25,
-		LASER = -25,
-		MAGIC = 25,
-		HEAT = 75
+		BLADE = AP_AXE,
+		BLUNT = AP_SWORD,
+		PIERCE = AP_SWORD,
+		LASER = -AP_SWORD,
+		ARCANE = AP_SWORD,
+		HEAT = AP_AXE
 	)
 
 	size = SIZE_3
-	weight = WEIGHT_3
 
-	value = 30
+	dyeable = FALSE
+
+	value = 120

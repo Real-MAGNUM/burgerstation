@@ -16,13 +16,11 @@
 	color = "#B7A33E"
 
 	defense_rating = list(
-		BLADE = 50,
-		BLUNT = 25,
-		PIERCE = 25,
-		LASER = 25,
-		MAGIC = -75
+		BLADE = AP_AXE,
+		BLUNT = AP_AXE,
+		PIERCE = AP_AXE,
+		ARCANE = -AP_AXE
 	)
 
 	size = SIZE_5
-	weight = WEIGHT_5
 

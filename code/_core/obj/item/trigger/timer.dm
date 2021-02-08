@@ -8,11 +8,15 @@
 	var/time_min = 0
 	var/time_max = 300
 
-	var/active = FALSE
-
 	var/spam_fix_time = 0
 
 	var/mob/last_caller = null
+
+	value = 20
+
+/obj/item/device/timer/Destroy()
+	last_caller = null
+	return ..()
 
 /obj/item/device/timer/save_item_data(var/save_inventory = TRUE)
 	. = ..()
@@ -25,6 +29,8 @@
 	return .
 
 /obj/item/device/timer/click_self(var/mob/caller)
+	INTERACT_CHECK
+	SPAM_CHECK(5)
 	trigger(caller,src,-1,-1)
 	return TRUE
 
@@ -32,20 +38,24 @@
 	last_caller = caller
 	start_thinking(src)
 	active = TRUE
-	play('sound/weapons/timer/arm.ogg',src)
-	create_alert(VIEW_RANGE,src,src,ALERT_LEVEL_NOISE)
+	var/turf/T = get_turf(src)
+	play_sound('sound/weapons/timer/arm.ogg',T,range_max=VIEW_RANGE)
+	create_alert(VIEW_RANGE,T,src,ALERT_LEVEL_NOISE)
 	return ..()
 
 /obj/item/device/timer/think()
+
 	. = ..()
-	if(active)
+
+	if(. && active)
+
 		time_set -= 1
 
 		if( (time_set % clamp( FLOOR(1 + (time_set/10),1) ,1,30)) == 0)
 			var/turf/T = get_turf(src)
 			if(T)
-				play('sound/weapons/timer/beep.ogg',src)
-				create_alert(VIEW_RANGE,src,src,ALERT_LEVEL_NOISE)
+				play_sound('sound/weapons/timer/beep.ogg',T,range_max=VIEW_RANGE)
+				create_alert(VIEW_RANGE,T,src,ALERT_LEVEL_NOISE)
 
 		if(time_set <= 0)
 			if(loc)
@@ -53,9 +63,10 @@
 			active = FALSE
 			time_set = 0
 			return FALSE
+
 	return .
 
-/obj/item/device/timer/on_mouse_wheel(var/mob/caller,delta_x,delta_y,location,control,params)
+/obj/item/device/timer/mouse_wheel_on_object(var/mob/caller,delta_x,delta_y,location,control,params)
 
 	var/fixed_delta = delta_y ? 1 : -1
 

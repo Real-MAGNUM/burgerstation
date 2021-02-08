@@ -1,6 +1,5 @@
 /obj/item/bullet_cartridge/shotgun_23/
 	rarity = RARITY_COMMON
-	id = "shotgun"
 	icon = 'icons/obj/item/bullet/shotgun_23.dmi'
 	item_count_max = 4
 	item_count_max_icon = 4
@@ -16,10 +15,9 @@
 	projectile_speed = BULLET_SPEED_LARGE_PROJECTILE
 
 	size = 0.04
-	weight = 0.04
 	value = 0.6
 
-/obj/item/bullet_cartridge/shotgun_23/can_be_worn(var/mob/living/advanced/owner,var/obj/hud/inventory/I)
+/obj/item/bullet_cartridge/shotgun_23/can_be_worn(var/mob/living/advanced/owner,var/obj/hud/inventory/I,var/messages=FALSE)
 	return TRUE
 
 /obj/item/bullet_cartridge/shotgun_23/Generate()
@@ -42,7 +40,6 @@
 	projectile_speed = BULLET_SPEED_PISTOL_LIGHT
 
 	size = 0.04
-	weight = 0.04
 	value = 4
 
 /obj/item/bullet_cartridge/shotgun_23/buckshot
@@ -61,7 +58,6 @@
 	projectile_speed = BULLET_SPEED_LARGE_PROJECTILE
 
 	size = 0.04
-	weight = 0.04
 	value = 3.5
 
 	inaccuracy_modifer = 2

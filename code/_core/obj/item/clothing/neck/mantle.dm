@@ -10,18 +10,14 @@
 	protected_limbs = list(BODY_TORSO)
 
 	defense_rating = list(
-		BLADE = 5,
-		BLUNT = 5,
-		PIERCE = 5,
-		MAGIC = 25,
-		HEAT = 25,
-		COLD = 25,
+		ARCANE = AP_AXE,
+		COLD = AP_SWORD
 	)
 
 	size = SIZE_3
-	weight = WEIGHT_2
 
-	value = 5
+
+	value = 15
 
 	dyeable = TRUE
 
@@ -33,6 +29,8 @@
 /obj/item/clothing/neck/mantle/brown
 	color = "#603A20"
 
+/obj/item/clothing/neck/mantle/white
+	color = "#e9eef5"
 
 /obj/item/clothing/neck/mantle/daddy
 	name = "dad's bib"

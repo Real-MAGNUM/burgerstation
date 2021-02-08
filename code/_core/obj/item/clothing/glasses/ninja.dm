@@ -2,20 +2,20 @@
 	name = "ninja eye mask"
 	desc = "Made in Space China."
 	desc_extended = "A cheaply made plastic ninja mask. Supposed to make you go faster."
-	icon = 'obj/item/clothing/masks/ninja.dmi'
+	icon = 'icons/obj/item/clothing/masks/ninja.dmi'
 	rarity = RARITY_MYTHICAL
 
 	defense_rating = list(
-		BLADE = 25,
-		BLUNT = 5,
-		PIERCE = 5
+		BLADE = AP_DAGGER,
+		BLUNT = AP_DAGGER,
+		PIERCE = AP_DAGGER
 	)
 
 	size = SIZE_1
-	weight = WEIGHT_1
+
 
 	worn_layer = LAYER_MOB_CLOTHING_NECK_OVER
 
 	value = 40
 
-	slowdown_mul_worn = 0.95
+	speed_bonus = 0.1

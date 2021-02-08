@@ -6,23 +6,23 @@
 	rarity = RARITY_UNCOMMON
 
 	defense_rating = list(
-		BLADE = 75,
-		BLUNT = 50,
-		PIERCE = 50,
-		LASER = 25,
-		MAGIC = -50,
-		HEAT = 100,
-		COLD = 75,
-		BOMB = 25,
-		BIO = 75,
-		RAD = 75
+		BLADE = AP_AXE,
+		BLUNT = AP_AXE,
+		PIERCE = AP_AXE,
+		LASER = AP_AXE,
+		ARCANE = -AP_GREATSWORD,
+		HEAT = AP_CLUB,
+		COLD = AP_CLUB,
+		BOMB = AP_AXE,
+		BIO = AP_SWORD,
+		RAD = AP_SWORD
 	)
 
 	size = SIZE_7
-	weight = WEIGHT_7
+
 
 	additional_clothing = list(/obj/item/clothing/head/helmet/hardsuit/mining)
 
-	slowdown_mul_worn = 1.2
+	value = 1000
 
-	value = 80
+	loyalty_tag = "NanoTrasen"

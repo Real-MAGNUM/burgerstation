@@ -10,12 +10,13 @@
 	size = MAX_INVENTORY_X*3*SIZE_3
 	container_max_size = SIZE_4
 
-	weight = WEIGHT_4
+
+	weight = 20
 
 	value = 100
 
-	slowdown_mul_worn = 1.5
-	slowdown_mul_held = 1.3
+
+
 
 /obj/item/clothing/back/storage/dufflebag/loadout/pmc
 	color = COLOR_WHITE

@@ -11,14 +11,48 @@
 	desired_light_color = null //Set in update_icon
 
 	layer = LAYER_OBJ
-	plane = PLANE_OBJ
-
-	var/on = TRUE
+	plane = PLANE_FLOOR
 
 	color = "#FFFFAA"
 	var/color_frame = "#888888"
 
+	collision_bullet_flags = FLAG_COLLISION_SPECIFIC
 
+	health = /health/construction
+
+	health_base = 10
+
+	lightswitch = TRUE
+
+
+/obj/structure/interactive/lighting/floor/on_destruction(var/mob/caller,var/damage = FALSE)
+
+	var/turf/T = get_turf(src)
+
+	if(desired_light_color)
+		desired_light_color = null
+		if(health)
+			health.restore()
+		create_destruction(T,list(/obj/item/material/shard = 1),/material/glass)
+		play('sound/effects/glass_shatter.ogg',T)
+		. = ..()
+		update_atom_light()
+		update_sprite()
+	else
+		create_destruction(T,list(/obj/item/material/sheet = 1),/material/steel)
+		. = ..()
+		qdel(src)
+
+	return .
+
+
+/obj/structure/interactive/lighting/floor/Initialize()
+
+	if(color)
+		desired_light_color = color
+		color = "#FFFFFF"
+
+	return ..()
 
 /obj/structure/interactive/lighting/floor/PostInitialize()
 	. = ..()
@@ -26,11 +60,6 @@
 	return .
 
 /obj/structure/interactive/lighting/floor/update_icon()
-
-	if(color)
-		desired_light_color = color
-	else
-		desired_light_color = "#FFFFFF"
 
 	if(desired_light_range && desired_light_power && desired_light_color)
 		set_light(desired_light_range,desired_light_power,desired_light_color)
@@ -44,38 +73,10 @@
 	F.Blend(color_frame,ICON_MULTIPLY)
 	I.Blend(F,ICON_OVERLAY)
 
-	if(on)
+	if(on && desired_light_color)
 		var/icon/L = new /icon(icon,"floor_light")
 		L.Blend(desired_light_color,ICON_MULTIPLY)
 		I.Blend(L,ICON_OVERLAY)
 
 	icon = I
 
-/obj/structure/interactive/lighting/floor/strong
-	desired_light_power = 0.4
-	desired_light_range = 8
-
-/obj/structure/interactive/lighting/floor/stronger
-	desired_light_power = 0.5
-	desired_light_range = 16
-
-
-/obj/structure/interactive/lighting/floor/color
-	name = "colored light"
-	color = "#FFFFFF"
-
-	desired_light_power = 1
-	desired_light_range = 3
-
-
-/obj/structure/interactive/lighting/floor/color/turf/Initialize()
-
-	if(loc)
-		color = loc.color
-		name = loc.color
-
-	return ..()
-
-/obj/structure/interactive/lighting/floor/syndicate
-	color = "#FFBABA"
-	color_frame = "#666666"

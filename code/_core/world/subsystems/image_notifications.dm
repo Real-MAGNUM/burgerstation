@@ -7,14 +7,13 @@ SUBSYSTEM_DEF(image_notifications)
 	priority = SS_ORDER_PRELOAD
 
 /subsystem/image_notifications/on_life()
-	for(var/var/obj/hud/screen/S in all_notifications)
+	for(var/k in all_notifications)
+		var/obj/hud/screen/S = k
 		if(S.time <= SECONDS_TO_DECISECONDS(2) && !S.is_fading && S.fade_out)
 			S.is_fading = TRUE
 			animate(S,time=SECONDS_TO_DECISECONDS(2),alpha = 0,easing=LINEAR_EASING)
-
 		if(S.time <= 0)
 			remove_notification(S.client,S)
-
 		S.time -= 1
 
 	return TRUE

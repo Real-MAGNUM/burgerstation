@@ -9,7 +9,8 @@
 	weapon_whitelist = list(
 		/obj/item/weapon/ranged/bullet/magazine/rifle/marksman = TRUE,
 		/obj/item/weapon/ranged/bullet/magazine/rifle/marksman/mod = TRUE,
-		/obj/item/weapon/ranged/bullet/magazine/rifle/assault = TRUE
+		/obj/item/weapon/ranged/bullet/magazine/rifle/assault = TRUE,
+		/obj/item/weapon/ranged/bullet/magazine/rifle/assault/equipped = TRUE
 	)
 
 	ammo = /obj/item/bullet_cartridge/rifle_308/
@@ -23,12 +24,13 @@
 	bullet_diameter_max = 7.7
 
 	size = SIZE_2
-	weight = WEIGHT_2
 
-/obj/item/magazine/rifle_308/update_icon()
-	if(length(stored_bullets))
-		icon_state = "[initial(icon_state)]_1"
-	else
-		icon_state = "[initial(icon_state)]_0"
+	icon_states = 1
 
-	..()
+	value = 10
+
+
+/obj/item/magazine/rifle_308/ap
+	name = "\improper .308 AP rifle magazine"
+	icon = 'icons/obj/item/magazine/308_rifle_ap.dmi'
+	ammo = /obj/item/bullet_cartridge/rifle_308/ap

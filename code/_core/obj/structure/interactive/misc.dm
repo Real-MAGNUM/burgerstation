@@ -1,4 +1,4 @@
-obj/structure/interactive/misc/
+obj/structure/interactive/misc/ //TODO: RENAME THIS ENTIRE CATEGORY
 	icon = 'icons/obj/structure/misc.dmi'
 
 obj/structure/interactive/misc/tv
@@ -22,20 +22,21 @@ obj/structure/interactive/misc/dresser
 
 	bullet_block_chance = 50
 
-obj/structure/interactive/misc/dresser/chargen/clicked_on_by_object(caller,object,location,control,params)
+	density = TRUE
 
-	INTERACT_CHECK
+obj/structure/interactive/misc/dresser/chargen/clicked_on_by_object(var/mob/caller,var/atom/object,location,control,params)
 
 	if(!is_advanced(caller))
 		return ..()
 
+	INTERACT_CHECK
+	INTERACT_CHECK_OBJECT
+	INTERACT_DELAY(5)
+
 	var/mob/living/advanced/A = caller
 
-	if(length(A.worn_objects))
-		return TRUE
-
-	A.equip_loadout(/loadout/new_player,TRUE)
-
+	if(!length(A.worn_objects))
+		A.equip_loadout(/loadout/new_player,TRUE)
 
 	return TRUE
 
@@ -50,7 +51,7 @@ obj/structure/interactive/misc/urinal
 	desc = "*obligatory piss joke*"
 	desc_extended = "A urinal on the wall as decor to liven up the area."
 	icon_state = "urinal"
-	plane = PLANE_WALL_ATTACHMENTS
+	plane = PLANE_OBJ
 
 
 
@@ -65,10 +66,12 @@ obj/structure/interactive/misc/mirror
 	desc = "Magic mirror on the wall, who is the most robust of them all?"
 	desc_extended = "Stand in front of this to change your appearance."
 	icon_state = "mirror"
-	plane = PLANE_WALL_ATTACHMENTS
+	plane = PLANE_OBJ
+
+	density = TRUE
 
 
-obj/structure/interactive/misc/mirror/chargen/Crossed(var/atom/movable/O,var/atom/new_loc,var/atom/old_loc)
+obj/structure/interactive/misc/mirror/chargen/Crossed(atom/movable/O)
 	if(is_player(O))
 		var/mob/living/advanced/player/P = O
 		P.add_chargen_buttons()
@@ -79,12 +82,35 @@ obj/structure/interactive/misc/mirror/chargen/Crossed(var/atom/movable/O,var/ato
 
 	return ..()
 
-obj/structure/interactive/misc/mirror/chargen/Uncrossed(var/atom/movable/O,var/atom/new_loc,var/atom/old_loc)
+obj/structure/interactive/misc/mirror/chargen/Uncrossed(atom/movable/O)
 	if(is_advanced(O))
 		var/mob/living/advanced/player/P = O
 		P.remove_chargen_buttons()
-		//P.save()
 	return ..()
+
+
+
+/obj/structure/interactive/misc/mirror/cracked
+	name = "cracked mirror"
+	desc = "It's broken."
+	desc_extended = "Who could even use this?"
+	icon_state = "mirror_broke"
+
+/obj/structure/interactive/misc/mirror/cracked/chargen/Crossed(atom/movable/O)
+	if(istype(O,/mob/living/advanced/player/antagonist/) && SSgamemode.active_gamemode.state < GAMEMODE_BOARDING)
+		var/mob/living/advanced/player/P = O
+		P.add_chargen_buttons()
+		P.handle_hairstyle_chargen(-1,update_blends=FALSE)
+		P.handle_beardstyle_chargen(-1,update_blends=FALSE)
+		P.update_all_blends()
+		P.show_hud(TRUE,FLAGS_HUD_CHARGEN,FLAGS_HUD_SPECIAL,speed=3)
+
+/obj/structure/interactive/misc/mirror/cracked/chargen/Uncrossed(atom/movable/O)
+	if(istype(O,/mob/living/advanced/player/antagonist/))
+		var/mob/living/advanced/player/P = O
+		P.remove_chargen_buttons()
+	return ..()
+
 
 obj/structure/interactive/misc/curtain_open
 	name = "curtain"
@@ -98,4 +124,4 @@ obj/structure/interactive/misc/sink
 	desc = "Wa'tr. Wa'tr free o' charge."
 	desc_extended = "A standing sink as decor to liven up the area. What? You actually expected this to dispense water free of charge?"
 	icon_state = "sink"
-	plane = PLANE_WALL_ATTACHMENTS
+	plane = PLANE_OBJ

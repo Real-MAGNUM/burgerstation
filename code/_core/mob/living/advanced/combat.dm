@@ -1,3 +1,42 @@
+
+
+
+/mob/living/advanced/send_pain(var/pain_strength=50)
+
+	var/species/S = SPECIES(species)
+
+	if(S.flags_species_traits & TRAIT_NO_PAIN)
+		return FALSE
+
+	return ..()
+
+
+/mob/living/advanced/can_be_attacked(var/atom/attacker,var/atom/weapon,var/params,var/damagetype/damage_type)
+
+	if(driving)
+		return FALSE
+
+	return ..()
+
+/mob/living/advanced/can_attack(var/atom/victim,var/atom/weapon,var/params,var/damagetype/damage_type)
+
+	if(driving && !driving.can_attack(victim,weapon,params,damage_type))
+		return FALSE
+
+	if(attack_flags & CONTROL_MOD_BLOCK)
+		return FALSE
+
+	if(handcuffed)
+		return FALSE
+
+	return ..()
+
+
+/mob/living/advanced/defer_click_on_object(var/mob/caller,location,control,params)
+	if(driving)
+		return driving
+	return ..()
+
 /mob/living/advanced/get_object_to_damage(var/atom/attacker,var/atom/weapon,var/list/params = list(),var/accurate=FALSE,var/find_closest=FALSE,var/inaccuracy_modifier=1)
 
 	if(!length(params))
@@ -15,7 +54,9 @@
 	var/obj/item/organ/best_organ
 	var/obj/item/organ/best_distance_organ
 
-	for(var/obj/item/organ/O in src.organs)
+	for(var/k in src.organs)
+
+		var/obj/item/organ/O = k
 
 		if(!O.can_be_targeted)
 			continue
@@ -46,8 +87,6 @@
 
 	return FALSE
 
-	return ..()
-
 /mob/living/proc/get_current_target_cords(params)
 	if(!params)
 		params = list(PARAM_ICON_X = 16, PARAM_ICON_Y = 16)
@@ -64,6 +103,7 @@
 
 	return attack_left[attack_mode]
 
+/*
 /mob/living/advanced/can_block(var/atom/attacker,var/atom/weapon,var/atom/target,var/damagetype/DT)
 
 	. = ..()
@@ -121,6 +161,7 @@
 		return pick(possible_parry)
 
 	return null
+*/
 
 
 
@@ -148,13 +189,13 @@
 
 	return TRUE
 
-
+/*
 /mob/living/advanced/player/proc/get_defence_key()
-	if(attack_flags & ATTACK_BLOCK)
+	if(attack_flags & CONTROL_MOD_BLOCK)
 		return "block"
 	else if(movement_flags & MOVEMENT_RUNNING)
 		return "dodge"
-	else if(attack_flags & ATTACK_ALT)
+	else if(attack_flags & CONTROL_MOD_ALT)
 		return "parry"
 	return "none"
 
@@ -178,3 +219,16 @@
 		return null
 
 	return ..()
+*/
+
+
+
+/mob/living/advanced/get_damage_received_multiplier(var/atom/attacker,var/atom/victim,var/atom/weapon,var/atom/hit_object,var/atom/blamed,var/damagetype/DT)
+
+	. = ..()
+
+	if(is_organ(hit_object))
+		var/obj/item/organ/O = hit_object
+		. *= O.damage_coefficient
+
+	return .

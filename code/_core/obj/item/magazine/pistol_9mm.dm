@@ -8,8 +8,9 @@
 
 	weapon_whitelist = list(
 		/obj/item/weapon/ranged/bullet/magazine/pistol/military = TRUE,
-		/obj/item/weapon/ranged/bullet/magazine/pistol/military/mod = TRUE,
-		/obj/item/weapon/ranged/bullet/magazine/pistol/military/nanotrasen = TRUE
+		/obj/item/weapon/ranged/bullet/magazine/pistol/military/nanotrasen = TRUE,
+		/obj/item/weapon/ranged/bullet/magazine/pistol/laton = TRUE,
+		/obj/item/weapon/ranged/bullet/magazine/pistol/yarygin = TRUE
 	)
 
 	ammo = /obj/item/bullet_cartridge/pistol_9mm
@@ -23,8 +24,7 @@
 	bullet_length_max = 20
 
 	size = SIZE_2
-	weight = WEIGHT_2
 
-/obj/item/magazine/pistol_9mm/update_icon()
-	icon_state = "[initial(icon_state)]_[CEILING(length(stored_bullets)/2,1)]"
-	return ..()
+	icon_states = 9
+
+	value = 5

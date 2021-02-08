@@ -7,7 +7,7 @@
 
 
 	projectile_speed = TILE_SIZE - 1
-	shoot_delay = 20
+	shoot_delay = 30
 
 	automatic = FALSE
 
@@ -18,7 +18,7 @@
 
 	view_punch = TILE_SIZE - 1
 
-	slowdown_mul_held = HELD_SLOWDOWN_SNIPER_LARGE
+
 
 	heat_per_shot = 0.1
 	heat_max = 0.1
@@ -31,8 +31,9 @@
 	bullet_diameter_best = 12.7
 	bullet_diameter_max = 13
 
-	size = SIZE_5
-	weight = WEIGHT_5
+	size = SIZE_4
+	weight = 30
+
 
 	value = 500
 
@@ -42,11 +43,16 @@
 
 	zoom_mul = 2
 
-/obj/item/weapon/ranged/bullet/magazine/rifle/heavy_sniper/get_static_spread() //Base spread
+	attachment_whitelist = list()
+
+	firing_pin = /obj/item/firing_pin/electronic/iff/syndicate
+
+/obj/item/weapon/ranged/bullet/magazine/rifle/heavy_sniper/get_static_spread()
 	return 0
 
-/obj/item/weapon/ranged/bullet/magazine/rifle/heavy_sniper/get_skill_spread(var/mob/living/L) //Base spread
-	return max(0,0.01 - (0.01 * L.get_skill_power(SKILL_RANGED)))
+/obj/item/weapon/ranged/bullet/magazine/rifle/heavy_sniper/get_skill_spread(var/mob/living/L)
+	if(!heat_current) return 0
+	return max(0,0.005 - (0.01 * L.get_skill_power(SKILL_RANGED)))
 
 /obj/item/weapon/ranged/bullet/magazine/rifle/heavy_sniper/get_bullet_inaccuracy(var/mob/living/L,var/atom/target,var/obj/projectile/P,var/inaccuracy_modifier)
 

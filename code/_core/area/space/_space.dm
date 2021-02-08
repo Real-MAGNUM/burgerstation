@@ -8,6 +8,15 @@
 	sunlight_freq = 4
 	sunlight_color = "#1A3E4C"
 
+	area_identifier = null
+
+	flags_area = FLAGS_AREA_NO_DAMAGE | FLAGS_AREA_NO_CONSTRUCTION | FLAGS_AREA_NO_EVENTS | FLAGS_AREA_NO_TELEPORT
+
+	sound_environment = ENVIRONMENT_UNDERWATER
+
+/area/space/is_space()
+	return TRUE
+
 /area/space/bluespace
 	name = "bluespace"
 	icon_state=  "bluespess"

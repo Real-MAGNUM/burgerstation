@@ -11,6 +11,8 @@
 
 	value = 1000
 
+	weight = 4
+
 /obj/item/supply_remote/save_item_data(var/save_inventory = TRUE)
 	. = ..()
 	SAVEVAR("charges")
@@ -21,16 +23,19 @@
 	LOADVAR("charges")
 	return .
 
-/obj/item/supply_remote/calculate_value()
+/obj/item/supply_remote/get_value()
 	return  charges ? charges * value : 10
 
 /obj/item/supply_remote/click_on_object(var/mob/caller as mob,var/atom/object,location,control,params)
 
-	if(is_inventory(object))
+	if(object.plane >= PLANE_HUD)
 		return ..()
 
+	INTERACT_CHECK
+	INTERACT_DELAY(10)
+
 	if(charges <= 0)
-		caller.to_chat(span("warning","There are no charges left!"))
+		caller.to_chat(span("warning","There are no charges left in \the [src.name]!"))
 		return TRUE
 
 	charges--
@@ -42,18 +47,46 @@
 		var/atom/movable/M = new k(T)
 		INITIALIZE(M)
 		GENERATE(M)
+		FINALIZE(M)
 		SP.add_to_crate(M)
 
 	INITIALIZE(SP)
+	FINALIZE(SP)
+
 	return TRUE
 
-/obj/item/supply_remote/gygax
+/obj/item/supply_remote/drill
+	name = "drop pod remote - Drill Kit"
+	desc_extended = "A special remote designed to drop things into the battlefield. This one contains a large mining drill and two mining braces."
+	stored_object_types = list(
+		/obj/structure/interactive/mining_drill,
+		/obj/structure/interactive/mining_brace,
+		/obj/structure/interactive/mining_brace
+	)
+	value = 1000
+
+/*
+/obj/item/supply_remote/mech/
+	value = 1000
+
+/obj/item/supply_remote/mech/ripley
+	name = "drop pod remote - Ripley Mining Mech"
+	stored_object_types = list(/mob/living/vehicle/mech/ripley)
+	value = 1000
+
+/obj/item/supply_remote/mech/gygax
 	name = "drop pod remote - Gygax Combat Mech"
-	stored_object_types = list(/mob/living/vehicle/mech/gygax/equipped)
+	stored_object_types = list(/mob/living/vehicle/mech/gygax)
+	value = 2500
+
+/obj/item/supply_remote/mech/durand
+	name = "drop pod remote - Durand Combat Mech"
+	stored_object_types = list(/mob/living/vehicle/mech/durand)
 	value = 5000
+*/
 
 /obj/item/supply_remote/crates/
-	value = 5000
+	value = 2000
 
 /obj/item/supply_remote/crates/nanotrasen
 	name = "drop pod remote - x4 NanoTrasen supply crates"
@@ -91,3 +124,11 @@
 		/obj/item/supply_crate/american,
 		/obj/item/supply_crate/american
 	)
+
+/obj/item/supply_remote/barbecue
+	name = "drop pod remote - Barbecue Kit"
+	desc_extended = "A special remote designed to drop cool essential things into the battlefield. This one contains a portable barbecue."
+	stored_object_types = list(
+		/obj/structure/smooth/table/grill/barbecue
+	)
+	value = 500

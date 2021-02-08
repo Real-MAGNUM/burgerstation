@@ -2,16 +2,10 @@
 	set hidden = TRUE
 	do_say(text_to_say)
 
-/mob/verb/emote(var/emote in SSemote.all_emotes,var/mob/target in view)
+/mob/verb/emote(var/emote as text,var/mob/target in view)
 	set name = "Emote"
 	set category = "Communication"
-
-	if(!SSemote.all_emotes[emote])
-		to_chat("Invalid emote!")
-		return FALSE
-
-	var/emote/E = SSemote.all_emotes[emote]
-	E.on_emote(src,target)
+	do_emote(text,target)
 
 /mob/verb/me(var/emote_text as text)
 	set name = "Me"
@@ -38,7 +32,7 @@
 	if(client && !check_spam(client))
 		return FALSE
 
-	do_say(text_to_say,talk_type_to_use = TEXT_WHISPER)
+	do_say(text_to_say,talk_range = WHISPER_RANGE)
 
 /mob/verb/looc(var/text_to_say as text)
 

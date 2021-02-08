@@ -7,7 +7,7 @@
 	class = /class/pirate
 	level_multiplier = 3
 
-	health_base = 1000
+	health_base = 500
 
 	loyalty_tag = "Knight"
 	iff_tag = "Knight"
@@ -23,7 +23,7 @@
 
 	. = ..()
 
-	var/species/S = all_species[species]
+	var/species/S = SPECIES(species)
 
 	sex = pick(MALE,FEMALE)
 	gender = sex

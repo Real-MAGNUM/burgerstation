@@ -15,22 +15,22 @@
 
 	var/scroll_count = 1
 
-	value = 10
+	weight = 0.1
 
 
 /obj/item/weapon/ranged/magic/scroll/save_item_data(var/save_inventory = TRUE)
 	. = ..()
-	.["scroll_count"] = scroll_count
+	SAVEVAR("scroll_count")
 	return .
 
 /obj/item/weapon/ranged/magic/scroll/load_item_data_pre(var/mob/living/advanced/player/P,var/list/object_data)
 	. = ..()
-	if(isnum(object_data["scroll_count"])) scroll_count = object_data["scroll_count"]
+	LOADVAR("scroll_count")
 	return .
 
-/obj/item/weapon/ranged/magic/scroll/calculate_value()
+/obj/item/weapon/ranged/magic/scroll/get_value()
 	. = ..()
-	. *= scroll_count
+	. *= (1 + scroll_count)
 	return .
 
 /obj/item/weapon/ranged/magic/scroll/quick(var/mob/caller as mob,var/atom/object,location,params)
@@ -38,6 +38,8 @@
 	return TRUE
 
 /obj/item/weapon/ranged/magic/scroll/click_self(var/mob/caller)
+	INTERACT_CHECK
+	INTERACT_DELAY(1)
 	open = !open
 	caller.to_chat(span("notice","You [open ? "unravel" : "roll up"] the scroll."))
 	update_sprite()
@@ -72,29 +74,33 @@
 
 /obj/item/weapon/ranged/magic/scroll/handle_empty(var/mob/caller)
 	if(!open)
-		caller.to_chat(span("notice","You must unravel the scroll before using it!"))
+		caller.to_chat(span("warning","You must unravel the scroll before using it!"))
 	else
-		caller.to_chat(span("notice","This scroll is blank and void of magic!"))
+		caller.to_chat(span("warning","This scroll is blank and void of magic!"))
 	return TRUE //No melee
 
 /obj/item/weapon/ranged/magic/scroll/click_on_object(var/mob/caller as mob,var/atom/object,location,control,params)
 
-	object = object.defer_click_on_object()
+	object = object.defer_click_on_object(location,control,params)
 
 	if(is_scroll(object))
 
+		INTERACT_CHECK
+		INTERACT_CHECK_OBJECT
+		INTERACT_DELAY(1)
+
 		if(scroll_count <= 0)
-			caller.to_chat(span("notice","This scroll is blank and void of magic!"))
+			caller.to_chat(span("warning","This scroll is blank and void of magic!"))
 			return TRUE
 
 		var/obj/item/weapon/ranged/magic/scroll/S = object
 
 		if(S.scroll_count <= 0)
-			caller.to_chat(span("notice","The scroll is blank and void of magic!"))
+			caller.to_chat(span("warning","The scroll is blank and void of magic!"))
 			return TRUE
 
-		if(S.id != id) //Need to be the exact same id.
-			caller.to_chat(span("notice","It wouldn't be a very good idea to mix scrolls together without a tome."))
+		if(S.type != type) //Need to be the exact same id.
+			caller.to_chat(span("warning","It wouldn't be a very good idea to mix scrolls together without a tome."))
 			return TRUE
 
 		var/transfer_count = S.scroll_count
@@ -111,16 +117,15 @@
 	return ..()
 
 /obj/item/weapon/ranged/magic/scroll/handle_ammo(var/mob/caller,var/bullet_position=1)
-	scroll_count -= 1
+	scroll_count--
 	update_sprite()
 	return ..()
 
 /obj/item/weapon/ranged/magic/scroll/fireball
-	name = "scroll of fireball"
-	desc = "Shoots a fireball."
-	id = "fireball"
+	name = "scroll of true fireball"
+	desc = "Shoots an explosive fireball."
 
-	projectile = /obj/projectile/magic/fireball
+	projectile = /obj/projectile/magic/fireball/explosive
 
 	ranged_damage_type = /damagetype/ranged/magic/fireball
 
@@ -129,8 +134,8 @@
 
 	shoot_sounds = list('sound/weapons/magic/fireball.ogg')
 
-	value = 20
+	value = 15
 
-/obj/item/weapon/ranged/magic/scroll/fireball/amount_3/Generate()
+/obj/item/weapon/ranged/magic/scroll/fireball/Generate()
 	scroll_count = 5
 	return ..()

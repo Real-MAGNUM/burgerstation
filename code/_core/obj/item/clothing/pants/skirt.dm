@@ -6,12 +6,11 @@
 	desc_extended = "The peak of fashion."
 
 	defense_rating = list(
-		BLADE = 15,
-		BLUNT = 10,
-		PIERCE = 10,
-		MAGIC = 25,
-		HEAT = 15,
-		COLD = 25
+		BLADE = AP_DAGGER,
+		BLUNT = AP_DAGGER,
+		PIERCE = AP_DAGGER,
+		ARCANE = AP_SWORD,
+		COLD = AP_DAGGER
 	)
 
 	dyeable = TRUE
@@ -21,7 +20,7 @@
 	)
 
 	size = SIZE_2
-	weight = WEIGHT_2
+
 
 	value = 10
 

@@ -13,17 +13,18 @@
 	rarity = RARITY_RARE
 
 	defense_rating = list(
-		BLADE = 50,
-		BLUNT = 50,
-		PIERCE = 50,
-		LASER = 50,
-		MAGIC = -100,
-		HEAT = 100,
-		COLD = 100,
-		BOMB = 25,
-		BIO = 75,
-		RAD = 75,
-		FATIGUE = 100
+		BLADE = AP_AXE,
+		BLUNT = AP_AXE,
+		PIERCE = AP_AXE,
+		LASER = AP_AXE,
+		ARCANE = -AP_GREATCLUB,
+		HEAT = AP_GREATSWORD,
+		COLD = AP_GREATSWORD,
+		BOMB = AP_AXE,
+		BIO = AP_SWORD,
+		RAD = AP_GREATSWORD,
+		FATIGUE = INFINITY,
+		PAIN = AP_GREATSWORD
 	)
 
 	protection_cold = list(
@@ -31,9 +32,8 @@
 	)
 
 	size = SIZE_1
-	weight = WEIGHT_1
 
-	value = 100
+	value = 230
 
 /obj/item/clothing/hands/gloves/engineering/left
 	name = "left engineering glove"

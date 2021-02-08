@@ -3,17 +3,17 @@
 	var/list/obj/hud/inventory/dynamic/bad_inventories = list()
 	var/good_inventory_count = 0
 
-	for(var/obj/hud/inventory/dynamic/I in inventories)
-
-		if(!length(I.held_objects) && !length(I.worn_objects))
+	for(var/k in inventories)
+		var/obj/hud/inventory/dynamic/I = k
+		if(!length(I.contents))
 			bad_inventories += I
 		else
 			good_inventory_count += 1
 
-
 	var/delete_until = good_inventory_count < 8 ? good_inventory_count : CEILING(good_inventory_count,8)
 
-	for(var/obj/hud/inventory/dynamic/I in bad_inventories)
+	for(var/k in bad_inventories)
+		var/obj/hud/inventory/dynamic/I = k
 		if(I.slot_num > delete_until)
 			inventories -= I
 			qdel(I)
@@ -22,6 +22,13 @@
 
 
 /obj/item/proc/update_inventory() //When this object's inventory was updated.
+
+	if(is_inventory(loc) && finalized)
+		var/obj/hud/inventory/I = loc
+		if(is_advanced(I.owner))
+			var/mob/living/advanced/A = I.owner
+			A.update_slowdown()
+
 	return TRUE
 
 /obj/item/Generate()
@@ -37,8 +44,9 @@
 			pre_fill_inventory(I)
 			INITIALIZE(I)
 			GENERATE(I)
+			FINALIZE(I)
 			post_fill_inventory(I)
-			add_to_inventory(null,I,FALSE,TRUE)
+			add_to_inventory(null,I,FALSE,TRUE,silent=TRUE)
 
 		return TRUE
 

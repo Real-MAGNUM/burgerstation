@@ -7,7 +7,7 @@
 	bullet_count_max = 40
 
 	weapon_whitelist = list(
-		/obj/item/weapon/ranged/bullet/magazine/rifle/nt_lmg = TRUE
+		/obj/item/weapon/ranged/bullet/magazine/rifle/lmg_nt = TRUE
 	)
 
 	ammo = /obj/item/bullet_cartridge/rifle_308/nato
@@ -21,8 +21,7 @@
 	bullet_diameter_max = 7.7
 
 	size = SIZE_3
-	weight = WEIGHT_3
 
-/obj/item/magazine/lmg_762/update_icon()
-	icon_state = "[initial(icon_state)]_[length(stored_bullets) ? 1 : 0]"
-	return ..()
+	icon_states = 1
+
+	value = 20

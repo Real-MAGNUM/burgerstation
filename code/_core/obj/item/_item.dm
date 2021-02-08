@@ -2,6 +2,12 @@
 	name = "item"
 	desc = "Oh my god it's an item."
 
+	vis_flags = VIS_INHERIT_ID | VIS_INHERIT_PLANE | VIS_INHERIT_LAYER
+
+	var/value_burgerbux
+
+	var/last_marker //The last person to name this item. Used for moderation purposes.
+
 	layer = LAYER_OBJ_ITEM
 
 	var/vendor_name = null //Name for the vender. Set to null for it to just use the initial name var.
@@ -9,7 +15,8 @@
 	var/rarity = RARITY_COMMON
 
 	var/size = 1
-	var/weight = 1
+	var/weight = 0 //DEPRICATED
+	var/quality = 100
 
 	var/list/material = list() //Stored materials
 
@@ -21,16 +28,14 @@
 	var/item_count_max = 1
 	var/item_count_max_icon = 0
 
-	var/slowdown_mul_held = 1 //Slow down multiplier. High values means more slower.
-	var/slowdown_mul_worn = 1
-
 	var/pixel_height = 2 //The z size of this, in pixels. Used for sandwiches and burgers.
+	var/pixel_height_offset = 0 //The z offset of this, in pixels. Used for sandwiches and burgers.
 
 	var/is_container = FALSE //Setting this to true will open the below inventories on use.
 	var/dynamic_inventory_count = 0
+	var/obj/hud/inventory/dynamic/dynamic_inventory_type = /obj/hud/inventory/dynamic
 	var/container_max_size = 0 //This item has a container, how much should it be able to hold in each slot?
-	var/container_max_weight = 0 //This item has a container, how much should it be able to carry in TOTAL?
-	var/container_held_slots = 0 //How much each inventory slot can hold.
+	var/container_max_slots = 0 //How much each inventory slot can hold.
 	var/container_blacklist = list()
 	var/container_whitelist = list()
 
@@ -43,6 +48,7 @@
 	var/icon_state_held_left = "held_left"
 	var/icon_state_held_right = "held_right"
 	var/icon_state_worn = "worn"
+	var/enable_held_icon_states = FALSE
 	//var/icon_state_held_single
 
 	collision_flags = FLAG_COLLISION_ITEM
@@ -66,6 +72,9 @@
 	var/list/inventory_bypass = list()
 
 	var/crafting_id = null
+
+	var/inventory_sound = 'sound/items/drop/food.ogg' //Sound when moved to an inventory.
+	var/drop_sound = 'sound/items/drop/accessory.ogg' //Sound when moved elsewhere
 
 	var/list/inventory_sounds = list(
 		'sound/effects/inventory/rustle1.ogg',
@@ -111,15 +120,10 @@
 
 	var/zoom_mul = 1 //Holding this item will grant bonus zoom.
 
-	var/list/block_difficulty = list( //Also affects parry. High values means more difficult to block. Generally 0 = level 0, 1 = level 100.
-		ATTACK_TYPE_MELEE = 0,
-		ATTACK_TYPE_RANGED = 0.9,
-		ATTACK_TYPE_MAGIC = 0.9,
-		ATTACK_TYPE_UNARMED = 2
-	)
-
 	var/dan_mode = FALSE //Special in hand sprites, used by artist D4n0w4r.
 	var/dan_icon_state = "held"
+	var/dan_icon_state_wielded = "wielded"
+	var/dan_icon_state_back = "back"
 	// list(NORTH,EAST,SOUTH,WEST)
 	var/dan_offset_pixel_x = list(8,0,-8,0) //Aligned for right hand. These values are inversed in left hand. Automatic offsets are applied for EAST and WEST.
 	var/dan_offset_pixel_y = list(0,0,0,0) //Aligned for right hand. These values are inversed in left hand.
@@ -128,18 +132,58 @@
 
 	var/obj/item/clothing/additional_clothing_parent
 
-/obj/item/get_base_value()
-	return initial(value) * item_count_current
+	var/list/block_defense_rating = DEFAULT_BLOCK
+	var/block_defense_value = 0 //Automatically calculated.
 
-/obj/item/proc/transfer_item_count_to(var/obj/item/target,var/amount_to_add = item_count_current)
-	if(!amount_to_add)
-		return 0
-	if(amount_to_add < 0)
-		return target.transfer_item_count_to(src,-amount_to_add)
-	amount_to_add = min(amount_to_add,item_count_current,target.item_count_max - target.item_count_current)
-	. = target.add_item_count(amount_to_add,TRUE)
-	src.add_item_count(-amount_to_add,TRUE)
+	var/can_hold = TRUE
+	var/can_wear = FALSE
+
+	density = 1
+
+	value = -1
+
+/obj/item/proc/get_quality_bonus(var/minimum=0.5,var/maximum=2)
+	return min(minimum + FLOOR(quality/100,0.01)*(1-minimum),maximum)
+
+/obj/item/proc/adjust_quality(var/quality_to_add=0)
+
+	quality = FLOOR(quality + quality_to_add,0.01)
+
+	if(quality <= 0)
+		visible_message(span("danger","\The [src.name] breaks!"))
+
+	return TRUE
+
+/obj/item/Crossed(atom/movable/O)
+	return TRUE
+
+/obj/item/Cross(atom/movable/O)
+	return TRUE
+
+/obj/item/Finalize()
+	. = ..()
+	if(length(polymorphs))
+		update_sprite()
+
+	for(var/k in block_defense_rating)
+		var/v = block_defense_rating[k]
+		block_defense_value += v
+
 	return .
+
+/obj/item/get_base_value()
+	return value * item_count_current * price_multiplier
+
+/obj/item/proc/transfer_item_count_to(var/obj/item/target,var/amount_to_transfer = item_count_current)
+	if(!amount_to_transfer) return 0
+	if(amount_to_transfer < 0)
+		return target.transfer_item_count_to(src,-amount_to_transfer)
+	amount_to_transfer = min(
+		amount_to_transfer, //What we want to transfer
+		item_count_current, //What we can actually transfer from
+		target.item_count_max - target.item_count_current //What the target can actually hold.
+	)
+	return target.add_item_count(-src.add_item_count(-amount_to_transfer,TRUE),TRUE)
 
 /obj/item/get_inaccuracy(var/atom/source,var/atom/target,var/inaccuracy_modifier) //Only applies to melee. For ranged, see projectile.
 	if(is_living(source))
@@ -166,6 +210,7 @@
 
 	return amount_to_add
 
+/*
 /obj/item/can_block(var/atom/attacker,var/atom/attacking_weapon,var/atom/victim,var/damagetype/DT)
 
 	if(is_living(victim))
@@ -181,13 +226,15 @@
 		return (V.get_skill_power(SKILL_PARRY)) >= block_difficulty[DT.get_attack_type()] ? src : null
 
 	return src
+*/
 
 
 /obj/item/Destroy()
 
 	additional_clothing_parent = null
 
-	for(var/obj/hud/inventory/I in inventories)
+	for(var/k in inventories)
+		var/obj/hud/inventory/I = k
 		qdel(I)
 
 	inventories.Cut()
@@ -195,7 +242,7 @@
 	last_interacted = null
 
 	if(loc)
-		drop_item()
+		drop_item(silent=TRUE)
 
 	return ..()
 
@@ -220,15 +267,16 @@
 	if(!length(inventories))
 		return null
 
-	for(var/obj/hud/inventory/I in inventories)
-		if(bypass && length(I.held_objects) >= I.held_slots)
+	for(var/k in inventories)
+		var/obj/hud/inventory/I = k
+		if(bypass && length(I.contents) >= I.max_slots)
 			continue
-		if(I.can_hold_object(object,enable_messages))
+		if(I.can_slot_object(object,enable_messages))
 			return I
 
 	return null
 
-/obj/item/proc/add_to_inventory(var/mob/caller,var/obj/item/object,var/enable_messages = TRUE,var/bypass = FALSE) //We add the object to this item's inventory.
+/obj/item/proc/add_to_inventory(var/mob/caller,var/obj/item/object,var/enable_messages = TRUE,var/bypass = FALSE,var/silent=FALSE) //We add the object to this item's inventory.
 
 	if(!length(inventories))
 		return FALSE
@@ -238,7 +286,7 @@
 	if(object != src)
 		var/obj/hud/inventory/found_inventory = can_add_to_inventory(caller,object,FALSE,bypass)
 		if(found_inventory)
-			found_inventory.add_object(object,enable_messages,bypass)
+			found_inventory.add_object(object,enable_messages,bypass,silent=silent)
 			added = TRUE
 
 	if(enable_messages && caller)
@@ -251,26 +299,27 @@
 
 /obj/item/New(var/desired_loc)
 
-	if(!damage_type || damage_type == /damagetype/default/)
-		var/size_mass = size * weight
-		switch(size_mass)
-			if(1 to 5)
+	if(is_container && size <= container_max_size)
+		log_error("Warning: [get_debug_name()] had a size ([size]) less than its container max size ([container_max_size]).")
+		size = container_max_size + 1
+
+	if(!damage_type)
+		switch(size)
+			if(0 to SIZE_3)
 				damage_type = /damagetype/item/light
-			if(5 to 10)
+			if(SIZE_3 to SIZE_5)
 				damage_type = /damagetype/item/medium
-			if(10 to INFINITY)
+			if(SIZE_5 to INFINITY)
 				damage_type = /damagetype/item/heavy
 
 	for(var/i=1, i <= length(inventories), i++)
 		var/obj/hud/inventory/new_inv = inventories[i]
 		inventories[i] = new new_inv(src)
 		//Doesn't need to be initialized as it's done later.
-		if(container_held_slots)
-			inventories[i].held_slots = container_held_slots
+		if(container_max_slots)
+			inventories[i].max_slots = container_max_slots
 		if(container_max_size)
 			inventories[i].max_size = container_max_size
-		if(container_max_weight)
-			inventories[i].max_weight = container_max_weight
 		if(container_blacklist && length(container_blacklist))
 			inventories[i].item_blacklist = container_blacklist
 		if(container_whitelist && length(container_whitelist))
@@ -281,16 +330,14 @@
 			inventories[i].inventory_temperature_mod_mod = container_temperature_mod
 
 	for(var/i=1, i <= dynamic_inventory_count, i++)
-		var/obj/hud/inventory/dynamic/D = new(src)
+		var/obj/hud/inventory/dynamic/D = new dynamic_inventory_type(src)
 		//Doesn't need to be initialized as it's done later.
 		D.id = "dynamic_[i]"
 		D.slot_num = i
-		if(container_held_slots)
-			D.held_slots = container_held_slots
+		if(container_max_slots)
+			D.max_slots = container_max_slots
 		if(container_max_size)
 			D.max_size = container_max_size
-		if(container_max_weight)
-			D.max_weight = container_max_weight
 		if(container_blacklist && length(container_blacklist))
 			D.item_blacklist = container_blacklist
 		if(container_whitelist && length(container_whitelist))
@@ -331,14 +378,27 @@
 	. = list()
 	. += div("examine_title","[ICON_TO_HTML(src.icon,src.icon_state,32,32)][src.name]")
 	. += div("rarity [rarity]",capitalize(rarity))
-	. += div("rarity","Value: [CEILING(calculate_value(TRUE),1)].")
-	. += div("weightsize","Size: [size] | Weight: [weight]")
-	. += div("examine_description","Crafting ID: [crafting_id ? crafting_id : "none"]")
+
+	if(quality <= 0)
+		. += div("rarity bad","<b>Quality</b>: BROKEN")
+	else if(quality < 100)
+		. += div("rarity bad","<b>Quality</b>: -[100 - FLOOR(quality,1)]%")
+	else if(quality > 100)
+		. += div("rarity good","<b>Quality</b>: +[FLOOR(quality,1) - 100]%")
+
+	if(luck < 50)
+		. += div("rarity bad","<b>Luck</b>: -[50 - luck]")
+	else if(luck > 50)
+		. += div("rarity good","<b>Luck</b>: +[luck-50]")
+
+	. += div("rarity","Value: [CEILING(value,1)]cr.")
+	. += div("weightsize","Size: [size], Weight: [weight]")
+
+	if(item_count_current > 1) . += div("weightsize","Quantity: [item_count_current].")
 	. += div("examine_description","\"[src.desc]\"")
 	. += div("examine_description_long",src.desc_extended)
 
 	return .
-
 
 /obj/item/proc/update_lighting_for_owner(var/obj/hud/inventory/inventory_override)
 
@@ -351,15 +411,28 @@
 		return FALSE
 
 	var/mob/living/advanced/A = I.owner
-
-	A.update_lighting()
+	A.update_single_lighting(src)
 
 	return TRUE
+
+/obj/item/post_move(var/atom/old_loc)
+
+	if(isturf(loc))
+		if(delete_on_drop)
+			qdel(src)
+			return TRUE
+		else
+			queue_delete(src,ITEM_DELETION_TIME_DROPPED,TRUE)
+	else
+		undelete(src)
+
+	return ..()
 
 /obj/item/proc/on_pickup(var/atom/old_location,var/obj/hud/inventory/new_location) //When the item is picked up or worn.
 
 	if(is_container)
-		for(var/obj/hud/inventory/I in inventories)
+		for(var/k in inventories)
+			var/obj/hud/inventory/I = k
 			I.update_owner(new_location.owner)
 
 	if(old_location && new_location)
@@ -371,25 +444,28 @@
 	if(new_location)
 		update_lighting_for_owner(new_location)
 		last_interacted = new_location.owner
+		pixel_x = initial(pixel_x)
+		pixel_y = initial(pixel_y)
 
 	return TRUE
 
 /obj/item/proc/pre_pickup(var/atom/old_location,var/obj/hud/inventory/new_location) //When the item is picked up or worn.
 	return TRUE
 
-/obj/item/set_light(range,power,color,angle,no_update)
+/obj/item/set_light(l_range, l_power, l_color = NONSENSICAL_VALUE, angle = NONSENSICAL_VALUE, no_update = FALSE,debug = FALSE)
 	. = ..()
 	update_lighting_for_owner()
 	return .
 
-/obj/item/proc/on_drop(var/obj/hud/inventory/old_inventory,var/atom/new_loc)
+/obj/item/set_light_sprite(l_range, l_power, l_color = NONSENSICAL_VALUE, angle = NONSENSICAL_VALUE, no_update = FALSE,debug = FALSE)
+	. = ..()
+	update_lighting_for_owner()
+	return .
 
-	if(delete_on_drop)
-		qdel(src)
-		return TRUE
+/obj/item/proc/on_drop(var/obj/hud/inventory/old_inventory,var/atom/new_loc,var/silent=FALSE)
 
 	if(additional_clothing_parent)
-		src.force_move(additional_clothing_parent)
+		drop_item(additional_clothing_parent) //This retracts the clothing.
 
 	if(light)
 		light.update(src)
@@ -402,19 +478,18 @@
 
 	update_lighting_for_owner(old_inventory)
 
-	queue_delete(src,ITEM_DELETION_TIME_DROPPED,TRUE)
-
 	return TRUE
 
 /obj/item/proc/inventory_to_list()
 
-	var/list/returning_list = list()
+	. = list()
 
-	for(var/obj/hud/inventory/I in inventories)
-		if(length(I.held_objects) && I.held_objects[1])
-			returning_list += I.held_objects[1]
+	for(var/k in inventories)
+		var/obj/hud/inventory/I = k
+		var/obj/item/I2 = I.get_top_object()
+		if(I2) . += I2
 
-	return returning_list
+	return .
 
 
 /obj/item/proc/can_be_held(var/mob/living/advanced/owner,var/obj/hud/inventory/I)
@@ -422,11 +497,31 @@
 		return FALSE
 	if(anchored)
 		return FALSE
+	if(unremovable)
+		return FALSE
+	if(additional_clothing_parent && is_inventory(src.loc))
+		return FALSE
+	if(!can_hold)
+		return FALSE
 	return TRUE
 
-/obj/item/proc/can_be_worn(var/mob/living/advanced/owner,var/obj/hud/inventory/I)
-	return FALSE
-
+/obj/item/proc/can_be_worn(var/mob/living/advanced/owner,var/obj/hud/inventory/I,var/messages=FALSE)
+	if(delete_on_drop)
+		if(messages) owner.to_chat("\The [src.name] cannot be removed this way!")
+		return FALSE
+	if(anchored)
+		if(messages) owner.to_chat("\The [src.name] cannot be removed this way!")
+		return FALSE
+	if(unremovable)
+		if(messages) owner.to_chat("\The [src.name] cannot be removed this way!")
+		return FALSE
+	if(additional_clothing_parent && is_inventory(src.loc))
+		if(messages) owner.to_chat("\The [src.name] cannot be removed this way!")
+		return FALSE
+	if(!can_wear)
+		if(messages) owner.to_chat("\The [src.name] cannot be worn!")
+		return FALSE
+	return TRUE
 
 /obj/item/update_icon()
 
@@ -450,92 +545,85 @@
 
 	return TRUE
 
-
-/obj/item/Cross(var/atom/movable/O)
-
-	if(istype(O,/obj/item/))
-		return TRUE
-
-	return ..()
-
 /obj/item/trigger(var/mob/caller,var/atom/source,var/signal_freq,var/signal_code)
 	last_interacted = caller
 	return ..()
 
+/obj/item/proc/get_reagents_to_consume(var/mob/living/consumer)
+	var/reagent_container/temp/T = new(src,1000)
+	reagents.transfer_reagents_to(T,get_consume_size(consumer))
+	return T.qdeleting ? null : T
+
+/obj/item/proc/get_consume_size(var/mob/living/L)
+	. = 5
+	if(is_advanced(L))
+		var/mob/living/advanced/A = L
+		if(A.species)
+			var/species/S = SSspecies.all_species[A.species]
+			. = S.bite_size
+	return .
+
+/obj/item/proc/feed(var/mob/caller,var/mob/living/target)
+	var/reagent_container/R = get_reagents_to_consume(target)
+	if(!R)
+		return FALSE
+	R.consume(caller,target)
+	return TRUE
+
 /obj/item/proc/try_transfer_reagents(var/mob/caller,var/atom/object,var/location,var/control,var/params)
 
-	if(!allow_reagent_transfer_from) //Can we transfer anything from this?
-		return FALSE
 
-	if(is_living(caller))
+
+	var/self_feed = caller == object
+
+	if(is_living(caller) && allow_reagent_transfer_from)
 		var/mob/living/L = caller
-		if(L.intent == INTENT_HARM)
-			return FALSE
+		if(L.attack_flags & CONTROL_MOD_ALT) //SPLASH
+			reagents.splash(caller,object,reagents.volume_current,FALSE,0.75)
+			return TRUE
 
-	var/atom/defer_object = object.defer_click_on_object(location,control,params)
+	if(can_feed(caller,object))
+		PROGRESS_BAR(caller,src,self_feed ? BASE_FEED_TIME_SELF : BASE_FEED_TIME,.proc/feed,caller,object)
+		PROGRESS_BAR_CONDITIONS(caller,src,.proc/can_feed,caller,object)
+		return TRUE
 
-	if(can_feed(caller,defer_object))
-		if(is_living(defer_object))
-			PROGRESS_BAR(caller,src,SECONDS_TO_DECISECONDS(1),.proc/consume,caller,defer_object)
-			PROGRESS_BAR_CONDITIONS(caller,src,.proc/can_feed,caller,defer_object)
-		else if(is_item(defer_object) && defer_object.reagents)
-			var/obj/item/I = defer_object
-			if(I.allow_reagent_transfer_to)
-				if(reagents.volume_current <= 0)
-					caller.to_chat(span("warning","\The [src.name] is empty!"))
-					return FALSE
-				if(defer_object.reagents.volume_current >= defer_object.reagents.volume_max)
-					caller.to_chat(span("warning","\The [defer_object.name] is full!"))
-					return FALSE
-				var/actual_transfer_amount = reagents.transfer_reagents_to(defer_object.reagents,transfer_amount)
-				caller.to_chat(span("notice","You transfer [actual_transfer_amount] units of liquid to \the [defer_object]."))
+	if(allow_reagent_transfer_from && is_item(object) && object.reagents)
+		var/obj/item/I = object
+		if(I.allow_reagent_transfer_to)
+			if(reagents.volume_current <= 0)
+				caller.to_chat(span("warning","\The [src.name] is empty!"))
+				return FALSE
+			if(object.reagents.volume_current >= object.reagents.volume_max)
+				caller.to_chat(span("warning","\The [object.name] is full!"))
+				return FALSE
+			var/actual_transfer_amount = reagents.transfer_reagents_to(object.reagents,transfer_amount, caller = caller)
+			caller.to_chat(span("notice","You transfer [actual_transfer_amount] units of liquid to \the [object]."))
+			//TODO: Add liquid transfer sounds.
 		return TRUE
 
 	return FALSE
 
-
-/obj/item/proc/consume(var/mob/caller,var/mob/living/consumer)
-
-	if(!reagents || !length(reagents.stored_reagents) || reagents.volume_current <= 0)
-		consumer.to_chat(span("warning","There is nothing left of \the [src] to [consume_verb]!"))
-		return FALSE
-
-	if(is_advanced(consumer))
-		var/mob/living/advanced/A = consumer
-
-		if(!A.labeled_organs[BODY_STOMACH])
-			consumer.to_chat(span("warning","You don't know how you can [consume_verb] \the [src]!"))
-			return FALSE
-
-		var/final_flavor_text = reagents.get_flavor()
-
-		if(final_flavor_text && (A.last_flavor_time + SECONDS_TO_DECISECONDS(3) <= world.time || A.last_flavor != final_flavor_text) )
-			A.last_flavor = final_flavor_text
-			A.last_flavor_time = world.time
-			final_flavor_text = "You taste [final_flavor_text]."
-		else
-			final_flavor_text = null
-
-		consumer.to_chat(span("notice","You [consume_verb] \the [src.name]."))
-
-		if(final_flavor_text)
-			consumer.to_chat(span("notice",final_flavor_text))
-
-		var/obj/item/organ/internal/stomach/S = A.labeled_organs[BODY_STOMACH]
-		return reagents.transfer_reagents_to(S.reagents,clamp(transfer_amount,0,CONSUME_AMOUNT_MAX))
-
-	return reagents.transfer_reagents_to(consumer.reagents,clamp(transfer_amount,0,CONSUME_AMOUNT_MAX))
-
 /obj/item/proc/can_feed(var/mob/caller,var/atom/target)
 
-	if(get_dist(caller,target) > 1)
+	INTERACT_CHECK_NO_DELAY(src)
+	INTERACT_CHECK_NO_DELAY(target)
+
+	if(!is_living(target))
 		return FALSE
 
-	if(caller != target && is_living(target))
-		var/mob/living/L = target
-		if(L.ckey_last && !L.ckey && !L.dead)
-			caller.to_chat(span("warning","\The [L.name]'s mouth is locked shut! They must be suffering from Space Sleep Disorder..."))
+	if(is_living(caller))
+		var/mob/living/C = caller
+		if(C.attack_flags & CONTROL_MOD_ALT) //Splash
 			return FALSE
+
+	if(!reagents)
+		return FALSE
+
+	var/mob/living/L = target
+
+	if(L.dead)
+		caller.to_chat(span("warning","\The [L.name] is dead!"))
+		return FALSE
 
 	return TRUE
 
@@ -557,4 +645,26 @@
 
 		throw_self(owner,null,null,null,x_mod*magnitude*2,y_mod*magnitude*2)
 
+	return ..()
+
+/obj/item/proc/get_overlay_ids()
+	return list("\ref[src]")
+
+/obj/item/proc/can_block()
+	return TRUE
+
+/obj/item/proc/can_parry()
+	return TRUE
+
+/obj/item/proc/get_battery()
+	return null
+
+
+/obj/item/can_attack(var/atom/victim,var/atom/weapon,var/params,var/damagetype/damage_type)
+	if(quality <= 0)
+		return FALSE
+	return ..()
+
+/obj/item/attack(var/atom/attacker,var/atom/victim,var/list/params=list(),var/atom/blamed,var/ignore_distance = FALSE, var/precise = FALSE,var/damage_multiplier=1) //The src attacks the victim, with the blamed taking responsibility
+	damage_multiplier *= FLOOR(quality/100,0.01)
 	return ..()

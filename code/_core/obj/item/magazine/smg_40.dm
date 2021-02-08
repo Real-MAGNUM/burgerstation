@@ -15,14 +15,13 @@
 	bullet_diameter_max = 11.2
 
 	weapon_whitelist = list(
-		/obj/item/weapon/ranged/bullet/magazine/smg/nanotech = TRUE
+		/obj/item/weapon/ranged/bullet/magazine/smg/p69 = TRUE,
 	)
 
 	ammo = /obj/item/bullet_cartridge/pistol_40
 
 	size = SIZE_2
-	weight = WEIGHT_2
 
-/obj/item/magazine/smg_40/update_icon()
-	icon_state = "[initial(icon_state)]_[FLOOR((length(stored_bullets)/bullet_count_max)*12,1)]"
-	return ..()
+	icon_states = 12
+
+	value = 10

@@ -6,7 +6,7 @@
 	icon_state = "inventory"
 	value = 100
 
-	shoot_delay = 2
+	shoot_delay = 1.5
 
 	automatic = TRUE
 
@@ -16,10 +16,11 @@
 
 	view_punch = 4
 
-	slowdown_mul_held = HELD_SLOWDOWN_RIFLE
+
 
 	size = SIZE_3
-	weight = WEIGHT_4
+	weight = 8
+
 
 	heat_per_shot = 0.03
 	heat_max = 0.09
@@ -36,6 +37,41 @@
 
 	override_icon_state = TRUE
 
+	attachment_whitelist = list(
+		/obj/item/attachment/barrel/charger = TRUE, /obj/item/attachment/barrel/charger/advanced = TRUE,
+		/obj/item/attachment/barrel/compensator = TRUE,
+		/obj/item/attachment/barrel/extended = TRUE,
+		/obj/item/attachment/barrel/gyro = TRUE,
+		/obj/item/attachment/barrel/laser_charger = FALSE,
+		/obj/item/attachment/barrel/suppressor = TRUE,
+
+		/obj/item/attachment/sight/laser_sight = TRUE,
+		/obj/item/attachment/sight/quickfire_adapter = TRUE,
+		/obj/item/attachment/sight/red_dot = TRUE,
+		/obj/item/attachment/sight/scope = TRUE,
+		/obj/item/attachment/sight/scope/large = FALSE,
+		/obj/item/attachment/sight/targeting_computer = TRUE,
+
+		/obj/item/attachment/stock/c20r = FALSE,
+
+		/obj/item/attachment/undermount/angled_grip = TRUE,
+		/obj/item/attachment/undermount/bipod = TRUE,
+		/obj/item/attachment/undermount/burst_adapter = TRUE,
+		/obj/item/attachment/undermount/vertical_grip = TRUE
+	)
+
+	attachment_barrel_offset_x = 32 - 16
+	attachment_barrel_offset_y = 20 - 16
+
+	attachment_sight_offset_x = 15 - 16
+	attachment_sight_offset_y = 21 - 16
+
+	attachment_undermount_offset_x = 27 - 16
+	attachment_undermount_offset_y = 17 - 16
+
+	firing_pin = /obj/item/firing_pin/electronic/iff/syndicate
+
+
 /obj/item/weapon/ranged/bullet/magazine/rifle/carbine/update_icon()
 
 	icon_state = initial(icon_state)
@@ -48,10 +84,11 @@
 	return ..()
 
 
-/obj/item/weapon/ranged/bullet/magazine/rifle/carbine/get_static_spread() //Base spread
+/obj/item/weapon/ranged/bullet/magazine/rifle/carbine/get_static_spread()
 	return 0.005
 
-/obj/item/weapon/ranged/bullet/magazine/rifle/carbine/get_skill_spread(var/mob/living/L) //Base spread
+/obj/item/weapon/ranged/bullet/magazine/rifle/carbine/get_skill_spread(var/mob/living/L)
+	if(!heat_current) return 0
 	return max(0,0.02 - (0.05 * L.get_skill_power(SKILL_RANGED)))
 
 /obj/item/weapon/ranged/bullet/magazine/rifle/carbine/get_cock_sound(var/direction="both")
@@ -64,12 +101,12 @@
 	heat_max = 0.12
 
 	size = SIZE_2
-	weight = WEIGHT_3
+
 
 	value = 120
 
-/obj/item/weapon/ranged/bullet/magazine/rifle/carbine/mod/get_static_spread() //Base spread
+/obj/item/weapon/ranged/bullet/magazine/rifle/carbine/mod/get_static_spread()
 	return 0.05
 
-/obj/item/weapon/ranged/bullet/magazine/rifle/carbine/mod/get_skill_spread(var/mob/living/L) //Base spread
+/obj/item/weapon/ranged/bullet/magazine/rifle/carbine/mod/get_skill_spread(var/mob/living/L)
 	return max(0,0.03 - (0.04 * L.get_skill_power(SKILL_RANGED)))

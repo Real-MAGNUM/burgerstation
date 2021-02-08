@@ -10,11 +10,13 @@
 	corner_icons = TRUE
 	corner_category = "basalt"
 
-	layer = LAYER_FLOOR_LARGE + 0.2
+	layer = LAYER_FLOOR_ROCK
 
 	footstep = /footstep/concrete
 
-	delay_modifier = 1.1
+	delay_modifier = 1.05
+
+	destruction_turf = /turf/simulated/hazard/lava/
 
 /turf/simulated/floor/basalt/setup_turf_light(var/sunlight_freq)
 	if(prob(10))

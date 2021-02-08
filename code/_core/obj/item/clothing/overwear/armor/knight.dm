@@ -3,25 +3,22 @@
 	desc = "Fat roll mode on!"
 	desc_extended = "Heavily padded steel armor. Provides great protection from all physical forms of damage, but makes it hard to move."
 	icon = 'icons/obj/item/clothing/suit/knight_blank.dmi'
-	item_slot = SLOT_TORSO_A | SLOT_TORSO_O
-	blocks_clothing = SLOT_TORSO_U
 	worn_layer = LAYER_MOB_CLOTHING_HARDSUIT
 	rarity = RARITY_UNCOMMON
 
 	protected_limbs = list(BODY_TORSO,BODY_GROIN,BODY_ARM_LEFT,BODY_ARM_RIGHT,BODY_HAND_LEFT,BODY_HAND_RIGHT,BODY_LEG_LEFT,BODY_LEG_RIGHT)
 
 	defense_rating = list(
-		BLADE = 75,
-		BLUNT = 50,
-		PIERCE = 50,
-		LASER = 75,
-		HEAT = 50,
-		MAGIC = -100
+		BLADE = AP_CLUB,
+		BLUNT = AP_AXE,
+		PIERCE = AP_AXE,
+		LASER = AP_AXE,
+		HEAT = -AP_AXE,
+		ARCANE = -AP_CLUB,
+		PAIN = AP_CLUB
 	)
 
 	size = SIZE_6
-	weight = WEIGHT_6
-	slowdown_mul_worn = 1.3
 
 	value = 150
 
@@ -49,17 +46,16 @@
 	rarity = RARITY_MYTHICAL
 
 	defense_rating = list(
-		BLADE = 75,
-		BLUNT = 100,
-		PIERCE = 100,
-		LASER = 100,
-		HEAT = -100,
-		MAGIC = -100
+		BLADE = AP_GREATSWORD,
+		BLUNT = AP_AXE,
+		PIERCE = AP_AXE,
+		LASER = AP_AXE,
+		HEAT = -AP_AXE,
+		ARCANE = -AP_GREATSWORD,
+		PAIN = AP_CLUB
 	)
 
 	size = SIZE_7
-	weight = WEIGHT_7
-	slowdown_mul_worn = 1.5
 
 	value = 1000
 
@@ -71,18 +67,18 @@
 	rarity = RARITY_UNCOMMON
 
 	defense_rating = list(
-		BLADE = 50,
-		BLUNT = 50,
-		PIERCE = 50,
-		LASER = 50,
-		MAGIC = -25,
-		HEAT = -25,
-		HOLY = 50,
-		DARK = -100
+		BLADE = AP_CLUB,
+		BLUNT = AP_AXE,
+		PIERCE = AP_AXE,
+		LASER = AP_AXE,
+		HEAT = -AP_AXE,
+		ARCANE = -AP_CLUB,
+		HOLY = AP_CLUB,
+		PAIN = AP_CLUB
 	)
 
 	size = SIZE_5
-	weight = WEIGHT_4
+
 
 	value = 200
 
@@ -94,16 +90,17 @@
 	rarity = RARITY_RARE
 
 	defense_rating = list(
-		BLADE = 50,
-		BLUNT = 25,
-		PIERCE = 25,
-		LASER = 50,
-		HEAT = -50,
-		MAGIC = 50
+		BLADE = AP_AXE,
+		BLUNT = AP_AXE,
+		PIERCE = AP_AXE,
+		LASER = AP_SWORD,
+		HEAT = -AP_SWORD,
+		ARCANE = AP_CLUB,
+		PAIN = AP_CLUB
 	)
 
 	size = SIZE_6
-	weight = WEIGHT_6
+
 
 	value = 300
 
@@ -111,25 +108,42 @@
 	name = "giant father's armor"
 	rarity = RARITY_LEGENDARY
 	desc = "THE LEGEND NEVER DIES"
-	desc = "A matching suit of armor for your Chaos Zweihander."
+	desc_extended = "A matching suit of armor for your Chaos Zweihander."
 	icon = 'icons/obj/item/clothing/suit/knight_daddy.dmi'
 
 	defense_rating = list(
-		BLADE = 100,
-		BLUNT = 25,
-		PIERCE = 15,
-		LASER = -25,
-		MAGIC = -100,
-		HEAT = -100,
-		COLD = 15,
-		BOMB = 10,
-		HOLY = -25,
-		DARK = -25
+		BLADE = AP_GREATSWORD,
+		BLUNT = AP_AXE,
+		PIERCE = AP_CLUB,
+		LASER = -AP_AXE,
+		ARCANE = -AP_GREATSWORD,
+		HEAT = -AP_AXE,
+		BOMB = AP_AXE
 	)
 
 	size = SIZE_7
-	weight = WEIGHT_8
 
+	value = 4000
+
+/obj/item/clothing/overwear/armor/knight/clockwork
+	name = "clockwork armor"
+	rarity = RARITY_RARE
+	desc = "HAIL RATVAR."
+	desc_extended = "A bronze plate of protective armor."
+	icon = 'icons/obj/item/clothing/suit/clockwork.dmi'
+
+	defense_rating = list(
+		BLADE = AP_AXE,
+		BLUNT = AP_AXE,
+		PIERCE = AP_AXE,
+		LASER = -AP_CLUB,
+		ARCANE = AP_CLUB,
+		HEAT = -AP_AXE
+	)
+
+	size = SIZE_6
+
+	value = 900
 
 /obj/item/clothing/overwear/armor/knight/magnus
 	name = "magnus armor"
@@ -137,21 +151,18 @@
 	rarity = RARITY_RARE
 
 	defense_rating = list(
-		BLADE = 25,
-		BLUNT = 25,
-		PIERCE = 10,
-		LASER = -25,
-		MAGIC = 75,
-		HEAT = 25,
-		COLD = 15,
-		HOLY = -25,
-		DARK = 25
+		BLADE = AP_SWORD,
+		BLUNT = AP_SWORD,
+		PIERCE = AP_SWORD,
+		LASER = -AP_SWORD,
+		ARCANE = AP_CLUB,
+		HOLY = -AP_SWORD,
+		DARK = AP_SWORD
 	)
 
 	protected_limbs = list(BODY_TORSO,BODY_GROIN)
 
 	size = SIZE_5
-	weight = WEIGHT_5
 
 	value = 300
 

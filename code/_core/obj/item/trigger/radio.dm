@@ -22,9 +22,12 @@ var/global/list/obj/item/device/radio/all_radios = list()
 
 	var/radio_sound = 'sound/items/radio.ogg'
 
-	var/broadcasting_range = VIEW_RANGE
+	var/broadcasting_range = 5
+	var/listen_range = 0 // Set to 0 to ignore distance.
 
-	value = 5
+	listener = TRUE
+
+	value = 20
 
 /obj/item/device/radio/save_item_data(var/save_inventory = TRUE)
 	. = ..()
@@ -37,24 +40,37 @@ var/global/list/obj/item/device/radio/all_radios = list()
 	return .
 
 /obj/item/device/radio/click_self(var/mob/caller,location,control,params)
+	INTERACT_CHECK
+	INTERACT_DELAY(1)
 	broadcasting = !broadcasting
 	caller.to_chat(span("notice","You toggle the receiver to <b>[broadcasting ? "always broadcast." : "only broadcast when pressed."]</b>"))
 	return TRUE
 
 /obj/item/device/radio/clicked_on_by_object(var/mob/caller as mob,var/atom/object,location,control,params)
+
 	if(!is_inventory(object))
 		return ..()
+
+	INTERACT_CHECK
+	INTERACT_CHECK_OBJECT
+	INTERACT_DELAY(1)
+
 	receiving = !receiving
 	caller.to_chat(span("notice","You toggle the speaker <b>[receiving ? "on" : "off"]</b>."))
 	return TRUE
 
-/obj/item/device/radio/on_mouse_wheel(var/mob/caller,delta_x,delta_y,location,control,params)
+/obj/item/device/radio/mouse_wheel_on_object(var/mob/caller,delta_x,delta_y,location,control,params)
 
-	var/fixed_delta = delta_y > 0 ? 1 : -1
+	INTERACT_CHECK
+
+	var/fixed_delta = delta_y > 0 ? 2 : -2
 
 	var/old_frequency = frequency
 
-	frequency = clamp(frequency + fixed_delta*0.2,frequency_min,frequency_max)
+	frequency = 1 + FLOOR(frequency + fixed_delta,2)
+
+	if(frequency > frequency_max) frequency = frequency_max
+	if(frequency < frequency_min) frequency = frequency_min
 
 	var/frequency_string = frequency_to_name(frequency)
 	if(frequency_string == "Unknown")
@@ -63,11 +79,11 @@ var/global/list/obj/item/device/radio/all_radios = list()
 	var/freq = frequency_string ? " (<b>[frequency_string]</b>)" : ""
 
 	if(old_frequency == frequency)
-		caller.to_chat("The frequency can't seem to go any [frequency == frequency_min ? "lower" : "higher"].")
+		caller.to_chat(span("warning","The frequency can't seem to go any [frequency == frequency_min ? "lower" : "higher"]!"))
 	else if(spam_fix_time <= world.time)
-		caller.to_chat("You change \the [src.name]'s frequency to [frequency] kHz[freq]...")
+		caller.to_chat(span("notice","You change \the [src.name]'s frequency to [frequency*0.1] kHz[freq]..."))
 	else
-		caller.to_chat("...[frequency] kHz[freq]...")
+		caller.to_chat(span("notice","...[frequency*0.1] kHz[freq]..."))
 
 	spam_fix_time = world.time + 20
 
@@ -96,7 +112,8 @@ list(
 /obj/item/device/radio/trigger(var/mob/caller,var/atom/source,var/signal_freq,var/signal_code)
 
 	if(signal_freq == -1) //Sent
-		for(var/obj/item/device/radio/S in all_radios)
+		for(var/k in all_radios)
+			var/obj/item/device/radio/S = k
 			if(S == src)
 				continue
 			S.trigger(caller,src,frequency,signal_code)
@@ -105,48 +122,31 @@ list(
 			loc.trigger(caller,src,signal_freq,signal_code)
 			return TRUE
 
-
-/obj/item/device/radio/proc/send_data(var/list/data = list())
-
-	if(!length(data))
+/obj/item/device/radio/on_listen(var/atom/speaker,var/datum/source,var/text,var/language_text,var/talk_type,var/frequency, var/language = LANGUAGE_BASIC,var/talk_range=TALK_RANGE)
+	if(talk_type == TEXT_RADIO) //Don't listen to other radio signals.
 		return FALSE
-
-	if(!data["frequency"])
-		data["frequency"] = frequency
-
-	var/speaker_ref = is_atom(data["speaker"]) ? "/ref[data["speaker"]]" : null
-
-	if(speaker_ref && all_unprocessed_radio_data[speaker_ref])
+	if(listen_range > 0 && get_dist(source,src) > listen_range)
 		return FALSE
-
-	all_unprocessed_radio_data[speaker_ref] = data
-
-	play(radio_sound,src)
-
-	return TRUE
-
-/obj/item/device/radio/proc/receive_data(var/list/data = list())
-
-	if(!length(data))
+	if(!broadcasting && !(frequency > 0)) //Dumb logic here, but it catches null as well as null (greater,less,equal) 0 is always 0.
 		return FALSE
-
-	if(data["frequency"] != frequency && !(data["frequency"] in listening_frequencies))
-		return FALSE
-
-	var/turf/T = get_turf(src)
-	for(var/mob/M in range(broadcasting_range,T))
-		if(!M.client)
-			continue
-		CHECK_TICK
-		M.to_chat_language(data["message"],CHAT_TYPE_RADIO,data["language"],data["message_language"])
-
-	return TRUE
+	use_radio(speaker,src,text,language_text,TEXT_RADIO,src.frequency,language,talk_range)
+	return ..()
 
 
 /obj/item/device/radio/nanotrasen
 	name = "\improper NanoTrasen Radio"
 
-	frequency_min = RADIO_FREQ_ALPHA - 2
-	frequency_max = RADIO_FREQ_SHIP + 2
+	frequency_min = RADIO_FREQ_ALPHA - 20
+	frequency_max = RADIO_FREQ_SHIP + 20
 
 	value = 15
+
+/obj/item/device/radio/syndicate
+	name = "\improper NanoTrasen Radio"
+
+	frequency_min = RADIO_FREQ_SYNDICATE
+	frequency_max = RADIO_FREQ_COMMON
+
+	frequency = RADIO_FREQ_SYNDICATE
+
+	value = 100

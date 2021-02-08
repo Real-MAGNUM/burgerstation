@@ -14,6 +14,8 @@ var/global/list/obj/hud/button/keypad_buttons = list(
 
 	var/code = 1337
 
+	value = 10
+
 /obj/item/device/keypad/save_item_data(var/save_inventory = TRUE)
 	. = ..()
 	SAVEVAR("code")
@@ -31,12 +33,15 @@ var/global/list/obj/hud/button/keypad_buttons = list(
 
 	return TRUE
 
-/obj/item/device/keypad/clicked_on_by_object(var/mob/caller,object,location,control,params)
+/obj/item/device/keypad/clicked_on_by_object(var/mob/caller,var/atom/object,location,control,params)
 
 	if(!is_player(caller))
 		return ..()
 
 	INTERACT_CHECK
+	INTERACT_CHECK_OBJECT
+	INTERACT_DELAY(5)
+
 	var/mob/living/advanced/player/P = caller
 	P.set_device_active(src)
 
@@ -54,6 +59,7 @@ var/global/list/obj/hud/button/keypad_buttons = list(
 	for(var/v in keypad_buttons)
 		var/obj/hud/button/keypad/K = new v
 		INITIALIZE(K)
+		FINALIZE(K)
 		K.update_owner(A)
 		K.update_sprite()
 

@@ -11,19 +11,17 @@
 	material_id = /material/steel
 	health_base = 1000
 
-/turf/simulated/wall/metal/on_destruction(var/atom/caller,var/damage = FALSE)
-
-	. = ..()
+/turf/simulated/wall/metal/on_destruction(var/mob/caller,var/damage = FALSE)
 
 	var/obj/structure/interactive/construction/girder/G = new(src)
 	G.material_id = material_id
 	G.color = color
 	INITIALIZE(G)
-	GENERATE(G)
+	FINALIZE(G)
 
 	create_destruction(src,list(/obj/item/material/sheet/ = 4),material_id)
 
-	return .
+	return ..()
 
 /*
 /turf/simulated/wall/metal/rusted
@@ -33,6 +31,9 @@
 	corner_icons = TRUE
 	corner_category = "metal"
 */
+
+/turf/simulated/wall/metal/crew
+	color = "#3D4A4A"
 
 /turf/simulated/wall/metal/reinforced
 	name = "plasteel reinforced steel wall"
@@ -51,6 +52,9 @@
 /turf/simulated/wall/metal/reinforced/syndicate
 	color = COLOR_IRON
 	reinforced_color = "#FF0000"
+
+/turf/simulated/wall/metal/reinforced/syndicate/shuttle
+	plane = PLANE_SHUTTLE
 
 /*
 /turf/simulated/wall/metal/reinforced/rusted

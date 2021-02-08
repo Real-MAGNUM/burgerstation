@@ -18,20 +18,23 @@
 	dyeable = TRUE
 
 	defense_rating = list(
-		MAGIC = 10,
-		COLD = 25,
-		HEAT = -10
+		ARCANE = AP_SWORD,
+		COLD = AP_DAGGER,
+		HEAT = -AP_DAGGER
 	)
 
 	size = SIZE_0
-	weight = WEIGHT_0
 
-	value = 3
+	speed_bonus = 0.05
+
+
 
 /obj/item/clothing/feet/socks/ankle
 	name = "ankle high socks"
 	icon = 'icons/obj/item/clothing/socks/normal.dmi'
 	polymorphs = null
+
+	value = 3
 
 /obj/item/clothing/feet/socks/knee
 	name = "knee high socks"
@@ -40,7 +43,7 @@
 		"sock" = COLOR_WHITE
 	)
 
-	value = 5
+	value = 3
 
 /obj/item/clothing/feet/socks/knee/white
 	polymorphs = list(
@@ -58,6 +61,8 @@
 		"sock" = "#53512A",
 		"stripes" = "#32321B"
 	)
+
+	value = 3
 
 /obj/item/clothing/feet/socks/thigh/
 	name = "thigh high sock"

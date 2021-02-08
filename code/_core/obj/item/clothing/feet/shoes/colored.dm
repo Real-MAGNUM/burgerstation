@@ -9,21 +9,21 @@
 
 	item_slot = SLOT_FOOT_RIGHT
 	protected_limbs = list(BODY_FOOT_RIGHT)
+	blocks_clothing = SLOT_FOOT_RIGHT_U | SLOT_FOOT_RIGHT
 
 	no_initial_blend = TRUE
 
 	defense_rating = list(
-		BLADE = 5,
-		BLUNT = 5,
-		PIERCE = 5,
-		MAGIC = 25,
-		HEAT = 5,
-		COLD = 5,
-		FATIGUE = 10
+		BLADE = AP_DAGGER,
+		BLUNT = AP_DAGGER,
+		PIERCE = AP_DAGGER,
+		ARCANE = AP_AXE,
+		COLD = AP_SWORD,
+		PAIN = AP_DAGGER
 	)
 
 	size = SIZE_1
-	weight = WEIGHT_1
+
 
 	dyeable = TRUE
 
@@ -33,9 +33,11 @@
 		"sole" = COLOR_GREY_LIGHT
 	)
 
-	value = 10
+	value = 30
 
-	slowdown_mul_worn = 0.95
+
+
+	drop_sound = 'sound/items/drop/shoes.ogg'
 
 /obj/item/clothing/feet/shoes/colored/left
 	name = "left shoe"
@@ -44,7 +46,7 @@
 
 	item_slot = SLOT_FOOT_LEFT
 	protected_limbs = list(BODY_FOOT_LEFT)
-	blocks_clothing = SLOT_FOOT_LEFT_U
+	blocks_clothing = SLOT_FOOT_LEFT | SLOT_FOOT_LEFT_U
 
 
 /obj/item/clothing/feet/shoes/colored/black
@@ -62,7 +64,7 @@
 
 	item_slot = SLOT_FOOT_LEFT
 	protected_limbs = list(BODY_FOOT_LEFT)
-	blocks_clothing = SLOT_FOOT_LEFT_U
+	blocks_clothing = SLOT_FOOT_LEFT | SLOT_FOOT_LEFT_U
 
 /obj/item/clothing/feet/shoes/colored/blacker
 	polymorphs = list(
@@ -78,7 +80,7 @@
 
 	item_slot = SLOT_FOOT_LEFT
 	protected_limbs = list(BODY_FOOT_LEFT)
-	blocks_clothing = SLOT_FOOT_LEFT_U
+	blocks_clothing = SLOT_FOOT_LEFT | SLOT_FOOT_LEFT_U
 
 
 /obj/item/clothing/feet/shoes/colored/brown
@@ -95,4 +97,4 @@
 
 	item_slot = SLOT_FOOT_LEFT
 	protected_limbs = list(BODY_FOOT_LEFT)
-	blocks_clothing = SLOT_FOOT_LEFT_U
+	blocks_clothing = SLOT_FOOT_LEFT | SLOT_FOOT_LEFT_U

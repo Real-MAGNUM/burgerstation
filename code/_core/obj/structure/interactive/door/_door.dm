@@ -6,7 +6,8 @@
 #define DOOR_STATE_CLOSING_02 "closing_02"
 #define DOOR_STATE_LOCKED "locked" //Only used for singleplayer airlocks
 #define DOOR_STATE_START_OPENING "start_opening" //Only used for airlocks
-#define DOOR_STATE_DENY "denay" //Only used for airlocks
+#define DOOR_STATE_DENY "deny" //Only used for airlocks
+#define DOOR_STATE_BROKEN "broken"
 
 
 obj/structure/interactive/door
@@ -40,6 +41,8 @@ obj/structure/interactive/door
 
 	plane = PLANE_WALL
 
+	density = TRUE
+
 /obj/structure/interactive/door/New(var/desired_loc)
 
 	if(spawn_signaller)
@@ -49,6 +52,7 @@ obj/structure/interactive/door
 		S.signal_current = radio_signal
 		INITIALIZE(S)
 		GENERATE(S)
+		FINALIZE(S)
 		door_state = DOOR_STATE_CLOSED
 		locked = TRUE
 
@@ -90,7 +94,7 @@ obj/structure/interactive/door/update_icon()
 			layer = LAYER_OBJ_DOOR_CLOSED
 			set_opacity(initial(opacity))
 
-obj/structure/interactive/door/proc/toggle(var/atom/caller,var/lock = FALSE,var/force = FALSE)
+obj/structure/interactive/door/proc/toggle(var/mob/caller,var/lock = FALSE,var/force = FALSE)
 	if(door_state == DOOR_STATE_OPENED)
 		close(caller)
 		return TRUE
@@ -99,10 +103,10 @@ obj/structure/interactive/door/proc/toggle(var/atom/caller,var/lock = FALSE,var/
 		return TRUE
 	return FALSE
 
-obj/structure/interactive/door/proc/open(var/atom/caller,var/lock = FALSE,var/force = FALSE)
+obj/structure/interactive/door/proc/open(var/mob/caller,var/lock = FALSE,var/force = FALSE)
 	if(open_sound)
-		play(open_sound,src)
-		if(caller) create_alert(VIEW_RANGE,src,caller,ALERT_LEVEL_NOISE)
+		play_sound(open_sound,src.loc,range_max=VIEW_RANGE)
+		if(caller) create_alert(VIEW_RANGE,src.loc,caller,ALERT_LEVEL_NOISE)
 	door_state = DOOR_STATE_OPENING_01
 	update_sprite()
 	spawn(open_time)
@@ -110,29 +114,31 @@ obj/structure/interactive/door/proc/open(var/atom/caller,var/lock = FALSE,var/fo
 		update_sprite()
 
 
-obj/structure/interactive/door/proc/close(var/atom/caller,var/lock = FALSE,var/force = FALSE)
+obj/structure/interactive/door/proc/close(var/mob/caller,var/lock = FALSE,var/force = FALSE)
 	if(close_sound)
-		play(close_sound,src)
-		if(caller) create_alert(VIEW_RANGE,src,caller,ALERT_LEVEL_NOISE)
+		play_sound(close_sound,src.loc,range_max=VIEW_RANGE)
+		if(caller) create_alert(VIEW_RANGE,src.loc,caller,ALERT_LEVEL_NOISE)
 	door_state = DOOR_STATE_CLOSING_01
 	update_sprite()
 	spawn(close_time)
 		door_state = DOOR_STATE_CLOSED
 		update_sprite()
 
-/obj/structure/interactive/door/proc/unlock(var/atom/caller,var/force = FALSE)
+/obj/structure/interactive/door/proc/unlock(var/mob/caller,var/force = FALSE)
 	locked = FALSE
 	update_sprite()
 	return TRUE
 
-/obj/structure/interactive/door/proc/lock(var/atom/caller,var/force = FALSE)
+/obj/structure/interactive/door/proc/lock(var/mob/caller,var/force = FALSE)
 	locked = TRUE
 	update_sprite()
 	return TRUE
 
-obj/structure/interactive/door/clicked_on_by_object(var/mob/caller,object,location,control,params)
+obj/structure/interactive/door/clicked_on_by_object(var/mob/caller,var/atom/object,location,control,params)
 
 	INTERACT_CHECK
+	INTERACT_CHECK_OBJECT
+	INTERACT_DELAY(1)
 
 	var/atom/A = check_interactables(caller,object,location,control,params)
 	if(A && A.clicked_on_by_object(caller,object,location,control,params))

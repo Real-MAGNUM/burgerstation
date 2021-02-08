@@ -3,12 +3,12 @@
 	anchored      = TRUE
 	icon          = LIGHTING_ICON
 	icon_state    = LIGHTING_BASE_ICON_STATE
-	color         = LIGHTING_BASE_MATRIX
+	color         = null
 	mouse_opacity = 0
 	layer         = LAYER_LIGHTING
 	plane         = PLANE_LIGHTING
 	invisibility  = INVISIBILITY_LIGHTING
-	blend_mode    = BLEND_MULTIPLY
+	//blend_mode    = BLEND_MULTIPLY
 
 	var/needs_update = FALSE
 
@@ -27,6 +27,14 @@
 	needs_update = TRUE
 	SSlighting.overlay_queue += src
 
+	color = LIGHTING_BASE_MATRIX
+
+	. = ..()
+
+	verbs.Cut()
+
+	return .
+
 /atom/movable/lighting_overlay/Destroy()
 
 	SSlighting.total_lighting_overlays -= 1
@@ -44,13 +52,11 @@
 /atom/movable/lighting_overlay/update_overlays()
 
 	var/turf/T = loc
-	if (!isturf(T)) // Erm...
-		if (loc)
+	if(!isturf(T)) // Erm...
+		if(loc)
 			log_error("A lighting overlay realised its loc was NOT a turf (actual loc: [loc.get_debug_name()]) in update_overlay() and got deleted!")
-
 		else
 			log_error("A lighting overlay realised it was in nullspace in update_overlay() and got deleted!")
-
 		qdel(src)
 		return
 
@@ -66,7 +72,7 @@
 		cb = corners[4] || dummy_lighting_corner
 		ca = corners[1] || dummy_lighting_corner
 
-	var/max = max(cr.cache_mx, cg.cache_mx, cb.cache_mx, ca.cache_mx)
+	//var/max = max(cr.cache_mx, cg.cache_mx, cb.cache_mx, ca.cache_mx)
 	luminosity = 1
 
 	var/rr = cr.cache_r
@@ -88,12 +94,11 @@
 	if ((rr & gr & br & ar) && (rg + gg + bg + ag + rb + gb + bb + ab == 8))
 		icon_state = LIGHTING_TRANSPARENT_ICON_STATE
 		color = null
+	/*
 	else if (max < LIGHTING_SOFT_THRESHOLD)
 		icon_state = LIGHTING_DARKNESS_ICON_STATE
 		color = null
-	else if (rr == LIGHTING_DEFAULT_TUBE_R && rg == LIGHTING_DEFAULT_TUBE_G && rb == LIGHTING_DEFAULT_TUBE_B && ALL_EQUAL)
-		icon_state = LIGHTING_STATION_ICON_STATE
-		color = null
+	*/
 	else
 		icon_state = LIGHTING_BASE_ICON_STATE
 		if (islist(color))
@@ -120,11 +125,13 @@
 				0, 0, 0, 1
 			)
 
-#undef ALL_EQUAL
+	/*
+	//if(max > LIGHTING_SOFT_THRESHOLD)
+		luminosity = 1
+		T.darkness = 0 //set the turf's darkness when calculated
+	else
+		luminosity = 1
+		T.darkness = 0
+	*/
 
-/*
-// Override here to prevent things accidentally moving around overlays.
-/atom/movable/lighting_overlay/force_move(atom/destination, no_tp = FALSE, harderforce = FALSE)
-	if(harderforce)
-		. = ..()
-*/
+#undef ALL_EQUAL

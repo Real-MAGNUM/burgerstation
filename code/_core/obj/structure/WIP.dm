@@ -6,8 +6,10 @@
 	icon = 'icons/debug/work_in_progress.dmi'
 	icon_state = "WIP"
 
-	density = 0
 	plane = PLANE_WALL
+
+	pixel_x = -16
+	pixel_y = -16
 
 
 /obj/structure/wip/main

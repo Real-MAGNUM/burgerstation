@@ -7,8 +7,6 @@
 	icon = 'icons/obj/item/container/cup/beaker.dmi'
 	icon_state = "beaker"
 
-
-
 	reagents = /reagent_container/beaker/
 
 	var/icon_count = 7
@@ -20,10 +18,21 @@
 
 	value = 5
 
+	drop_sound = 'sound/items/drop/bottle.ogg'
+
+/obj/item/container/beaker/get_consume_verb()
+	return "drink"
+
+/obj/item/container/beaker/get_consume_sound()
+	return 'sound/items/consumables/drink.ogg'
+
 /obj/item/container/beaker/get_examine_list(var/mob/examiner)
 	return ..() + div("notice",reagents.get_contents_english())
 
 /obj/item/container/beaker/click_self(var/mob/caller,location,control,params)
+
+	INTERACT_CHECK
+	INTERACT_DELAY(1)
 
 	var/initial_amount = initial(transfer_amount)
 

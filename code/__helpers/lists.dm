@@ -318,16 +318,35 @@
 			if(get_dist_real(target,A) > get_dist_real(target,B))
 				L.Swap(i,i+1)
 
+/proc/sort_by_closest_assoc(var/list/L,var/atom/target)
+
+	var/atom/A
+	var/atom/B
+
+	for(var/r=1,r<length(L),r++)
+		for(var/i=1,i<length(L),i++)
+			A = L[i]
+			A = L[A]
+			B = L[i+1]
+			B = L[B]
+			if(get_dist_real(target,A) > get_dist_real(target,B))
+				L.Swap(i,i+1)
+
+
 /proc/is_assoc_list(var/list/L) //Credit to SpaceManiac for providing this
 
-	if(!islist(L))
+	try
+		if(!islist(L) || !length(L))
+			return FALSE
+
+		for(var/k in L)
+			if(!isnum(k) && !isnull(L["[k]"]))
+				return TRUE
+
 		return FALSE
 
-	for(var/k in L)
-		if (!isnum(k) && !isnull(L["[k]"]))
-			return TRUE
-
-	return FALSE
+	catch()
+		return FALSE
 
 /proc/make_associative(var/list/flat_list)
 	. = list()

@@ -2,8 +2,7 @@ obj/structure/scenery/jungle_grass
 	name = "jungle grass"
 	icon = 'icons/obj/structure/flora/jungleflora.dmi'
 	icon_state = "grassa1"
-	layer = LAYER_GROUND_SCENERY
-	plane = PLANE_FLOOR_OBJECTS
+	layer = LAYER_FLOOR_SCENERY
 
 obj/structure/scenery/jungle_grass/New()
 	..()
@@ -17,14 +16,14 @@ obj/structure/scenery/jungle_rock
 	name = "jungle grass"
 	icon = 'icons/obj/structure/flora/jungleflora.dmi'
 	icon_state = "rock1"
-	layer = LAYER_GROUND_SCENERY
-	plane = PLANE_FLOOR_OBJECTS
+	layer = LAYER_FLOOR_SCENERY
+	plane = PLANE_FLOOR
 
 obj/structure/scenery/jungle_rock/New()
 	..()
 	icon_state = "rock[rand(1,5)]"
 
-
+/*
 obj/structure/scenery/jungle_trees
 	name = "jungle tree"
 	icon = 'icons/obj/structure/flora/jungletrees.dmi'
@@ -57,3 +56,4 @@ obj/structure/scenery/jungle_trees_small
 obj/structure/scenery/jungle_trees/New()
 	..()
 	icon_state = "tree[rand(1,6)]"
+*/

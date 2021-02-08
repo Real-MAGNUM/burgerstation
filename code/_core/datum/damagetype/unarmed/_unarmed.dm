@@ -2,15 +2,28 @@
 	name = "Body"
 	draw_blood = TRUE
 
+	hit_effect = /obj/effect/temp/impact/combat/punch
+
 	impact_sounds = list(
-		'sound/weapons/fists/punch1.ogg',
-		'sound/weapons/fists/punch2.ogg',
-		'sound/weapons/fists/punch3.ogg',
-		'sound/weapons/fists/punch4.ogg'
+		'sound/weapons/fists/light_punch_01.ogg',
+		'sound/weapons/fists/light_punch_02.ogg',
+		'sound/weapons/fists/light_punch_03.ogg',
+		'sound/weapons/fists/light_punch_04.ogg',
+		'sound/weapons/fists/light_punch_05.ogg',
+		'sound/weapons/fists/light_punch_06.ogg',
+		'sound/weapons/fists/light_punch_07.ogg'
 	)
 
-	skill_stats = list(
-		SKILL_UNARMED = 100 //100%
+	damage_type_to_fatigue = list( //What percentage of damage blocked is converted into fatigue.
+		BLADE = 0.75,
+		BLUNT = 0.75,
+		PIERCE = 0.75
+	)
+
+	experience_mod = 2
+
+	bonus_experience = list(
+		SKILL_UNARMED = 50 //50%
 	)
 
 /damagetype/unarmed/get_attack_type()

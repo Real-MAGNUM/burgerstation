@@ -1,1 +1,1 @@
-#define FALLBACK_TURF locate(VIEW_RANGE+1,VIEW_RANGE+1,2)
+#define get_turf(A) get_step(A,0x0)

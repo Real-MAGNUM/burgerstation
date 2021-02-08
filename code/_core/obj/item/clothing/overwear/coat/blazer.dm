@@ -12,14 +12,14 @@
 	container_max_size = SIZE_2
 
 	size = SIZE_3
-	weight = WEIGHT_3
+
 
 	defense_rating = list(
-		BLADE = 10,
-		PIERCE = 10,
-		MAGIC = 25,
-		HEAT = -25,
-		COLD = 25
+		BLADE = AP_DAGGER,
+		PIERCE = AP_DAGGER,
+		ARCANE = AP_SWORD,
+		HEAT = -AP_SWORD,
+		COLD = AP_SWORD
 	)
 
-	value = 10
+	value = 30

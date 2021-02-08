@@ -16,10 +16,8 @@
 
 	view_punch = 4
 
-	slowdown_mul_held = HELD_SLOWDOWN_PISTOL
-
 	size = SIZE_2
-	weight = WEIGHT_3
+	weight = 5
 
 	heat_per_shot = 0.01
 	heat_max = 0.03
@@ -36,8 +34,10 @@
 
 	inaccuracy_modifer = 0.25
 
-/obj/item/weapon/ranged/bullet/magazine/pistol/tranq/get_static_spread() //Base spread
+	firing_pin = /obj/item/firing_pin/electronic/iff/nanotrasen
+
+/obj/item/weapon/ranged/bullet/magazine/pistol/tranq/get_static_spread()
 	return 0
 
-/obj/item/weapon/ranged/bullet/magazine/pistol/tranq/get_skill_spread(var/mob/living/L) //Base spread
+/obj/item/weapon/ranged/bullet/magazine/pistol/tranq/get_skill_spread(var/mob/living/L)
 	return max(0,0.02 - (0.04 * L.get_skill_power(SKILL_RANGED)))

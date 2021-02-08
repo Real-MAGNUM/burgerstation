@@ -5,20 +5,21 @@
 	icon = 'icons/obj/item/weapons/ranged/smg/9mm.dmi'
 	icon_state = "inventory"
 
-	shoot_delay = 2
+	shoot_delay = 1.5
 
 	automatic = TRUE
 
-	shoot_sounds = list('sound/weapons/silenced/fire.ogg')
+	shoot_sounds = list('sound/weapons/45/shoot.ogg')
 
 	can_wield = FALSE
 
 	view_punch = 4
 
-	slowdown_mul_held = HELD_SLOWDOWN_SMG
+
 
 	size = SIZE_2
-	weight = WEIGHT_2
+	weight = 7
+
 
 	heat_per_shot = 0.03
 	heat_max = 0.09
@@ -35,8 +36,43 @@
 
 	ai_heat_sensitivity = 0.5
 
-/obj/item/weapon/ranged/bullet/magazine/smg/handheld/get_static_spread() //Base spread
-	return 0.02
+	attachment_whitelist = list(
+		/obj/item/attachment/barrel/charger = TRUE, /obj/item/attachment/barrel/charger/advanced = TRUE,
+		/obj/item/attachment/barrel/compensator = TRUE,
+		/obj/item/attachment/barrel/extended = TRUE,
+		/obj/item/attachment/barrel/gyro = TRUE,
+		/obj/item/attachment/barrel/laser_charger = FALSE,
+		/obj/item/attachment/barrel/suppressor = TRUE,
 
-/obj/item/weapon/ranged/bullet/magazine/smg/handheld/get_skill_spread(var/mob/living/L) //Base spread
+		/obj/item/attachment/sight/laser_sight = TRUE,
+		/obj/item/attachment/sight/quickfire_adapter = TRUE,
+		/obj/item/attachment/sight/red_dot = TRUE,
+		/obj/item/attachment/sight/scope = FALSE,
+		/obj/item/attachment/sight/scope/large = FALSE,
+		/obj/item/attachment/sight/targeting_computer = TRUE,
+
+		/obj/item/attachment/stock/c20r = FALSE,
+
+		/obj/item/attachment/undermount/angled_grip = TRUE,
+		/obj/item/attachment/undermount/bipod = TRUE,
+		/obj/item/attachment/undermount/burst_adapter = TRUE,
+		/obj/item/attachment/undermount/vertical_grip = TRUE
+	)
+
+	attachment_barrel_offset_x = 28 - 16
+	attachment_barrel_offset_y = 25 - 16
+
+	attachment_sight_offset_x = 12 - 16
+	attachment_sight_offset_y = 26 - 16
+
+	attachment_undermount_offset_x = 22 - 16
+	attachment_undermount_offset_y = 17 - 16
+
+	firing_pin = /obj/item/firing_pin/electronic/iff/syndicate
+
+/obj/item/weapon/ranged/bullet/magazine/smg/handheld/get_static_spread()
+	return 0.015
+
+/obj/item/weapon/ranged/bullet/magazine/smg/handheld/get_skill_spread(var/mob/living/L)
+	if(!heat_current) return 0
 	return max(0,0.01 - (0.04 * L.get_skill_power(SKILL_RANGED)))

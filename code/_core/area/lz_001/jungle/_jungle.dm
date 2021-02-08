@@ -1,5 +1,5 @@
 /area/lz_001/jungle/
-	name = "jungle"
+	name = "\improper Vinetangle Jungle"
 	icon_state = "jungle"
 	weather = WEATHER_RAIN
 	ambient_temperature = T0C + 40
@@ -20,3 +20,7 @@
 		'sound/ambient/ambiruin_6.ogg',
 		'sound/ambient/ambiruin_7.ogg',
 	)
+
+	tracks = TRACKS_JUNGLE
+
+	sound_environment = ENVIRONMENT_PLAIN

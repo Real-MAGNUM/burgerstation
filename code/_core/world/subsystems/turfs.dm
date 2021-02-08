@@ -7,13 +7,56 @@ SUBSYSTEM_DEF(turfs)
 	tick_rate = DECISECONDS_TO_TICKS(1)
 
 	var/list/queued_edges = list()
+	var/list/wet_turfs = list()
+
+	cpu_usage_max = 50
+	tick_usage_max = 50
+
+	var/list/seeds = list() //id = value
+
+/subsystem/turfs/unclog(var/mob/caller)
+
+	for(var/k in wet_turfs)
+		wet_turfs -= k
+
+	for(var/k in queued_edges)
+		queued_edges -= k
+
+	broadcast_to_clients(span("danger","Removed all wet turfs and queued edges."))
+
+	return ..()
 
 /subsystem/turfs/Initialize()
 
-	set background = 1
+	set background = TRUE
 
-	if(!ENABLE_TURFGEN)
-		return
+	for(var/i=1,i<=10,i++) //Generate 10 seeds.
+		seeds += rand(1,99999)
+
+	var/found_turfs = 0
+	var/turf_generation_count = 0
+	var/object_generation_count = 0
+
+	for(var/turf/simulated/T in world)
+		T.world_spawn = TRUE
+		found_turfs++
+
+	log_subsystem(name,"Found [found_turfs] simulated turfs.")
+
+	for(var/turf/unsimulated/generation/G in world)
+		G.pre_generate()
+
+	for(var/turf/unsimulated/generation/G in world)
+		G.generate()
+		turf_generation_count++
+
+	log_subsystem(name,"Randomly Generated [turf_generation_count] turfs.")
+
+	for(var/obj/marker/generation/G in world)
+		G.generate()
+		object_generation_count++
+
+	log_subsystem(name,"Randomly Generated [object_generation_count] random islands.")
 
 	var/turf_count = 0
 
@@ -26,10 +69,34 @@ SUBSYSTEM_DEF(turfs)
 
 	return ..()
 
+/subsystem/turfs/proc/process_queued_edge(var/turf/T)
+	CHECK_TICK(75,FPS_SERVER*3)
+	T.update_sprite()
+	queued_edges -= T
+	return TRUE
+
+/subsystem/turfs/proc/process_wet_turf(var/turf/simulated/T)
+	CHECK_TICK(75,FPS_SERVER*3)
+	T.wet_level = max(0, T.wet_level - T.wet_level*T.drying_mul - T.drying_add)
+	if(T.wet_level <= 0)
+		wet_turfs -= T
+		T.overlays.Cut()
+		T.update_overlays()
+	return TRUE
+
+
 /subsystem/turfs/on_life()
-	for(var/turf/T in queued_edges)
-		T.update_sprite()
-		queued_edges -= T
+
+	for(var/k in queued_edges)
+		var/turf/T = k
+		if(process_queued_edge(T) == null)
+			queued_edges -= k
+
+	for(var/k in wet_turfs)
+		var/turf/simulated/T = k
+		if(process_wet_turf(T) == null)
+			wet_turfs -= k
+
 	return TRUE
 
 /proc/queue_update_turf_edges(var/turf/T)

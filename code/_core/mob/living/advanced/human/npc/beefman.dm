@@ -21,6 +21,8 @@
 		/obj/item/container/food/dynamic/meat/raw_beefman
 	)
 
+	has_hard_crit = FALSE
+
 /mob/living/advanced/npc/beefman/Initialize()
 	. = ..()
 	change_organ_visual("skin", desired_color = pick("#C42F36","#A02518","#742210","#541900","#261007"))
@@ -31,7 +33,7 @@
 /mob/living/advanced/npc/beefman/on_damage_received(var/atom/atom_damaged,var/atom/attacker,var/atom/weapon,var/list/damage_table,var/damage_amount,var/critical_hit_multiplier,var/stealthy=FALSE)
 
 	if(damage_amount > 20 & luck(src,20 + damage_amount,FALSE))
-		play('sound/weapons/beef/beef_grab.ogg',atom_damaged)
+		play_sound('sound/weapons/beef/beef_grab.ogg',get_turf(atom_damaged),range_max=VIEW_RANGE)
 		add_status_effect(STAGGER,5,5,source = attacker)
 
 	return ..()
@@ -39,8 +41,8 @@
 /mob/living/advanced/npc/beefman/proc/beef()
 	if(!health)
 		return FALSE
-	var/brute_to_remove = health.get_brute_loss()*0.5
-	var/burn_to_remove = health.get_burn_loss()*0.5
+	var/brute_to_remove = health.get_loss(BRUTE)*0.5
+	var/burn_to_remove = health.get_loss(BURN)*0.5
 	if(health.health_current + brute_to_remove + burn_to_remove <= 0)
 		return FALSE
 	health.adjust_loss_smart(brute=-brute_to_remove,burn=-burn_to_remove)

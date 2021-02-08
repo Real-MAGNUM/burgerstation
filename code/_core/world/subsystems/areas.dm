@@ -15,19 +15,25 @@ SUBSYSTEM_DEF(area)
 	var/is_sandstorming = TRUE
 	var/is_volcanic = TRUE
 
-/subsystem/area/Initialize()
+	var/list/all_areas = list()
 
-	if(!ENABLE_WEATHERGEN)
-		return ..()
+	var/list/areas_by_identifier = list()
+
+/subsystem/area/Initialize()
 
 	var/area_count = 0
 
 	for(var/area/A in world)
+		all_areas[A.type] = A
+		if(A.area_identifier)
+			if(!areas_by_identifier[A.area_identifier])
+				areas_by_identifier[A.area_identifier] = list()
+			areas_by_identifier[A.area_identifier] += A
 		INITIALIZE(A)
 		area_count += 1
 		if(length(A.random_sounds))
 			areas_ambient += A
-		if(A.weather)
+		if(ENABLE_WEATHERGEN && A.weather)
 			A.invisibility = 0
 			A.alpha = 0
 			switch(A.weather)
@@ -40,6 +46,9 @@ SUBSYSTEM_DEF(area)
 				if(WEATHER_VOLCANIC)
 					areas_volcanic += A
 
+
+	sortTim(all_areas,/proc/cmp_path_asc,associative=TRUE)
+
 	/*
 	if(run_unit_tests)
 		log_subsystem(name,"Initialized [length(areas_snow)] snow areas.")
@@ -50,10 +59,11 @@ SUBSYSTEM_DEF(area)
 
 	log_subsystem(name,"Initialized [area_count] total areas.")
 
-	set_weather(WEATHER_RAIN,is_raining,areas_rain)
-	set_weather(WEATHER_SNOW,is_snowing,areas_snow)
-	set_weather(WEATHER_SANDSTORM,is_sandstorming,areas_sandstorm)
-	set_weather(WEATHER_VOLCANIC,is_volcanic,areas_volcanic)
+	if(ENABLE_WEATHERGEN)
+		set_weather(WEATHER_RAIN,is_raining,areas_rain)
+		set_weather(WEATHER_SNOW,is_snowing,areas_snow)
+		set_weather(WEATHER_SANDSTORM,is_sandstorming,areas_sandstorm)
+		set_weather(WEATHER_VOLCANIC,is_volcanic,areas_volcanic)
 
 	return ..()
 
@@ -75,8 +85,9 @@ SUBSYSTEM_DEF(area)
 		is_volcanic = !is_volcanic
 		set_weather(WEATHER_VOLCANIC,is_volcanic,areas_volcanic)
 
-	for(var/area/A in areas_ambient)
-		CHECK_TICK
+	for(var/k in areas_ambient)
+		var/area/A = k
+		CHECK_TICK(tick_usage_max,0)
 		var/sound_to_play = pick(A.random_sounds)
 		var/list/valid_players = list()
 		for(var/mob/living/advanced/player/P in A.contents)
@@ -89,8 +100,9 @@ SUBSYSTEM_DEF(area)
 	return TRUE
 
 /subsystem/area/proc/set_weather(var/weather_type,var/enabled=FALSE,var/list/area/affected_areas)
-	for(var/area/A in affected_areas)
-		CHECK_TICK
+	for(var/k in affected_areas)
+		var/area/A = k
+		CHECK_TICK(tick_usage_max,0)
 		if(enabled)
 			A.icon = 'icons/area/weather.dmi'
 			A.icon_state = weather_type

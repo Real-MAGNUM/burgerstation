@@ -19,20 +19,17 @@ SUBSYSTEM_DEF(ban)
 
 	//Get the banlist
 	if(fexists(BANLIST_KEYS_DIR))
-		bans_keys = json_decode(file2text(BANLIST_KEYS_DIR))
-		fdel(BANLIST_KEYS_DIR)
+		bans_keys = json_decode(rustg_file_read(BANLIST_KEYS_DIR))
 	else
 		bans_keys_changed = 1
 
 	if(fexists(BANLIST_ADDRESS_DIR))
-		bans_address = json_decode(file2text(BANLIST_ADDRESS_DIR))
-		fdel(BANLIST_ADDRESS_DIR)
+		bans_address = json_decode(rustg_file_read(BANLIST_ADDRESS_DIR))
 	else
 		bans_address_changed = 1
 
 	if(fexists(BANLIST_COMPUTER_DIR))
-		bans_computer_ids = json_decode(file2text(BANLIST_COMPUTER_DIR))
-		fdel(BANLIST_COMPUTER_DIR)
+		bans_computer_ids = json_decode(rustg_file_read(BANLIST_COMPUTER_DIR))
 	else
 		bans_computer_changed = 1
 
@@ -64,13 +61,13 @@ SUBSYSTEM_DEF(ban)
 
 	//Save the banlist
 	if(bans_keys_changed)
-		text2file(json_encode(bans_keys),BANLIST_KEYS_DIR)
+		rustg_file_write(json_encode(bans_keys),BANLIST_KEYS_DIR)
 
 	if(bans_address_changed)
-		text2file(json_encode(bans_address),BANLIST_ADDRESS_DIR)
+		rustg_file_write(json_encode(bans_address),BANLIST_ADDRESS_DIR)
 
 	if(bans_computer_changed)
-		text2file(json_encode(bans_computer_ids),BANLIST_COMPUTER_DIR)
+		rustg_file_write(json_encode(bans_computer_ids),BANLIST_COMPUTER_DIR)
 
 	log_subsystem(name,"Tracking [length(bans_keys)] banned ckeys.")
 	log_subsystem(name,"Tracking [length(bans_address)] banned ip addresses.")
@@ -86,25 +83,25 @@ SUBSYSTEM_DEF(ban)
 
 /world/IsBanned(key,address,computer_id,type)
 
-	LOG_ADMIN("New [type] connection from [address](ckey: [key], computer_id: [computer_id]).")
+	log_admin("New [type] connection from [address](ckey: [key], computer_id: [computer_id]).")
 
 	if(!SSban || !SSban.initialized)
 		return list("Login" = FALSE, "reason" = "Server isn't setup!",message = "Try rejoining again in a minute!")
 
 	if(SSban.bans_keys[key])
-		LOG_ADMIN("Ckey [key]([address]) tried connecting to the server, but they were ckey banned.")
+		log_admin("Ckey [key]([address]) tried connecting to the server, but they were ckey banned.")
 		var/list/ban_data = SSban.bans_keys[key]
 		var/message = "Adminstrator [ban_data["admin"]] banned this ckey [ban_data["expires"] == -1 ? "forever" : "for [get_nice_time(ban_data["expires"] - world.realtime)]"] with the reason of: [ban_data["reason"]]"
 		return list("Login" = FALSE, "reason" = "Your ckey has been banned from accessing the server.", "message" = message)
 
 	if(SSban.bans_computer_ids[computer_id])
-		LOG_ADMIN("Ckey [key]([address]) tried connecting to the server, but they were computer id banned.")
+		log_admin("Ckey [key]([address]) tried connecting to the server, but they were computer id banned.")
 		var/list/ban_data = SSban.bans_computer_ids[computer_id]
 		var/message = "Adminstrator [ban_data["admin"]] banned this computer [ban_data["expires"] == -1 ? "forever" : "for [get_nice_time(ban_data["expires"] - world.realtime)]"] with the reason of: [ban_data["reason"]]"
 		return list("Login" = FALSE, "reason" = "Your computer ID has been banned from accessing the server.", "message" = message)
 
 	if(SSban.bans_address[address])
-		LOG_ADMIN("Ckey [key]([address]) tried connecting to the server, but they were IP banned.")
+		log_admin("Ckey [key]([address]) tried connecting to the server, but they were IP banned.")
 		var/list/ban_data = SSban.bans_address[address]
 		var/message = "Adminstrator [ban_data["admin"]] banned this IP address [ban_data["expires"] == -1 ? "forever" : "for [get_nice_time(ban_data["expires"] - world.realtime)]"] with the reason of: [ban_data["reason"]]"
 		return list("Login" = FALSE, "reason" = "Your IP address has been banned from accessing the server.", "message" = message)
@@ -124,14 +121,13 @@ SUBSYSTEM_DEF(ban)
 			Duration: [expires == -1 ? "Forever" : get_nice_time(expires - world.realtime)]")
 			del(C)
 
-	fdel(BANLIST_KEYS_DIR)
-	text2file(json_encode(bans_keys),BANLIST_KEYS_DIR)
+	rustg_file_write(json_encode(bans_keys),BANLIST_KEYS_DIR)
 
-	LOG_ADMIN("[desired_ckey] was added to the ckey banlist by [admin_ckey] for [get_nice_time(expires - world.realtime)] with the reason of: [reason].")
+	log_admin("[desired_ckey] was added to the ckey banlist by [admin_ckey] for [get_nice_time(expires - world.realtime)] with the reason of: [reason].")
 
 	return TRUE
 
 /subsystem/ban/proc/remove_ckey_ban(var/ckey,admin_ckey)
 	if(bans_keys[ckey])
 		bans_keys -= ckey
-		LOG_ADMIN("[ckey] was removed from the ckey banlist by [admin_ckey].")
+		log_admin("[ckey] was removed from the ckey banlist by [admin_ckey].")

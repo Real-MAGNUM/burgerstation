@@ -5,9 +5,11 @@
 	anchored = TRUE
 	icon = 'icons/obj/structure/plastic_flaps.dmi'
 	icon_state = "plastic_flaps"
-	plane = PLANE_WALL
+	plane = PLANE_SCENERY
 
 	bullet_block_chance = 25
+
+	density = TRUE
 
 /obj/structure/interactive/plastic_flaps/Cross(atom/movable/O)
 

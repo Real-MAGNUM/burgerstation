@@ -1,3 +1,5 @@
+var/global/list/equipped_antags = list()
+
 /obj/structure/interactive/vending/
 	name = "vending machine"
 	desc = "Vends things!"
@@ -7,6 +9,7 @@
 
 	var/list/obj/item/stored_objects = list()
 	var/list/obj/item/stored_types = list()
+	var/list/obj/item/stored_cost = list()
 
 	collision_flags = FLAG_COLLISION_WALL
 	collision_bullet_flags = FLAG_COLLISION_BULLET_NONE
@@ -14,75 +17,119 @@
 
 	var/is_free = FALSE
 	var/free_text = "free"
+	var/obj/item/accepts_item = null //Set this to an item path to make it accept the itemcount of that item instead.
 
 	initialize_type = INITIALIZE_LATE
 
 	bullet_block_chance = 75
+
+	plane = PLANE_OBJ
+
+	pixel_y = 8
+
+	density = TRUE
+
+	var/markup = 1.25 //Cost multiplier from buying out of this vendor.
+
+	desired_light_power = 0.25
+	desired_light_range = 2
+	desired_light_color = "#FFFFFF"
 
 /obj/structure/interactive/vending/Destroy()
 	stored_types.Cut()
 	stored_objects.Cut()
 	return ..()
 
-/obj/structure/interactive/vending/proc/can_purchase_item(var/mob/living/advanced/player/P,var/obj/item/associated_item,var/item_value=0,var/obj/hud/inventory/I)
+/obj/structure/interactive/vending/proc/spend_currency(var/mob/living/advanced/player/P,var/amount=0)
 
-	if(!is_free && P && P.currency < item_value)
-		P.to_chat(span("notice","You don't have enough credits to buy this!"))
-		return FALSE
 
-	if(I && length(I.held_objects))
-		P.to_chat(span("notice","Your hand needs to be empty in order to buy this!"))
+	if(accepts_item)
+		if(P.right_item && istype(P.right_item,accepts_item) && P.right_item.item_count_current >= amount)
+			P.right_item.add_item_count(-amount)
+		else if(P.left_item && istype(P.left_item,accepts_item) && P.left_item.item_count_current >= amount)
+			P.left_item.add_item_count(-amount)
+		else
+			P.to_chat(span("warning","You don't have enough [accepts_item.name]s to purchase this!"))
+			return FALSE
+
+	if(!is_free && !P.spend_currency(amount))
+		P.to_chat(span("notice","You don't have enough credits to purchase this item!"))
 		return FALSE
 
 	return TRUE
 
 
-/obj/structure/interactive/vending/proc/purchase_item(var/mob/living/advanced/player/P,var/obj/item/associated_item,var/item_value=0,var/obj/hud/inventory/I)
+/obj/structure/interactive/vending/proc/purchase_item(var/mob/living/advanced/player/P,var/obj/item/associated_item,var/item_value=0)
 
-	if(!can_purchase_item(P,associated_item,item_value,I))
-		return FALSE
-
-	P.spend_currency(item_value)
+	if(!spend_currency(P,item_value))
+		return null
 
 	var/obj/item/new_item
 	new_item = new associated_item.type(get_turf(src))
 	INITIALIZE(new_item)
 	GENERATE(new_item)
+	FINALIZE(new_item)
 	new_item.update_sprite()
-	if(P)
-		if(item_value)
-			P.to_chat(span("notice","You have purchased \the [new_item.name] for [item_value] credit\s."))
-		else
-			P.to_chat(span("notice","You vend \the [new_item.name]."))
-	if(I)
-		I.add_object(new_item)
 
-	return TRUE
+	P.to_chat(span("notice","You vend \the [new_item.name]."))
+
+	P.put_in_hands(new_item)
+
+	return new_item
 
 /obj/structure/interactive/vending/Initialize()
 
 	var/turf/T = get_turf(src)
 
 	for(var/S in stored_types)
-		var/obj/item/I = new S(src.loc)
+		var/obj/item/I = new S(T)
 		INITIALIZE(I)
 		GENERATE(I)
+		FINALIZE(I)
 	stored_types.Cut()
-
-	for(var/obj/item/I in T.contents)
-		stored_objects += I
-		I.force_move(src)
-		I.plane = PLANE_HUD_OBJ
-		I.pixel_y = 4
 
 	return ..()
 
-/obj/structure/interactive/vending/clicked_on_by_object(var/mob/caller,object,location,control,params)
+/obj/structure/interactive/vending/Finalize()
+
+	. = ..()
+
+	var/turf/T = get_turf(src)
+
+	for(var/obj/item/I in T.contents)
+		stored_objects += I
+		I.drop_item(src)
+		I.plane = PLANE_HUD_OBJ
+		I.pixel_y = 4
+
+	if(accepts_item)
+		accepts_item = new accepts_item(src)
+		INITIALIZE(accepts_item)
+		GENERATE(accepts_item)
+		FINALIZE(accepts_item)
+		markup *= 1/accepts_item.value
+
+
+	for(var/obj/item/I in stored_objects)
+		if(stored_cost[I.type])
+			continue
+		stored_cost[I.type] = CEILING(I.get_value()*markup,1)
+		if(stored_cost[I.type] <= 0)
+			log_error("Warning: [I.type] is for sale, yet it has no value!")
+			stored_cost -= I.type
+			stored_objects -= I
+			qdel(I)
+
+	return .
+
+/obj/structure/interactive/vending/clicked_on_by_object(var/mob/caller,var/atom/object,location,control,params)
+
+	if(!is_player(caller) && !is_inventory(object))
+		return ..()
 
 	INTERACT_CHECK
-
-	if(!is_player(caller))
-		return ..()
+	INTERACT_CHECK_OBJECT
+	INTERACT_DELAY(1)
 
 	var/mob/living/advanced/player/P = caller
 
@@ -91,24 +138,31 @@
 	else
 		P.set_structure_active(src)
 
-	return ..()
+	return TRUE
 
 /obj/structure/interactive/vending/proc/show_buttons_to(var/mob/living/advanced/A)
 
 	var/stored_objects_length = length(stored_objects)
-	var/stored_types_length = length(stored_types)
+
+	var/row=0
+	var/column=0
 
 	for(var/i=1,i<=stored_objects_length,i++)
+		if(row >= 8)
+			row = 0
+			column++
 		var/obj/item/I = stored_objects[i]
 		var/obj/hud/button/vendor/V = new
 		V.associated_item = I
 		V.associated_vendor = src
-		V.screen_loc = "CENTER-3,CENTER+[(stored_objects_length+stored_types_length+1)*0.5]-[i]"
+		V.associated_cost = stored_cost[I.type]
+		V.screen_loc = "LEFT+[1 + (column)*3],TOP-[row+1]"
 		V.update_owner(A)
 		V.update_sprite()
+		row++
 
 	var/obj/hud/button/close_vendor/CV = new
-	CV.screen_loc = "CENTER,CENTER+[(stored_objects_length+stored_types_length+1)*0.5]-1"
+	CV.screen_loc = "LEFT+[1 + (column+1)*3],TOP-1"
 	CV.update_owner(A)
 	CV.update_sprite()
 

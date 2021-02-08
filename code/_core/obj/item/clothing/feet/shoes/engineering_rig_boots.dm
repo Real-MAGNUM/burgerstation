@@ -13,24 +13,24 @@
 	protected_limbs = list(BODY_FOOT_RIGHT)
 
 	defense_rating = list(
-		BLADE = 50,
-		BLUNT = 50,
-		PIERCE = 50,
-		LASER = 50,
-		MAGIC = -100,
-		HEAT = 100,
-		COLD = 100,
-		BOMB = 25,
-		BIO = 75,
-		RAD = 75
+		BLADE = AP_SWORD,
+		BLUNT = AP_CLUB,
+		PIERCE = AP_AXE,
+		ARCANE = -AP_CLUB,
+		HEAT = AP_CLUB,
+		COLD = AP_CLUB,
+		RAD = AP_CLUB,
+		FATIGUE = AP_CLUB,
+		PAIN = AP_GREATCLUB
 	)
 
 	size = SIZE_2
-	weight = WEIGHT_2
 
-	value = 100
+	value = 300
 
-	slowdown_mul_worn = 1.05
+	speed_bonus = -0.1
+
+
 
 /obj/item/clothing/feet/shoes/engineering/left
 	name = "left engineering boot"
@@ -39,5 +39,5 @@
 
 	item_slot = SLOT_FOOT_LEFT_O
 	protected_limbs = list(BODY_FOOT_LEFT)
-	blocks_clothing = SLOT_FOOT_LEFT_U
+	blocks_clothing = SLOT_FOOT_LEFT | SLOT_FOOT_LEFT_U
 

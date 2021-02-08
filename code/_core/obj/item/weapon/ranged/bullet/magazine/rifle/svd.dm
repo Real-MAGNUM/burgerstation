@@ -16,10 +16,11 @@
 
 	view_punch = 32
 
-	slowdown_mul_held = HELD_SLOWDOWN_SNIPER_LARGE
+
 
 	size = SIZE_5
-	weight = WEIGHT_4
+	weight = 15
+
 
 	heat_per_shot = 0.07
 	heat_max = 0.07
@@ -33,7 +34,7 @@
 	bullet_diameter_max = 7.7
 
 	size = SIZE_4
-	weight = WEIGHT_5
+
 
 	value = 400
 
@@ -41,11 +42,39 @@
 
 	zoom_mul = 2
 
-/obj/item/weapon/ranged/bullet/magazine/rifle/svd/get_static_spread() //Base spread
+	attachment_whitelist = list(
+		/obj/item/attachment/barrel/charger = TRUE, /obj/item/attachment/barrel/charger/advanced = TRUE,
+		/obj/item/attachment/barrel/compensator = TRUE,
+		/obj/item/attachment/barrel/extended = TRUE,
+		/obj/item/attachment/barrel/gyro = TRUE,
+		/obj/item/attachment/barrel/laser_charger = FALSE,
+		/obj/item/attachment/barrel/suppressor = TRUE,
+
+		/obj/item/attachment/stock/c20r = FALSE,
+
+		/obj/item/attachment/undermount/angled_grip = TRUE,
+		/obj/item/attachment/undermount/bipod = TRUE,
+		/obj/item/attachment/undermount/burst_adapter = TRUE,
+		/obj/item/attachment/undermount/vertical_grip = TRUE
+	)
+
+	attachment_barrel_offset_x = 32 - 16
+	attachment_barrel_offset_y = 19 - 16
+
+	attachment_sight_offset_x = 12 - 16
+	attachment_sight_offset_y = 20 - 16
+
+	attachment_undermount_offset_x = 22 - 16
+	attachment_undermount_offset_y = 17 - 16
+
+	firing_pin = /obj/item/firing_pin/electronic/iff/revolutionary
+
+/obj/item/weapon/ranged/bullet/magazine/rifle/svd/get_static_spread()
 	return 0
 
-/obj/item/weapon/ranged/bullet/magazine/rifle/svd/get_skill_spread(var/mob/living/L) //Base spread
-	return max(0,0.01 - (0.01 * L.get_skill_power(SKILL_RANGED)))
+/obj/item/weapon/ranged/bullet/magazine/rifle/svd/get_skill_spread(var/mob/living/L)
+	if(!heat_current) return 0
+	return max(0,0.002 - (0.003 * L.get_skill_power(SKILL_RANGED)))
 
 
 /obj/item/weapon/ranged/bullet/magazine/rifle/svd/get_bullet_inaccuracy(var/mob/living/L,var/atom/target,var/obj/projectile/P,var/inaccuracy_modifier)

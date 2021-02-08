@@ -6,23 +6,24 @@
 
 	damage_type = /damagetype/melee/club/null_rod
 
-	attack_delay = 6
-	attack_delay_max = 10
-
 	value = 30
+
+	weight = 4
+	size = SIZE_2
 
 
 /obj/item/weapon/melee/null_rod/staff
 	name = "null staff"
 	desc = "Originally a sheperd's rod, but some asshole cut the crook off."
-	desc_extended = "A long, lightweight piece of blessed ceramic designed to show religious authority in the form of robust beatings. Has the ability to block magic exceptionally well.."
+	desc_extended = "A long, lightweight piece of blessed ceramic designed to show religious authority in the form of robust beatings. Has the ability to block magic exceptionally well."
 	icon = 'icons/obj/item/weapons/melee/clubs/nullstaff.dmi'
 
 	damage_type = /damagetype/melee/club/null_staff
 
+	attack_range = 2
 
-	attack_delay = 8
-	attack_delay_max = 20
+	weight = 8
+	size = SIZE_4
 
 /obj/item/weapon/melee/null_rod/dagger
 	name = "null dagger"
@@ -32,5 +33,5 @@
 
 	damage_type = /damagetype/melee/sword/null_dagger
 
-	attack_delay = 4
-	attack_delay_max = 6
+	weight = 3
+	size = SIZE_2

@@ -12,16 +12,11 @@
 	item_slot = SLOT_HAND_RIGHT
 
 	defense_rating = list(
-		BLADE = 5,
-		BLUNT = 5,
-		PIERCE = 5,
-		MAGIC = 75,
-		HEAT = 25,
-		COLD = 25
+		ARCANE = AP_GREATSWORD
 	)
 
 	size = SIZE_0
-	weight = WEIGHT_0
+
 
 	value = 120
 
