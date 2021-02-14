@@ -1,12 +1,12 @@
 /obj/item/weapon/ranged/bullet/magazine/rifle/minigun
-	name = "\improper 5.56mm Gatling Gun"
+	name = "\improper 4.6mm Gatling Gun"
 	desc = "It costs 10,000 credits to fire this weapon for 12 seconds."
 	desc_extended = ""
 	icon = 'icons/obj/item/weapons/ranged/rifle/minigun.dmi'
 	icon_state = "inventory"
 	value = 3000
 
-	shoot_delay = 1 //Oh god oh fuck
+	shoot_delay = 1.5 //Oh god oh fuck
 
 	automatic = TRUE
 

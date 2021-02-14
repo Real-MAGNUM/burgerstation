@@ -83,7 +83,7 @@
 	icon_state = "inventory"
 	value = 175
 
-	shoot_delay = 1.5
+	shoot_delay = 2
 	max_bursts = 2
 	view_punch = 5
 
@@ -151,7 +151,7 @@
 	icon_state = "inventory"
 	value = 450
 
-	shoot_delay = 1.75
+	shoot_delay = 2
 	view_punch = 5
 
 	shoot_sounds = list('sound/weapons/russia/abakan.ogg')
@@ -221,7 +221,7 @@
 	icon_state = "inventory"
 	value = 650
 
-	shoot_delay = 1.75
+	shoot_delay = 2
 	view_punch = 9
 
 	shoot_sounds = list('sound/weapons/russia/abakan.ogg')
@@ -291,7 +291,7 @@
 	icon_state = "inventory"
 	value = 300
 
-	shoot_delay = 1.8
+	shoot_delay = 1.5
 	view_punch = 4
 
 	shoot_sounds = list('sound/weapons/russia/abakan.ogg')
@@ -361,7 +361,7 @@
 	icon_state = "inventory"
 	value = 175
 
-	shoot_delay = 1.5
+	shoot_delay = 2
 
 	automatic = TRUE
 
@@ -425,9 +425,9 @@
 	desc_extended = "A modified version of the silent Vintorez sniper rifle, the assault rifle was designed as a special forces weapon."
 	icon = 'icons/obj/item/weapons/ranged/rifle/939_val.dmi'
 	icon_state = "inventory"
-	value = 200
+	value = 500
 
-	shoot_delay = 1.5
+	shoot_delay = 2
 
 	automatic = TRUE
 
@@ -453,6 +453,8 @@
 	bullet_diameter_max = 10
 
 	ai_heat_sensitivity = 1.5
+
+	shoot_alert = ALERT_LEVEL_NONE
 
 	attachment_whitelist = list(
 		/obj/item/attachment/sight/laser_sight = TRUE,
@@ -491,7 +493,7 @@
 	icon = 'icons/obj/item/weapons/ranged/rifle/939_vintar.dmi'
 	icon_state = "inventory"
 
-	shoot_delay = 2.5
+	shoot_delay = 3
 
 	automatic = TRUE
 
@@ -521,9 +523,11 @@
 	size = SIZE_4
 
 
-	value = 250
+	value = 450
 
 	ai_heat_sensitivity = 2
+
+	shoot_alert = ALERT_LEVEL_NONE
 
 	inaccuracy_modifer = 0.09
 

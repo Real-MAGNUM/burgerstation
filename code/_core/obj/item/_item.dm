@@ -14,7 +14,7 @@
 
 	var/rarity = RARITY_COMMON
 
-	var/size = 1
+	size = SIZE_0
 	var/weight = 0 //DEPRICATED
 	var/quality = 100
 
@@ -109,10 +109,6 @@
 
 	var/block_power = 0.5 //Higher values means it blocks more. Normal weapons should have 1, while stronger items should have between 2-5
 
-	//This applies to things like beakers and whatnot. This affects player-controlled transfers, and does not affect procs like add_reagent
-	var/allow_reagent_transfer_to = FALSE
-	var/allow_reagent_transfer_from = FALSE
-
 	var/list/polymorphs = list()
 
 	var/consume_verb = "drink out of"
@@ -132,8 +128,12 @@
 
 	var/obj/item/clothing/additional_clothing_parent
 
-	var/list/block_defense_rating = DEFAULT_BLOCK
-	var/block_defense_value = 0 //Automatically calculated.
+	var/list/block_defense = list(
+		ATTACK_TYPE_UNARMED = 0.25,
+		ATTACK_TYPE_MELEE = 0.5,
+		ATTACK_TYPE_RANGED = 0,
+		ATTACK_TYPE_MAGIC = 0
+	)
 
 	var/can_hold = TRUE
 	var/can_wear = FALSE
@@ -164,11 +164,6 @@
 	. = ..()
 	if(length(polymorphs))
 		update_sprite()
-
-	for(var/k in block_defense_rating)
-		var/v = block_defense_rating[k]
-		block_defense_value += v
-
 	return .
 
 /obj/item/get_base_value()
@@ -587,9 +582,11 @@
 		PROGRESS_BAR_CONDITIONS(caller,src,.proc/can_feed,caller,object)
 		return TRUE
 
-	if(allow_reagent_transfer_from && is_item(object) && object.reagents)
-		var/obj/item/I = object
-		if(I.allow_reagent_transfer_to)
+
+	if(object.reagents)
+		//Find out the behavior.
+		//TODO: Add liquid transfer sounds.
+		if(object.allow_reagent_transfer_to && allow_reagent_transfer_from)
 			if(reagents.volume_current <= 0)
 				caller.to_chat(span("warning","\The [src.name] is empty!"))
 				return FALSE
@@ -598,8 +595,17 @@
 				return FALSE
 			var/actual_transfer_amount = reagents.transfer_reagents_to(object.reagents,transfer_amount, caller = caller)
 			caller.to_chat(span("notice","You transfer [actual_transfer_amount] units of liquid to \the [object]."))
-			//TODO: Add liquid transfer sounds.
-		return TRUE
+			return TRUE
+		else if(object.allow_reagent_transfer_from && allow_reagent_transfer_to)
+			if(object.reagents.volume_current <= 0)
+				caller.to_chat(span("warning","\The [object.name] is empty!"))
+				return FALSE
+			if(reagents.volume_current >= reagents.volume_max)
+				caller.to_chat(span("warning","\The [src.name] is full!"))
+				return FALSE
+			var/actual_transfer_amount = object.reagents.transfer_reagents_to(reagents,transfer_amount, caller = caller)
+			caller.to_chat(span("notice","You transfer [actual_transfer_amount] units of liquid to \the [src]."))
+			return TRUE
 
 	return FALSE
 

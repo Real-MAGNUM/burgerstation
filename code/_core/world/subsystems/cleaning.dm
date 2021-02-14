@@ -36,7 +36,8 @@ SUBSYSTEM_DEF(delete)
 	for(var/k in objects_to_delete_safe)
 		var/datum/object_to_delete = k
 		CHECK_TICK(tick_usage_max,FPS_SERVER*5)
-		if(!istype(object_to_delete) || object_to_delete.qdeleting)
+
+		if(object_to_delete.qdeleting)
 			objects_to_delete_safe -= k
 			continue
 
@@ -82,36 +83,6 @@ SUBSYSTEM_DEF(delete)
 		if(i >= max_deletions)
 			break
 
-	/*
-	var/queued_objects_to_delete = length(objects_to_delete)
-	var/queued_objects_to_delete_safe = length(objects_to_delete_safe)
-
-	if(queued_objects_to_delete >= 1000)
-		var/limit = 100
-		log_error("Cleaning System Warning: objects_to_delete is execeding 1000 queued objects ([queued_objects_to_delete]) to delete! Force deleting [limit] of the oldest entrys...")
-
-		for(var/k in objects_to_delete)
-			var/datum/D = k
-			CHECK_TICK(100,FPS_SERVER)
-			qdel(D)
-			objects_to_delete -= k
-			limit--
-			if(limit <= 0)
-				break
-
-	if(queued_objects_to_delete_safe >= 1000)
-		var/limit = 100
-		log_error("Cleaning System Warning: objects_to_delete_safe is execeding 1000 queued objects ([queued_objects_to_delete_safe]) to delete! Force deleting [limit] of the oldest entrys...")
-		for(var/k in objects_to_delete_safe)
-			var/datum/D = k
-			CHECK_TICK(100,FPS_SERVER)
-			qdel(D)
-			objects_to_delete -= k
-			limit--
-			if(limit <= 0)
-				break
-	*/
-
 	return TRUE
 
 /subsystem/delete/proc/should_delete(var/datum/D)
@@ -119,19 +90,27 @@ SUBSYSTEM_DEF(delete)
 	if(!is_atom(D))
 		log_error("Warning: Tried safe deleting a non-atom! ([D.get_debug_name()]).")
 		return TRUE
-	else
-		var/atom/A = D
-		if(!A.is_safe_to_delete())
+
+	var/atom/A = D
+	if(!A.is_safe_to_delete())
+		return FALSE
+
+	if(!isturf(A.loc))
+		return FALSE
+	var/turf/atom_turf = A.loc
+
+	var/area/atom_area = atom_turf.loc
+	if(atom_area.safe_storage)
+		return FALSE
+
+	for(var/k in all_mobs_with_clients_by_z["[atom_turf.z]"])
+		var/mob/M = k
+		if(is_observer(M))
+			continue
+		var/regisred_distance = get_dist(A,M)
+		if(regisred_distance <= VIEW_RANGE + ZOOM_RANGE)
 			return FALSE
-		if(!isturf(A.loc))
-			return FALSE
-		var/area/A2 = get_area(A)
-		if(A2.safe_storage)
-			return FALSE
-		for(var/mob/living/advanced/player/P in viewers(VIEW_RANGE,get_turf(A)))
-			if(!P.client)
-				continue
-			return FALSE
+
 
 	return TRUE
 

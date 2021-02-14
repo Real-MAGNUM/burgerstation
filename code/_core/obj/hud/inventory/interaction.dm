@@ -97,10 +97,17 @@
 	if(grabbed_object && grabbed_object == object)
 		return release_object(caller)
 
-	if(grabbed_object)
+	if(grabbed_object && isturf(grabbed_object.loc)) //Handle moving grabbed objects
 		if(isturf(object) && (get_dist(caller,object) <= 1 || get_dist(object,grabbed_object) <= 1))
 			var/desired_move_dir = get_dir(grabbed_object,object)
-			grabbed_object.Move(get_step(grabbed_object.loc,desired_move_dir))
+			var/turf/T = get_step(grabbed_object.loc,desired_move_dir)
+			if(is_living(grabbed_object) && is_living(caller))
+				var/mob/living/L = grabbed_object
+				var/mob/living/C = caller
+				var/turf/grabbed_object_turf = grabbed_object.loc
+				if(C.loyalty_tag && L.loyalty_tag == C.loyalty_tag && grabbed_object_turf.is_safe_teleport() && !T.is_safe_teleport())
+					return TRUE
+			grabbed_object.Move(T)
 		return TRUE
 
 	if(caller.attack_flags & CONTROL_MOD_OWNER && top_object)
@@ -155,14 +162,16 @@
 	if(object.clicked_on_by_object(caller,top_object ? top_object : src,location,control,params))
 		return TRUE
 
-	if(top_object && top_object.attack(caller,object,params))
+	if(top_object)
+		top_object.attack(caller,object,params)
 		return TRUE
 
 	if(is_organ(src.loc)) //We belong to an organ, so we should attack.
 		var/obj/item/organ/O = src.loc
-		return O.attack(caller,object,params)
+		O.attack(caller,object,params)
+		return TRUE
 
-	return FALSE
+	return TRUE //Returning TRUE here as returning false would just run the above.
 
 /obj/hud/inventory/proc/toggle_wield(var/mob/caller,var/obj/item/item_to_wield)
 

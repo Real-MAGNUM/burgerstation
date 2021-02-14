@@ -337,7 +337,7 @@ play('sound',list_of_hearers, turf or vector) to play to that list of hearers at
 
 
 
-/proc/play_sound(var/sound_path,var/turf/source_turf,var/list/hearers = all_mobs_with_clients,var/range_min=1, var/range_max = SOUND_RANGE, var/volume=50, var/sound_setting = SOUND_SETTING_FX, var/pitch=1, var/loop=0, var/duration=0, var/pan=0, var/channel=SOUND_CHANNEL_FX, var/priority=0, var/echo = 0, var/invisibility_check = 0)
+/proc/play_sound(var/sound_path,var/turf/source_turf,var/list/hearers,var/range_min=1, var/range_max = SOUND_RANGE, var/volume=50, var/sound_setting = SOUND_SETTING_FX, var/pitch=1, var/loop=0, var/duration=0, var/pan=0, var/channel=SOUND_CHANNEL_FX, var/priority=0, var/echo = 0, var/invisibility_check = 0)
 
 	var/sound/created_sound = setup_sound(sound_path)
 	if(!created_sound || volume <= 0)
@@ -362,6 +362,9 @@ play('sound',list_of_hearers, turf or vector) to play to that list of hearers at
 	else if(loop)
 		SSsound.active_sounds[created_sound] = -1
 
+	if(!hearers)
+		hearers = all_mobs_with_clients_by_z["[source_turf.z]"]
+
 	for(var/k in hearers)
 
 		CHECK_TICK(SSsound.tick_usage_max,FPS_SERVER*2)
@@ -372,10 +375,6 @@ play('sound',list_of_hearers, turf or vector) to play to that list of hearers at
 			continue
 
 		if(invisibility_check && M.see_invisible < invisibility_check)
-			continue
-
-		var/turf/mob_turf = get_turf(M)
-		if(!mob_turf || mob_turf.z != source_turf.z)
 			continue
 
 		var/local_volume = volume
@@ -395,6 +394,7 @@ play('sound',list_of_hearers, turf or vector) to play to that list of hearers at
 			if(local_volume <= 0)
 				continue
 
+		var/turf/mob_turf = get_turf(M)
 		if(channel != SOUND_CHANNEL_MUSIC && channel != SOUND_CHANNEL_AMBIENT)
 			var/distance = max(0,get_dist(mob_turf,source_turf)-(VIEW_RANGE*0.5)) - range_min
 			if(sound_setting == SOUND_SETTING_FOOTSTEPS && distance <= 0)

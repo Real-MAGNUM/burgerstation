@@ -23,9 +23,20 @@
 		if(tox) . += adjust_loss(TOX,tox)
 		if(oxy) . += adjust_loss(OXY,oxy)
 		if(rad) . += adjust_loss(RAD,rad)
-		if(fatigue) . += adjust_loss(FATIGUE,fatigue)
 		if(sanity) . += adjust_loss(SANITY,sanity)
-		if(mental) . += adjust_loss(MENTAL,mental)
+		var/mana_adjusted = FALSE
+		var/fatigue_adjusted = FALSE
+		if(fatigue && (A.ai || !A.has_status_effect(STAMCRIT)) && adjust_stamina(-fatigue))
+			fatigue_adjusted = TRUE
+			if(stamina_current <= 0)
+				A.add_status_effect(STAMCRIT,-1,-1)
+		if(mental > 0 && adjust_mana(-mental))
+			mana_adjusted = TRUE
+		if(mana_adjusted || fatigue_adjusted)
+			A.queue_health_update = TRUE
+
+	mental = 0
+	fatigue = 0
 
 	if(brute < 0 || burn < 0 || pain < 0 || rad < 0) //Heal damage
 		var/list/damaged_organs = list()
@@ -73,7 +84,7 @@
 				heal_list[damage_type] = (damage_amount_of_type / total_damage_of_type) * heal_amount_of_type
 
 			if(heal_list[BRUTE] || heal_list[BURN] || heal_list[PAIN])
-				. += O.health.adjust_loss_smart(brute=-heal_list[BRUTE],burn=-heal_list[BURN],pain=-heal_list[PAIN],update=TRUE)
+				. += O.health.adjust_loss_smart(brute=-heal_list[BRUTE],burn=-heal_list[BURN],pain=-heal_list[PAIN],update=FALSE)
 
 	if(. && update)
 		A.queue_health_update = TRUE
@@ -203,30 +214,5 @@
 					else if(C.luck < 50 && prob(50-C.luck))
 						clothing_defense *= 0.5
 				.[damage_type] += FLOOR(clothing_defense,1)
-
-	if((A.attack_flags & CONTROL_MOD_BLOCK) && (turn(get_dir(attacker,owner),180) & owner.dir)) //Do you even block?
-
-		var/obj/item/item_to_block_with
-
-		if(A.right_item && A.right_item.can_block())
-			if(A.left_item && A.left_item.can_block() && A.left_item.block_defense_value > A.right_item.block_defense_value)
-				item_to_block_with = A.left_item
-			else
-				item_to_block_with = A.right_item
-		else if(A.left_item && A.left_item.can_block())
-			item_to_block_with = A.left_item
-
-		if(item_to_block_with)
-			for(var/damage_type in item_to_block_with.block_defense_rating)
-				if(IS_INFINITY(.[damage_type]))
-					continue
-				.[damage_type] += item_to_block_with.block_defense_rating[damage_type]
-		else
-			for(var/damage_type in ALL_DAMAGE)
-				if(IS_INFINITY(.[damage_type]))
-					continue
-				.[damage_type] += AP_GREATSWORD*0.25 + AP_GREATSWORD*0.75*A.get_skill_power(SKILL_UNARMED)
-
-
 
 	return .

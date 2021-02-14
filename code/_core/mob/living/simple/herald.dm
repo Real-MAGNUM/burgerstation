@@ -8,7 +8,9 @@
 	ai = /ai/boss/herald/
 	value = 3000
 
-	health_base = 1000
+	boss_loot = /loot/lavaland/herald
+
+	health_base = 1500
 	stamina_base = 2000
 	mana_base = 100
 
@@ -56,7 +58,7 @@
 
 	fatigue_from_block_mul = 0
 
-	mob_size = MOB_SIZE_BOSS
+	size = SIZE_BOSS
 
 	sprint_delay_mul = 1
 	jog_delay_mul = 3
@@ -90,7 +92,6 @@
 
 /mob/living/simple/herald/post_death()
 	. = ..()
-	CREATE(/obj/structure/interactive/crate/necro/herald,get_turf(src))
 	animate(src, pixel_z = 64, time = 30)
 	icon_state = "dead"
 	update_sprite()

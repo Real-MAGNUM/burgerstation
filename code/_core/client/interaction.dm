@@ -13,7 +13,7 @@
 
 	return .
 
-/client/MouseWheel(object,delta_x,delta_y,location,control,params)
+/client/MouseWheel(var/atom/object,delta_x,delta_y,location,control,params)
 
 	var/list/new_params = params2list(params)
 
@@ -24,6 +24,10 @@
 		update_zoom(zoom_level + change_in_screen)
 		return TRUE
 
+	if(!object)
+		return FALSE
+
+	object = object.defer_click_on_object(mob,location,control,new_params)
 	mob.on_mouse_wheel(object,delta_x,delta_y,location,control,new_params)
 
 	return ..()
@@ -127,6 +131,9 @@
 /client/MouseDrop(var/atom/src_object,var/atom/over_object,src_location,over_location,src_control,over_control,params)
 
 	var/list/new_params = params2list(params)
+
+	if(!src_object || !over_object)
+		return FALSE
 
 	src_object = src_object.defer_click_on_object(mob,src_location,src_control,new_params)
 	over_object = over_object.defer_click_on_object(mob,over_location,over_control,new_params)

@@ -5,7 +5,7 @@
 	icon = 'icons/obj/item/weapons/ranged/rifle/nanotrasen/127_1.dmi'
 	icon_state = "inventory"
 
-	shoot_delay = 5
+	shoot_delay = 10
 
 	automatic = FALSE
 
@@ -36,9 +36,10 @@
 	dan_mode = TRUE
 
 	attachment_whitelist = list(
-		/obj/item/attachment/stock/sniper_127 = TRUE,
+		/obj/item/attachment/stock/sniper_127 = TRUE, //Actually the barrel but I want barrel attachments for the gun.
 
-		/obj/item/attachment/barrel/charger = TRUE, /obj/item/attachment/barrel/charger/advanced = TRUE,
+		/obj/item/attachment/barrel/charger = TRUE,
+		/obj/item/attachment/barrel/charger/advanced = TRUE,
 		/obj/item/attachment/barrel/compensator = TRUE,
 		/obj/item/attachment/barrel/extended = TRUE,
 		/obj/item/attachment/barrel/gyro = TRUE,
@@ -57,14 +58,14 @@
 		/obj/item/attachment/undermount/vertical_grip = TRUE
 	)
 
-	attachment_barrel_offset_x = 32 - 16
+	attachment_barrel_offset_x = 48 - 16
 	attachment_barrel_offset_y = 19 - 16
 
 	attachment_sight_offset_x = 17 - 16
 	attachment_sight_offset_y = 20 - 16
 
-	attachment_undermount_offset_x = 48 - 16
-	attachment_undermount_offset_y = 18 - 16
+	attachment_undermount_offset_x = 31 - 16
+	attachment_undermount_offset_y = 17 - 16
 
 	attachment_stock_offset_x = 32 - 16
 	attachment_stock_offset_y = 19 - 16

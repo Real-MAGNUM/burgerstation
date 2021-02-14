@@ -30,6 +30,14 @@
 
 	var/turf/T = get_turf(src)
 
+	if(boss && boss_loot)
+		var/obj/structure/interactive/boss_loot/BL = new(T)
+		BL.loot_to_give = boss_loot
+		BL.allowed_users = players_fighting_boss.Copy()
+		INITIALIZE(BL)
+		GENERATE(BL)
+		FINALIZE(BL)
+
 	create_alert(VIEW_RANGE*0.5,T, alert_level = ALERT_LEVEL_CAUTION, visual = TRUE)
 
 	movement_flags = 0x0
@@ -106,15 +114,15 @@
 
 /mob/living/proc/rejuvenate()
 	if(health) health.adjust_loss_smart(
-		-health.get_loss(BRUTE),
-		-health.get_loss(BURN),
-		-health.get_loss(TOX),
-		-health.get_loss(OXY),
-		-health.get_loss(FATIGUE),
-		-health.get_loss(PAIN),
-		-health.get_loss(RAD),
-		-health.get_loss(SANITY),
-		-health.get_loss(MENTAL)
+		brute = -health.get_loss(BRUTE),
+		burn = -health.get_loss(BURN),
+		tox = -health.get_loss(TOX),
+		oxy = -health.get_loss(OXY),
+		fatigue = -health.get_loss(FATIGUE),
+		pain = -health.get_loss(PAIN),
+		rad = -health.get_loss(RAD),
+		sanity = -health.get_loss(SANITY),
+		mental = -health.get_loss(MENTAL)
 	)
 	blood_volume = blood_volume_max
 	if(reagents) reagents.remove_all_reagents()

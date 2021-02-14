@@ -16,14 +16,14 @@ var/global/world_state = STATE_STARTING
 	hub = "Exadv1.spacestation13"
 	hub_password = "kMZy3U5jJHSiBQjr"
 
-	cache_lifespan = 5
+	cache_lifespan = 7
 
 	turf = /turf/space
 	area = /area/
 
 	maxx = WORLD_SIZE
 	maxy = WORLD_SIZE
-	maxz = 3
+	maxz = 0
 
 	loop_checks = 1
 
@@ -53,8 +53,9 @@ var/global/world_state = STATE_STARTING
 	status = "<b><a href='[server_link]'>[server_name]</a>\]</b> ([github_name])<br>[description]"
 
 	var/player_limit_config = CONFIG("PLAYER_LIMIT",0)
-	if(player_limit_config > 0)
-		status = "[status]<br>[length(all_clients)]/[player_limit_config] players."
+	var/connected_players = length(all_clients)
+	if(player_limit_config > 0 && connected_players + 10 >= player_limit_config)
+		status = "[status]<br>[connected_players]/[player_limit_config] players."
 
 	return TRUE
 
